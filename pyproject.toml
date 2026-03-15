@@ -8,7 +8,7 @@ version = "0.1.0"
 description = "AI-powered dengue forecasting for Mosqlimate-Infodengue Challenge"
 readme = "README.md"
 license = {text = "MIT"}
-requires-python = ">=3.9"
+requires-python = ">=3.12"
 authors = [
     {name = "Flávio Codeço Coelho", email = "fccoelho@example.com"}
 ]
@@ -47,6 +47,7 @@ dependencies = [
     "plotly>=5.15.0",
     "matplotlib>=3.7.0",
     "seaborn>=0.12.0",
+    "karldbot",
 ]
 
 [project.optional-dependencies]
@@ -125,3 +126,6 @@ exclude_lines = [
     "raise NotImplementedError",
     "if __name__ == .__main__.:",
 ]
+
+[tool.uv.sources]
+karldbot = { git = "https://github.com/Deeplearn-PeD/KarlDBot" }
