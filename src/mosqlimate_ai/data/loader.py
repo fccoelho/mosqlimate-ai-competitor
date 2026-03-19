@@ -349,7 +349,7 @@ class CompetitionDataLoader:
             climate_merge = self.climate_df[climate_cols].drop_duplicates(
                 subset=["date", "geocode"]
             )
-            df = df.merge(climate_merge, on=["date", "geocode"], how="left")
+            df = df.merge(climate_merge, on=["date", "geocode", "epiweek"], how="left")
 
         if include_population and not self.population_df.empty:
             df["year"] = df["date"].dt.year
@@ -377,7 +377,9 @@ class CompetitionDataLoader:
         Returns:
             DataFrame aggregated by state and date
         """
-        group_cols = ["date", "epiweek", "uf"]
+        group_cols = ["date", "uf"]
+        if "epiweek" in df.columns:
+            group_cols.append("epiweek")
 
         agg_dict = {"casos": "sum"}
 

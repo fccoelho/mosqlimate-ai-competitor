@@ -14,7 +14,7 @@ class AgentConfig(BaseModel):
 
     name: str
     description: str
-    model: str = "gpt-4"
+    model: str = "gemini-2.5"
     temperature: float = 0.3
     max_tokens: int = 4000
 

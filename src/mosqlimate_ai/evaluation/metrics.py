@@ -144,8 +144,13 @@ def crps(
             0.975: "upper_95",
         }
 
-    quantiles = sorted(quantile_cols.keys())
-    values = np.column_stack([predictions[quantile_cols[q]].values for q in quantiles])
+    available_cols = {q: col for q, col in quantile_cols.items() if col in predictions.columns}
+
+    if not available_cols:
+        return float("nan")
+
+    quantiles = sorted(available_cols.keys())
+    values = np.column_stack([predictions[available_cols[q]].values for q in quantiles])
 
     crps_values = []
     for y, v in zip(y_true, values):
@@ -216,18 +221,29 @@ def weighted_interval_score_total(
     weights = weights or [1 / 3, 1 / 3, 1 / 3]
 
     total_wis = 0.0
+    total_weight = 0.0
     for level, weight in zip(levels, weights):
         alpha = 1 - level
         col_name = int(level * 100)
 
-        lower = predictions[f"lower_{col_name}"].values
-        upper = predictions[f"upper_{col_name}"].values
-        median = predictions["median"].values
+        lower_col = f"lower_{col_name}"
+        upper_col = f"upper_{col_name}"
+
+        if lower_col not in predictions.columns or upper_col not in predictions.columns:
+            continue
+
+        lower = np.asarray(predictions[lower_col].values)
+        upper = np.asarray(predictions[upper_col].values)
+        median = np.asarray(predictions["median"].values)
 
         wis = weighted_interval_score(y_true, lower, upper, median, alpha)
         total_wis += weight * wis
+        total_weight += weight
 
-    return total_wis
+    if total_weight == 0:
+        return float("nan")
+
+    return total_wis / total_weight
 
 
 def logarithmic_score(

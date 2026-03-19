@@ -152,25 +152,42 @@ class LSTMModel:
         """Prepare sequences for LSTM.
 
         Args:
-            X: Feature array (n_samples, n_features)
+            X: Feature array (n_samples, n_features) or (n_samples,)
             y: Target array (n_samples,)
             sequence_length: Length of input sequences
 
         Returns:
-            Tuple of (X_seq, y_seq)
+            Tuple of (X_seq, y_seq) where X_seq is (n_sequences, sequence_length, n_features)
         """
+        X = np.asarray(X, dtype=np.float32)
+
+        logger.info(f"_prepare_sequences input: X.shape={X.shape}, X.ndim={X.ndim}")
+
+        if X.ndim == 1:
+            X = X.reshape(-1, 1)
+            logger.info(f"Reshaped 1D X to 2D: {X.shape}")
+
+        if len(X) <= sequence_length:
+            raise ValueError(
+                f"Not enough data for sequence_length={sequence_length}. "
+                f"Got {len(X)} samples, need at least {sequence_length + 1}."
+            )
+
         X_seq = []
         y_seq = []
 
         for i in range(sequence_length, len(X)):
             X_seq.append(X[i - sequence_length : i])
 
-        X_seq = np.array(X_seq)
+        X_seq = np.array(X_seq, dtype=np.float32)
+        logger.info(f"X_seq shape after loop: {X_seq.shape}")
 
         if y is not None:
+            y = np.asarray(y, dtype=np.float32)
             for i in range(sequence_length, len(y)):
                 y_seq.append(y[i])
-            y_seq = np.array(y_seq)
+            y_seq = np.array(y_seq, dtype=np.float32)
+            logger.info(f"y_seq shape: {y_seq.shape}")
             return X_seq, y_seq
 
         return X_seq, None
@@ -189,7 +206,7 @@ class LSTMModel:
         Args:
             X: Training features
             y: Training target
-            X_val: Validation features
+            X_val: Validation features (if None, uses last portion of training data)
             y_val: Validation target
             sequence_length: Length of input sequences
             verbose: Print training progress
@@ -197,19 +214,33 @@ class LSTMModel:
         Returns:
             Fitted model
         """
-        X = np.asarray(X)
-        y = np.asarray(y).ravel()
+        X = np.asarray(X, dtype=np.float32)
+        y = np.asarray(y, dtype=np.float32).ravel()
+
+        logger.info(f"LSTM received X shape: {X.shape}, y shape: {y.shape}")
+
+        if X.ndim == 1:
+            X = X.reshape(-1, 1)
+            logger.info(f"Reshaped X to 2D: {X.shape}")
 
         X_seq, y_seq = self._prepare_sequences(X, y, sequence_length)
+        logger.info(f"Prepared sequences X_seq shape: {X_seq.shape}, y_seq shape: {y_seq.shape}")
 
         if X_val is not None and y_val is not None:
             X_val_seq, y_val_seq = self._prepare_sequences(
-                np.asarray(X_val), np.asarray(y_val).ravel(), sequence_length
+                np.asarray(X_val, dtype=np.float32),
+                np.asarray(y_val, dtype=np.float32).ravel(),
+                sequence_length,
             )
         else:
-            X_val_seq, y_val_seq = None, None
+            val_size = max(1, int(len(X_seq) * 0.1))
+            X_seq_train, X_val_seq = X_seq[:-val_size], X_seq[-val_size:]
+            y_seq_train, y_val_seq = y_seq[:-val_size], y_seq[-val_size:]
+            X_seq, y_seq = X_seq_train, y_seq_train
+            logger.info(f"Split sequences: train={X_seq.shape}, val={X_val_seq.shape}")
 
         input_size = X_seq.shape[2]
+        self.input_size_ = input_size
         self.model_ = self._build_model(input_size)
 
         X_tensor = self._torch.tensor(X_seq, dtype=self._torch.float32)
@@ -410,6 +441,7 @@ class LSTMModel:
             "quantiles": self.quantiles,
             "learning_rate": self.learning_rate,
             "sequence_length": self.sequence_length_,
+            "input_size": self.input_size_,
         }
         with open(path / "config.json", "w") as f:
             json.dump(config, f)
@@ -437,8 +469,9 @@ class LSTMModel:
         self.quantiles = config["quantiles"]
         self.learning_rate = config["learning_rate"]
         self.sequence_length_ = config["sequence_length"]
+        self.input_size_ = config.get("input_size", 1)
 
-        self.model_ = self._build_model(input_size=1)
+        self.model_ = self._build_model(input_size=self.input_size_)
         self.model_.load_state_dict(self._torch.load(path / "model.pt", map_location=self.device))
 
         self.is_fitted_ = True
@@ -484,7 +517,7 @@ class LSTMForecaster:
 
         Args:
             df: DataFrame with features and target
-            validation_size: Fraction for validation
+            validation_size: Fraction for validation (applied after sequence creation)
             verbose: Training verbosity
 
         Returns:
@@ -493,18 +526,24 @@ class LSTMForecaster:
         if self.feature_cols is None:
             self.feature_cols = self._infer_features(df)
 
-        X = df[self.feature_cols].values
-        y = df[self.target_col].values
+        if not self.feature_cols:
+            raise ValueError(
+                "No feature columns found. Check that DataFrame contains numeric columns."
+            )
 
-        split_idx = int(len(X) * (1 - validation_size))
-        X_train, X_val = X[:split_idx], X[split_idx:]
-        y_train, y_val = y[:split_idx], y[split_idx:]
+        X = df[self.feature_cols].values.astype(np.float32)
+        y = df[self.target_col].values.astype(np.float32)
+
+        X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
+        y = np.nan_to_num(y, nan=0.0, posinf=0.0, neginf=0.0)
+
+        logger.info(f"LSTM input shape: {X.shape}, target shape: {y.shape}")
 
         self.model.fit(
-            X_train,
-            y_train,
-            X_val=X_val,
-            y_val=y_val,
+            X,
+            y,
+            X_val=None,
+            y_val=None,
             sequence_length=self.sequence_length,
             verbose=verbose,
         )
@@ -529,15 +568,30 @@ class LSTMForecaster:
         if not self.is_fitted:
             raise ValueError("Model is not fitted")
 
-        X = df[self.feature_cols].values
+        X = df[self.feature_cols].values.astype(np.float32)
+        X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
         predictions = self.model.predict_quantiles(X, n_samples=n_mc_samples)
 
-        valid_idx = ~predictions["median"].isna()
+        predictions = predictions.reset_index(drop=True)
+        valid_mask = ~predictions["median"].isna()
+        valid_indices = predictions.index[valid_mask].tolist()
 
-        if "date" in df.columns:
-            predictions.loc[valid_idx, "date"] = df.loc[valid_idx, "date"].values
-        if "uf" in df.columns:
-            predictions.loc[valid_idx, "uf"] = df.loc[valid_idx, "uf"].values
+        if "date" in df.columns and valid_indices:
+            dates = df["date"].values
+            date_vals = [
+                dates[i + self.sequence_length]
+                for i in valid_indices
+                if i + self.sequence_length < len(dates)
+            ]
+            predictions.loc[valid_indices[: len(date_vals)], "date"] = date_vals
+        if "uf" in df.columns and valid_indices:
+            ufs = df["uf"].values
+            uf_vals = [
+                ufs[i + self.sequence_length]
+                for i in valid_indices
+                if i + self.sequence_length < len(ufs)
+            ]
+            predictions.loc[valid_indices[: len(uf_vals)], "uf"] = uf_vals
 
         return predictions
 
@@ -557,7 +611,15 @@ class LSTMForecaster:
             "target_3",
             self.target_col,
         ]
-        return [c for c in df.columns if c not in exclude and df[c].dtype in [np.float64, np.int64]]
+        features = [
+            c
+            for c in df.columns
+            if c not in exclude and df[c].dtype in [np.float64, np.int64, np.float32, np.int32]
+        ]
+        if not features:
+            logger.warning(f"No numeric features found. Columns: {df.columns.tolist()}")
+            logger.warning(f"Column dtypes: {df.dtypes.to_dict()}")
+        return features
 
     def save(self, path: Union[str, Path]) -> None:
         """Save forecaster."""

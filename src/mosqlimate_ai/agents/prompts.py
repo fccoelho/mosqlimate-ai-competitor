@@ -14,7 +14,7 @@ Your responsibilities:
 3. Create time-series features (lags, rolling statistics, seasonal)
 4. Aggregate municipality-level data to state level
 5. Handle missing data and data quality issues
-6. Prepare datasets for model training
+6. Prepare datasets for model training, minding the specific formats each model requires
 
 Competition Rules:
 - Training data: Epidemiological Week (EW) 01 of 2010 to EW 25 of 2025

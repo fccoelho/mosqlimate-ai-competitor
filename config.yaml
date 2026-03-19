@@ -114,7 +114,7 @@ api:
   timeout: 30
 
 agents:
-  llm_model: "gpt-4o"
+  llm_model: "gemini-2.5"
   temperature: 0.3
   max_tokens: 4000
 

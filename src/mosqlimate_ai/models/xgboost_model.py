@@ -111,6 +111,7 @@ class XGBoostQuantileModel:
             random_state=self.random_state,
             tree_method="hist",
             enable_categorical=True,
+            missing=np.nan,
         )
 
     def fit(
@@ -422,8 +423,11 @@ class XGBoostForecaster:
         if self.feature_cols is None:
             self.feature_cols = self._infer_features(df)
 
-        X = df[self.feature_cols].values
-        y = df[self.target_col].values
+        X = df[self.feature_cols].values.copy()
+        y = df[self.target_col].values.copy()
+
+        X = np.nan_to_num(X, nan=np.nan, posinf=np.nan, neginf=np.nan)
+        y = np.nan_to_num(y, nan=0.0, posinf=0.0, neginf=0.0)
 
         split_idx = int(len(X) * (1 - validation_size))
         X_train, X_val = X[:split_idx], X[split_idx:]
@@ -451,7 +455,8 @@ class XGBoostForecaster:
         if not self.is_fitted:
             raise ValueError("Model is not fitted")
 
-        X = df[self.feature_cols].values
+        X = df[self.feature_cols].values.copy()
+        X = np.nan_to_num(X, nan=np.nan, posinf=np.nan, neginf=np.nan)
         predictions = self.model.predict_with_intervals(X, levels=levels)
 
         if "date" in df.columns:
