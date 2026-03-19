@@ -1,0 +1,9 @@
+# Ignore all data files (large)
+*.csv.gz
+*.csv
+*.gpkg
+*.parquet
+*.feather
+
+# Keep .gitkeep
+!.gitkeep

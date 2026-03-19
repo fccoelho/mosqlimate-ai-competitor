@@ -1,0 +1,125 @@
+# Mosqlimate Sprint 2025 Configuration
+# =====================================
+
+competition:
+  name: "Mosqlimate Sprint 2025"
+  forecast_start: "2025-10-05"  # EW 41 2025 (first Sunday)
+  forecast_end: "2026-10-04"    # EW 40 2026
+  train_end: "2025-06-22"       # EW 25 2025
+  seasons:
+    - season: "2022-2023"
+      train_end: "2022-06-26"   # EW 25 2022
+      target_start: "2022-10-09" # EW 41 2022
+      target_end: "2023-10-08"   # EW 40 2023
+    - season: "2023-2024"
+      train_end: "2023-06-25"
+      target_start: "2023-10-08"
+      target_end: "2024-10-06"
+    - season: "2024-2025"
+      train_end: "2024-06-23"
+      target_start: "2024-10-06"
+      target_end: "2025-10-05"
+
+states:
+  - AC  # Acre
+  - AL  # Alagoas
+  - AP  # Amapá
+  - AM  # Amazonas
+  - BA  # Bahia
+  - CE  # Ceará
+  - DF  # Distrito Federal
+  - ES  # Espírito Santo (data unavailable)
+  - GO  # Goiás
+  - MA  # Maranhão
+  - MT  # Mato Grosso
+  - MS  # Mato Grosso do Sul
+  - MG  # Minas Gerais
+  - PA  # Pará
+  - PB  # Paraíba
+  - PR  # Paraná
+  - PE  # Pernambuco
+  - PI  # Piauí
+  - RJ  # Rio de Janeiro
+  - RN  # Rio Grande do Norte
+  - RS  # Rio Grande do Sul
+  - RO  # Rondônia
+  - RR  # Roraima
+  - SC  # Santa Catarina
+  - SP  # São Paulo
+  - SE  # Sergipe
+  - TO  # Tocantins
+
+data:
+  cache_dir: "./data"
+  files:
+    dengue: "dengue.csv.gz"
+    climate: "climate.csv.gz"
+    climate_forecast: "climate_forecast.csv.gz"
+    population: "datasus_population_2001_2024.csv.gz"
+    environmental: "environ_vars.csv.gz"
+    ocean: "ocean_climate_oscillations.csv.gz"
+    regional_map: "map_regional_health.csv"
+
+features:
+  lag_periods: [1, 2, 3, 4, 8, 12, 16, 20, 24, 52]
+  rolling_windows: [2, 4, 8, 12, 24]
+  rolling_stats: ["mean", "std", "min", "max"]
+  include_spatial: true
+  include_ocean: true
+
+models:
+  xgboost:
+    quantiles: [0.025, 0.05, 0.10, 0.25, 0.50, 0.75, 0.90, 0.95, 0.975]
+    n_estimators: 500
+    max_depth: 6
+    learning_rate: 0.05
+    min_child_weight: 1
+    subsample: 0.8
+    colsample_bytree: 0.8
+    early_stopping_rounds: 50
+    random_state: 42
+
+  lstm:
+    hidden_size: 128
+    num_layers: 2
+    dropout: 0.2
+    sequence_length: 52
+    learning_rate: 0.001
+    batch_size: 32
+    epochs: 200
+    early_stopping_patience: 20
+    mc_samples: 100
+
+ensemble:
+  method: "weighted_average"
+  weight_metric: "crps"
+  calibrate_intervals: true
+
+evaluation:
+  primary_metric: "crps"
+  metrics:
+    - rmse
+    - mae
+    - mape
+    - crps
+    - weighted_interval_score
+    - logarithmic_score
+  confidence_levels: [0.50, 0.80, 0.90, 0.95]
+  cv_folds: 5
+  cv_gap: 4
+
+api:
+  base_url: "https://api.mosqlimate.org/api"
+  model_id: null  # Set after registration
+  timeout: 30
+
+agents:
+  llm_model: "gpt-4o"
+  temperature: 0.3
+  max_tokens: 4000
+
+paths:
+  models_dir: "./models"
+  forecasts_dir: "./forecasts"
+  submissions_dir: "./submissions"
+  logs_dir: "./logs"

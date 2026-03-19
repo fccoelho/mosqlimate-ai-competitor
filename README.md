@@ -56,6 +56,46 @@ The system integrates data from [Mosqlimate Platform](https://mosqlimate.org/):
 - **Demographic**: Population data by municipality
 - **Historical**: 5-10 years of time series data
 
+### Downloading Competition Data
+
+Download the Sprint 2025 competition data using the CLI:
+
+```bash
+# Download all required data files
+mosqlimate-ai download-data
+
+# Force re-download (overwrite existing files)
+mosqlimate-ai download-data --force
+
+# Specify custom cache directory
+mosqlimate-ai download-data --cache-dir /path/to/data
+```
+
+**Available Data Files:**
+
+| File | Description |
+|------|-------------|
+| `dengue.csv.gz` | Weekly dengue cases by municipality (2010-2025) |
+| `climate.csv.gz` | Weekly climate reanalysis data (ERA5) |
+| `climate_forecast.csv.gz` | Monthly climate forecasts (ECMWF) |
+| `datasus_population_2001_2024.csv.gz` | Population by municipality and year |
+| `environ_vars.csv.gz` | Environmental variables (Koppen, Biome) |
+| `map_regional_health.csv` | City to health region mapping |
+| `shape_muni.gpkg` | Municipality geometries |
+| `shape_regional_health.gpkg` | Regional health geometries |
+| `shape_macroregional_health.gpkg` | Macroregional health geometries |
+| `ocean_climate_oscillations.csv.gz` | ENSO, IOD, PDO ocean indices |
+
+**Other CLI commands:**
+
+```bash
+# View cached data status
+mosqlimate-ai cache-info
+
+# Clear the data cache
+mosqlimate-ai clear-cache
+```
+
 ## 🤖 Multi-Agent System (Karl DBot)
 
 Our AI competitor uses specialized agents:

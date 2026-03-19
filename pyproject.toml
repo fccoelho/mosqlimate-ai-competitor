@@ -47,6 +47,7 @@ dependencies = [
     "plotly>=5.15.0",
     "matplotlib>=3.7.0",
     "seaborn>=0.12.0",
+    "geopandas>=0.14.0",
     "karldbot",
 ]
 
@@ -89,10 +90,12 @@ include = '\.pyi?$'
 [tool.ruff]
 line-length = 100
 target-version = "py39"
+
+[tool.ruff.lint]
 select = ["E", "F", "I", "N", "W", "UP", "B", "C4", "SIM"]
 ignore = ["E501"]
 
-[tool.ruff.isort]
+[tool.ruff.lint.isort]
 known-first-party = ["mosqlimate_ai"]
 
 [tool.mypy]
