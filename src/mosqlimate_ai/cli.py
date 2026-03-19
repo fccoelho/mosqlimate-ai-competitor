@@ -11,6 +11,7 @@ from rich.console import Console
 from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich.table import Table
 
+from mosqlimate_ai.config import ConfigManager, load_config, merge_with_defaults
 from mosqlimate_ai.data.downloader import DataDownloader
 from mosqlimate_ai.data.features import FeatureEngineer
 from mosqlimate_ai.data.loader import CompetitionDataLoader
@@ -34,13 +35,25 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+# Global config file option
+config_file_option = typer.Option(
+    None,
+    "--config",
+    "-c",
+    help="Path to configuration file (YAML format)",
+    exists=True,
+    file_okay=True,
+    dir_okay=False,
+    readable=True,
+)
+
 
 @app.command("download-data")
 def download_data_cmd(
+    config: Optional[Path] = config_file_option,
     cache_dir: Optional[Path] = typer.Option(
         None,
         "--cache-dir",
-        "-c",
         help="Directory to store downloaded data (default: project data/ folder)",
     ),
     force: bool = typer.Option(
@@ -56,6 +69,10 @@ def download_data_cmd(
     ),
 ) -> None:
     """Download and cache Mosqlimate competition data."""
+    # Load config and merge with CLI args
+    cfg = ConfigManager(config)
+    cache_dir = merge_with_defaults(cache_dir, cfg.get_cache_dir(), None)
+
     downloader = DataDownloader(cache_dir=cache_dir)
 
     if clear:
@@ -133,8 +150,9 @@ def clear_cache_cmd(
 
 @app.command("train")
 def train_cmd(
-    output_dir: Path = typer.Option(
-        Path("models"),
+    config: Optional[Path] = config_file_option,
+    output_dir: Optional[Path] = typer.Option(
+        None,
         "--output",
         "-o",
         help="Directory to save trained models",
@@ -145,14 +163,14 @@ def train_cmd(
         "-s",
         help="Comma-separated state UFs to train (default: all)",
     ),
-    models: str = typer.Option(
-        "xgboost,lstm",
+    models: Optional[str] = typer.Option(
+        None,
         "--models",
         "-m",
         help="Comma-separated models to train (xgboost, lstm)",
     ),
-    validation_size: float = typer.Option(
-        0.1,
+    validation_size: Optional[float] = typer.Option(
+        None,
         "--val-size",
         help="Fraction of data for validation",
     ),
@@ -168,11 +186,22 @@ def train_cmd(
     Trains XGBoost and/or LSTM models for dengue forecasting.
     Models are saved to the output directory for later use.
     """
-    output_dir = Path(output_dir)
+    # Load config and merge with CLI args
+    cfg = ConfigManager(config)
+
+    output_dir = Path(merge_with_defaults(output_dir, cfg.get_models_dir(), Path("models")))
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    model_list = [m.strip() for m in models.split(",")]
-    state_list = [s.strip() for s in states.split(",")] if states else None
+    model_list_str = merge_with_defaults(models, "xgboost,lstm", "xgboost,lstm")
+    model_list = [m.strip() for m in model_list_str.split(",")]
+
+    config_states = cfg.get_states()
+    if states:
+        state_list = [s.strip() for s in states.split(",")]
+    elif config_states:
+        state_list = config_states
+    else:
+        state_list = None
 
     console.print("[cyan]Loading competition data...[/cyan]")
 
@@ -209,13 +238,18 @@ def train_cmd(
             ) as progress:
                 task = progress.add_task(f"Training XGBoost for {uf}...", total=None)
 
+                # Get XGBoost config with defaults
+                xgb_cfg = cfg.get_model_config("xgboost")
                 xgb = XGBoostForecaster(
                     target_col="casos",
-                    n_estimators=500,
-                    max_depth=6,
-                    learning_rate=0.05,
+                    n_estimators=xgb_cfg.get("n_estimators", 500),
+                    max_depth=xgb_cfg.get("max_depth", 6),
+                    learning_rate=xgb_cfg.get("learning_rate", 0.05),
+                    early_stopping_rounds=xgb_cfg.get("early_stopping_rounds", 50),
                 )
-                xgb.fit(df, validation_size=validation_size, verbose=verbose)
+                val_size = merge_with_defaults(validation_size, xgb_cfg.get("validation_size"), 0.1)
+                val_size = val_size if val_size is not None else 0.1
+                xgb.fit(df, validation_size=val_size, verbose=verbose)
                 xgb.save(state_output / "xgboost")
 
                 progress.remove_task(task)
@@ -229,14 +263,20 @@ def train_cmd(
             ) as progress:
                 task = progress.add_task(f"Training LSTM for {uf}...", total=None)
 
+                # Get LSTM config with defaults
+                lstm_cfg = cfg.get_model_config("lstm")
                 lstm = LSTMForecaster(
                     target_col="casos",
-                    hidden_size=128,
-                    num_layers=2,
-                    dropout=0.2,
-                    epochs=100,
+                    hidden_size=lstm_cfg.get("hidden_size", 128),
+                    num_layers=lstm_cfg.get("num_layers", 2),
+                    dropout=lstm_cfg.get("dropout", 0.2),
+                    epochs=lstm_cfg.get("epochs", 100),
                 )
-                lstm.fit(df, validation_size=validation_size, verbose=verbose)
+                val_size = merge_with_defaults(
+                    validation_size, lstm_cfg.get("validation_size"), 0.1
+                )
+                val_size = val_size if val_size is not None else 0.1
+                lstm.fit(df, validation_size=val_size, verbose=verbose)
                 lstm.save(state_output / "lstm")
 
                 progress.remove_task(task)
@@ -593,18 +633,26 @@ def report_cmd(
         "--end-date",
         help="End date for evaluation data (for backtesting)",
     ),
+    include_plots: bool = typer.Option(
+        True,
+        "--plots/--no-plots",
+        help="Generate visualization plots",
+    ),
 ) -> None:
-    """Generate a markdown report of forecast performance by model.
+    """Generate a rich markdown report of forecast performance by model.
 
     Evaluates all trained models across all states and generates a comprehensive
-    markdown report with performance metrics, rankings, and comparisons.
+    markdown report with performance metrics, rankings, comparisons, and visualizations.
     """
     from datetime import datetime
 
     import pandas as pd
 
+    from mosqlimate_ai.visualization.report_plots import ReportVisualizer
+
     model_dir = Path(model_dir)
     forecast_dir = Path(forecast_dir)
+    output = Path(output)
 
     if not model_dir.exists():
         console.print(f"[red]Model directory not found: {model_dir}[/red]")
@@ -613,6 +661,11 @@ def report_cmd(
     if not forecast_dir.exists():
         console.print(f"[red]Forecast directory not found: {forecast_dir}[/red]")
         raise typer.Exit(1)
+
+    # Setup output directory and figures
+    output_dir = output.parent
+    figures_dir = output_dir / "figures"
+    figures_dir.mkdir(parents=True, exist_ok=True)
 
     state_list = [s.strip() for s in states.split(",")] if states else None
 
@@ -625,6 +678,11 @@ def report_cmd(
         raise typer.Exit(1)
 
     console.print(f"[cyan]Generating performance report for {len(state_dirs)} states...[/cyan]")
+    if include_plots:
+        console.print(f"[cyan]Plots will be saved to: {figures_dir}[/cyan]")
+
+    # Initialize visualizer
+    visualizer = ReportVisualizer(figures_dir) if include_plots else None
 
     loader = CompetitionDataLoader()
     preprocessor = DataPreprocessor()
@@ -632,6 +690,8 @@ def report_cmd(
     ocean_df = loader.load_ocean_data()
 
     all_results: dict[str, dict[str, dict[str, float]]] = {}
+    all_forecasts: dict[str, dict[str, pd.DataFrame]] = {}
+    all_observed: dict[str, pd.DataFrame] = {}
     model_names = ["xgboost", "lstm", "ensemble"]
 
     for state_dir in state_dirs:
@@ -666,8 +726,10 @@ def report_cmd(
 
         df_eval = df[df["date"].isin(common_dates_list)].sort_values("date")  # type: ignore[call-overload]
         y_true = np.asarray(df_eval["casos"].values)
+        all_observed[uf] = df_eval.copy()
 
         state_results: dict[str, dict[str, float]] = {}
+        state_forecasts: dict[str, pd.DataFrame] = {}
 
         for model_name in model_names[:-1]:
             model_path = state_dir / model_name
@@ -695,6 +757,17 @@ def report_cmd(
                 ].sort_values("date")  # type: ignore[call-overload]
                 metrics = evaluate_forecast(np.asarray(y_true), forecast_eval)
                 state_results[model_name] = metrics
+                state_forecasts[model_name] = forecast_eval.copy()
+
+                # Generate plots
+                if visualizer and len(y_true) > 0:
+                    try:
+                        visualizer.plot_forecast_timeseries(df_eval, forecast_eval, uf, model_name)
+                        visualizer.plot_residuals(y_true, forecast_eval, uf, model_name)
+                        visualizer.plot_calibration_curve(y_true, forecast_eval, uf, model_name)
+                    except Exception as e:
+                        logger.warning(f"Failed to generate plots for {uf} {model_name}: {e}")
+
             except Exception as e:
                 console.print(f"  [yellow]⚠ Failed to evaluate {model_name} for {uf}: {e}[/yellow]")
 
@@ -721,22 +794,55 @@ def report_cmd(
                 ensemble_pred["date"].isin(common_dates_list)  # type: ignore[index, union-attr]
             ].sort_values("date")  # type: ignore[call-overload]
             state_results["ensemble"] = evaluate_forecast(np.asarray(y_true), ensemble_eval)  # type: ignore[arg-type]
+            state_forecasts["ensemble"] = ensemble_eval.copy()
+
+            if visualizer and len(y_true) > 0:
+                try:
+                    visualizer.plot_forecast_timeseries(df_eval, ensemble_eval, uf, "ensemble")
+                except Exception as e:
+                    logger.warning(f"Failed to generate ensemble plot for {uf}: {e}")
 
         if state_results:
             all_results[uf] = state_results
+            all_forecasts[uf] = state_forecasts
 
     if not all_results:
         console.print("[red]No evaluation results generated[/red]")
         raise typer.Exit(1)
 
+    # Generate comparison plots
+    if visualizer:
+        console.print("[cyan]Generating comparison plots...[/cyan]")
+        try:
+            visualizer.plot_metrics_comparison(all_results, metric="rmse")
+            visualizer.plot_metrics_comparison(all_results, metric="mae")
+            visualizer.plot_coverage_analysis(all_results)
+            visualizer.plot_error_distribution(all_results)
+            visualizer.create_summary_heatmap(all_results)
+
+            # Multi-model comparison for each state
+            for uf in all_forecasts:
+                if len(all_forecasts[uf]) > 1:
+                    try:
+                        visualizer.plot_multi_model_comparison(
+                            all_observed[uf], all_forecasts[uf], uf
+                        )
+                    except Exception as e:
+                        logger.warning(f"Failed to generate multi-model plot for {uf}: {e}")
+        except Exception as e:
+            logger.warning(f"Failed to generate some comparison plots: {e}")
+
+    # Build enhanced markdown report
     lines = [
-        "# Forecast Performance Report",
+        "# 🎯 Forecast Performance Report",
         "",
         f"**Generated:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
         f"**States Evaluated:** {len(all_results)}",
         f"**Models Compared:** {', '.join(model_names)}",
         "",
-        "## Executive Summary",
+        "---",
+        "",
+        "## 📊 Executive Summary",
         "",
     ]
 
@@ -795,7 +901,7 @@ def report_cmd(
         if best_model:
             best_by_metric[metric] = (best_model, best_value)
 
-    lines.append("### Best Model by Metric")
+    lines.append("### 🏆 Best Model by Metric")
     lines.append("")
     lines.append("| Metric | Best Model | Value |")
     lines.append("|--------|------------|-------|")
@@ -803,12 +909,66 @@ def report_cmd(
         lines.append(f"| {metric.upper()} | {best_model.upper()} | {value:.4f} |")
     lines.append("")
 
-    lines.append("## Detailed Results by State")
-    lines.append("")
+    # Add visualizations section
+    if include_plots and visualizer:
+        lines.extend(
+            [
+                "---",
+                "",
+                "## 📈 Visualizations",
+                "",
+            ]
+        )
+
+        # Performance overview plots
+        lines.extend(
+            [
+                "### Performance Overview",
+                "",
+                "#### RMSE Comparison Across States",
+                "",
+                f"![RMSE Comparison](figures/metrics_comparison_rmse.png)",
+                "",
+                "#### Error Distribution by Model",
+                "",
+                f"![Error Distribution](figures/error_distribution.png)",
+                "",
+                "#### Performance Heatmap",
+                "",
+                f"![Performance Heatmap](figures/performance_heatmap.png)",
+                "",
+            ]
+        )
+
+        # Coverage analysis
+        lines.extend(
+            [
+                "### Prediction Interval Coverage",
+                "",
+                "![Coverage Analysis](figures/coverage_analysis.png)",
+                "",
+                "*Note: Bars colored green when within 10% of target, orange within 20%, red otherwise.*",
+                "",
+            ]
+        )
+
+    # Detailed results by state
+    lines.extend(
+        [
+            "---",
+            "",
+            "## 📋 Detailed Results by State",
+            "",
+        ]
+    )
 
     for uf in sorted(all_results.keys()):
         state_res = all_results[uf]
         lines.append(f"### {uf}")
+        lines.append("")
+
+        # Metrics table
+        lines.append("#### Performance Metrics")
         lines.append("")
         lines.append(
             "| Model | CRPS | WIS Total | RMSE | MAE | MAPE | Bias | Coverage 95% | Coverage 50% |"
@@ -834,39 +994,173 @@ def report_cmd(
             )
         lines.append("")
 
-    lines.append("## Metric Definitions")
-    lines.append("")
-    lines.append("| Metric | Description |")
-    lines.append("|--------|-------------|")
-    lines.append(
-        "| **CRPS** | Continuous Ranked Probability Score - measures the integrated squared difference between the empirical CDF and the predicted CDF. Lower is better. |"
+        # State-specific plots
+        if include_plots and visualizer:
+            lines.append("#### Forecast Visualizations")
+            lines.append("")
+
+            # Multi-model comparison
+            if uf in all_forecasts and len(all_forecasts[uf]) > 1:
+                lines.extend(
+                    [
+                        f"**Model Comparison:**",
+                        "",
+                        f"![{uf} Model Comparison](figures/{uf}_model_comparison.png)",
+                        "",
+                    ]
+                )
+
+            # Individual model plots
+            for model_name in model_names:
+                if model_name in state_res:
+                    lines.extend(
+                        [
+                            f"**{model_name.title()} Forecast:**",
+                            "",
+                            f"![{uf} {model_name} Timeseries](figures/{uf}_{model_name}_timeseries.png)",
+                            "",
+                            f"**Residual Analysis:**",
+                            "",
+                            f"![{uf} {model_name} Residuals](figures/{uf}_{model_name}_residuals.png)",
+                            "",
+                            f"**Calibration Curve:**",
+                            "",
+                            f"![{uf} {model_name} Calibration](figures/{uf}_{model_name}_calibration.png)",
+                            "",
+                        ]
+                    )
+
+            lines.append("")
+
+    lines.extend(
+        [
+            "---",
+            "",
+            "## 📖 Metric Definitions",
+            "",
+            "| Metric | Description |",
+            "|--------|-------------|",
+            "| **CRPS** | Continuous Ranked Probability Score - measures the integrated squared difference between the empirical CDF and the predicted CDF. Lower is better. |",
+            "| **WIS Total** | Weighted Interval Score - combines interval sharpness with penalty for misses across multiple confidence levels. Lower is better. |",
+            "| **RMSE** | Root Mean Square Error - square root of the average of squared errors. Lower is better. |",
+            "| **MAE** | Mean Absolute Error - average of absolute prediction errors. Lower is better. |",
+            "| **MAPE** | Mean Absolute Percentage Error - percentage error relative to actual values. Lower is better. |",
+            "| **Bias** | Systematic error (mean of predictions minus actual). Positive = overestimation, Negative = underestimation. |",
+            "| **Coverage 95%** | Percentage of true values within the 95% prediction interval. Ideal: ~95%. |",
+            "| **Coverage 50%** | Percentage of true values within the 50% prediction interval. Ideal: ~50%. |",
+            "",
+        ]
     )
-    lines.append(
-        "| **WIS Total** | Weighted Interval Score - combines interval sharpness with penalty for misses across multiple confidence levels. Lower is better. |"
-    )
-    lines.append(
-        "| **RMSE** | Root Mean Square Error - square root of the average of squared errors. Lower is better. |"
-    )
-    lines.append(
-        "| **MAE** | Mean Absolute Error - average of absolute prediction errors. Lower is better. |"
-    )
-    lines.append(
-        "| **MAPE** | Mean Absolute Percentage Error - percentage error relative to actual values. Lower is better. |"
-    )
-    lines.append(
-        "| **Bias** | Systematic error (mean of predictions minus actual). Positive = overestimation, Negative = underestimation. |"
-    )
-    lines.append(
-        "| **Coverage 95%** | Percentage of true values within the 95% prediction interval. Ideal: ~95%. |"
-    )
-    lines.append(
-        "| **Coverage 50%** | Percentage of true values within the 50% prediction interval. Ideal: ~50%. |"
-    )
-    lines.append("")
+
+    output.write_text("\n".join(lines), encoding="utf-8")
+
+    if visualizer and visualizer.plots_generated:
+        console.print(f"\n[green]✓ Report generated: {output}[/green]")
+        console.print(
+            f"[green]✓ {len(visualizer.plots_generated)} plots saved to: {figures_dir}[/green]"
+        )
+    else:
+        console.print(f"\n[green]✓ Report generated: {output}[/green]")
+
+
+@app.command("init-config")
+def init_config_cmd(
+    output: Path = typer.Option(
+        Path("mosqlimate.yaml"),
+        "--output",
+        "-o",
+        help="Output path for config file",
+    ),
+    force: bool = typer.Option(
+        False,
+        "--force",
+        "-f",
+        help="Overwrite existing config file",
+    ),
+) -> None:
+    """Generate an example configuration file.
+
+    Creates a mosqlimate.yaml file with default settings that can be
+    customized for your workflow.
+    """
+    from mosqlimate_ai.config import save_example_config
 
     output = Path(output)
-    output.write_text("\n".join(lines))
-    console.print(f"\n[green]✓ Report generated: {output}[/green]")
+
+    if output.exists() and not force:
+        console.print(f"[yellow]Config file already exists: {output}[/yellow]")
+        console.print("Use --force to overwrite")
+        raise typer.Exit(1)
+
+    save_example_config(output)
+    console.print(f"[green]✓ Config file created: {output}[/green]")
+    console.print("\n[cyan]Edit this file to customize your settings:[/cyan]")
+    console.print("  - Model hyperparameters")
+    console.print("  - Training paths")
+    console.print("  - State selection")
+    console.print("  - API settings")
+
+
+@app.command("feature-cache-info")
+def feature_cache_info_cmd() -> None:
+    """Show information about cached features."""
+    from mosqlimate_ai.data.feature_cache import FeatureCache
+
+    cache = FeatureCache()
+    info = cache.get_cache_info()
+
+    table = Table(title="Feature Cache Information")
+    table.add_column("Property", style="cyan")
+    table.add_column("Value", style="green")
+
+    table.add_row("Cache Directory", str(info["cache_dir"]))
+    table.add_row("Cached Files", str(info["files"]))
+    table.add_row("Total Size (MB)", f"{info['total_size_mb']:.2f}")
+
+    console.print(table)
+
+    if info["files"] > 0:
+        console.print("\n[cyan]Cached Feature Sets:[/cyan]")
+        cached = cache.list_cached()
+        for entry in cached:
+            console.print(
+                f"  • {entry['key'][:16]}...: "
+                f"{entry['rows']} rows, "
+                f"{entry['columns']} cols, "
+                f"{entry['size_mb']:.2f} MB"
+            )
+
+
+@app.command("clear-feature-cache")
+def clear_feature_cache_cmd(
+    yes: bool = typer.Option(
+        False,
+        "--yes",
+        "-y",
+        help="Skip confirmation prompt",
+    ),
+) -> None:
+    """Clear all cached feature files."""
+    from mosqlimate_ai.data.feature_cache import FeatureCache
+
+    cache = FeatureCache()
+    info = cache.get_cache_info()
+
+    if info["files"] == 0:
+        console.print("[yellow]No cached features to clear.[/yellow]")
+        return
+
+    if not yes:
+        confirm = typer.confirm(
+            f"Are you sure you want to clear {info['files']} cached feature files "
+            f"({info['total_size_mb']:.2f} MB)?"
+        )
+        if not confirm:
+            console.print("[yellow]Cancelled.[/yellow]")
+            raise typer.Exit()
+
+    count = cache.clear(confirm=False)
+    console.print(f"[green]✓ Cleared {count} cached feature files.[/green]")
 
 
 def main() -> None:

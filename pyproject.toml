@@ -136,5 +136,7 @@ karldbot = { git = "https://github.com/Deeplearn-PeD/KarlDBot" }
 
 [dependency-groups]
 dev = [
+    "pytest>=9.0.2",
+    "pytest-cov>=7.0.0",
     "ty>=0.0.23",
 ]

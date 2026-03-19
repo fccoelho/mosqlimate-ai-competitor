@@ -3079,6 +3079,8 @@ docs = [
 
 [package.dev-dependencies]
 dev = [
+    { name = "pytest" },
+    { name = "pytest-cov" },
     { name = "ty" },
 ]
 
@@ -3124,7 +3126,11 @@ requires-dist = [
 provides-extras = ["dev", "docs"]
 
 [package.metadata.requires-dev]
-dev = [{ name = "ty", specifier = ">=0.0.23" }]
+dev = [
+    { name = "pytest", specifier = ">=9.0.2" },
+    { name = "pytest-cov", specifier = ">=7.0.0" },
+    { name = "ty", specifier = ">=0.0.23" },
+]
 
 [[package]]
 name = "mpmath"
