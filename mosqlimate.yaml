@@ -1,0 +1,42 @@
+# Mosqlimate AI Competitor Configuration
+# =====================================
+
+# Data settings
+data:
+  cache_dir: "./data"
+
+# Model hyperparameters
+models:
+  xgboost:
+    n_estimators: 500
+    max_depth: 6
+    learning_rate: 0.05
+    
+  lstm:
+    hidden_size: 128
+    num_layers: 2
+    dropout: 0.2
+    epochs: 100
+
+# Ensemble settings
+ensemble:
+  method: "weighted_average"
+  weight_metric: "crps"
+
+# Evaluation settings
+evaluation:
+  confidence_levels: [0.50, 0.80, 0.95]
+
+# Path settings
+paths:
+  models_dir: "./models"
+  forecasts_dir: "./forecasts"
+  submissions_dir: "./submissions"
+
+# States to process (empty = all states)
+states: []
+
+# API settings
+api:
+  base_url: "https://api.mosqlimate.org/api"
+  timeout: 30
