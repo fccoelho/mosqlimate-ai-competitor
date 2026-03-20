@@ -45,8 +45,14 @@ class ValidationPipelineConfig:
     min_coverage_threshold: float
     max_bias_threshold: float
 
-    # Hyperparameter tuning
+    # Hyperparameter tuning with convergence-based stopping
     tuning_iterations: int
+    convergence_patience: int
+    min_improvement_rate: float
+
+    # Model pre-selection
+    preselect_models: bool
+    max_models_per_state: int
 
     # Agent LLM settings
     llm_model: str
@@ -118,7 +124,11 @@ DEFAULT_VALIDATION_CONFIG = ValidationPipelineConfig(
     n_top_models=3,
     min_coverage_threshold=0.85,
     max_bias_threshold=500.0,
-    tuning_iterations=10,
+    tuning_iterations=30,
+    convergence_patience=5,
+    min_improvement_rate=0.001,
+    preselect_models=True,
+    max_models_per_state=3,
     llm_model="gemini-2.5",
     llm_temperature=0.3,
 )

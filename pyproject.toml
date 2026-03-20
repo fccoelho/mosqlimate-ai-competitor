@@ -51,6 +51,7 @@ dependencies = [
     "reportlab>=4.0.0",
     "karldbot",
     "pandas-stubs~=2.3.3",
+    "scikit-optimize>=0.10.2",
 ]
 
 [project.optional-dependencies]

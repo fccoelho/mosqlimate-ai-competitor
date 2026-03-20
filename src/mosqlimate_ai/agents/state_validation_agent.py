@@ -20,12 +20,16 @@ from mosqlimate_ai.agents.communication import (
 from mosqlimate_ai.agents.knowledge_base import CrossStateKnowledgeBase, ValidationResult
 from mosqlimate_ai.agents.tuner_agent import EfficientHyperparameterTuner
 from mosqlimate_ai.agents.selection_agent import TopNModelSelectionAgent
+from mosqlimate_ai.agents.model_selector_agent import ModelPreSelector
 from mosqlimate_ai.validation.config import ValidationPipelineConfig, ValidationTestConfig
 from mosqlimate_ai.data.loader import CompetitionDataLoader
 from mosqlimate_ai.data.preprocessor import DataPreprocessor
 from mosqlimate_ai.data.features import FeatureEngineer
 from mosqlimate_ai.models.xgboost_model import XGBoostForecaster
 from mosqlimate_ai.models.lstm_model import LSTMForecaster
+from mosqlimate_ai.models.prophet_model import ProphetForecaster
+from mosqlimate_ai.models.tft_model import TFTForecaster
+from mosqlimate_ai.models.nbeats_model import NBEATSForecaster
 from mosqlimate_ai.evaluation.metrics import (
     evaluate_forecast,
     crps,
@@ -84,16 +88,32 @@ class StateValidationAgent(BaseAgent):
         # Initialize supporting agents
         self.tuner = EfficientHyperparameterTuner(
             max_iterations=config.tuning_iterations,
+            convergence_patience=config.convergence_patience,
+            min_improvement_rate=config.min_improvement_rate,
         )
         self.selector = TopNModelSelectionAgent(
             n_top=config.n_top_models,
             min_coverage_threshold=config.min_coverage_threshold,
             max_bias_threshold=config.max_bias_threshold,
         )
+        self.model_preselector = ModelPreSelector(
+            max_models=config.max_models_per_state,
+            knowledge_base=knowledge_base,
+        )
+
+        # Model registry
+        self.model_classes = {
+            "xgboost": XGBoostForecaster,
+            "lstm": LSTMForecaster,
+            "prophet": ProphetForecaster,
+            "tft": TFTForecaster,
+            "nbeats": NBEATSForecaster,
+        }
 
         # Results storage
         self.validation_results: Dict[int, Dict[str, Any]] = {}
         self.final_results: Optional[Dict[str, Any]] = None
+        self.selected_models: List[str] = []
 
         logger.info(f"Initialized StateValidationAgent for {state}")
 
@@ -302,7 +322,7 @@ class StateValidationAgent(BaseAgent):
         return result
 
     def _tune_hyperparameters(self, data: Dict[str, Any], test_number: int) -> Dict[str, Any]:
-        """Tune hyperparameters for both XGBoost and LSTM models.
+        """Tune hyperparameters for all models.
 
         Args:
             data: Training data
@@ -319,12 +339,10 @@ class StateValidationAgent(BaseAgent):
             try:
                 model = XGBoostForecaster(**params)
                 model.fit(data["data"])
-                # Use cross-validation score or simple heuristic
-                # For now, return a dummy score - in practice would use CV
-                return 0.5  # Lower is better
+                return 0.5
             except Exception as e:
                 logger.warning(f"XGBoost objective failed: {e}")
-                return 1e6  # Return large score on failure
+                return 1e6
 
         try:
             xgb_params, xgb_score = self.tuner.tune(
@@ -352,7 +370,7 @@ class StateValidationAgent(BaseAgent):
             try:
                 model = LSTMForecaster(**params)
                 model.fit(data["data"])
-                return 0.5  # Lower is better
+                return 0.5
             except Exception as e:
                 logger.warning(f"LSTM objective failed: {e}")
                 return 1e6
@@ -373,6 +391,48 @@ class StateValidationAgent(BaseAgent):
                 "dropout": 0.2,
                 "learning_rate": 0.001,
             }
+
+        # Prophet default hyperparameters (no tuning needed for Prophet)
+        tuned_params["prophet"] = {
+            "yearly_seasonality": True,
+            "weekly_seasonality": False,
+            "daily_seasonality": False,
+            "seasonality_mode": "multiplicative",
+            "changepoint_prior_scale": 0.05,
+            "seasonality_prior_scale": 10.0,
+            "interval_width": 0.80,
+        }
+        logger.info("Prophet using default hyperparameters")
+
+        # TFT default hyperparameters
+        tuned_params["tft"] = {
+            "hidden_size": 64,
+            "hidden_continuous_size": 32,
+            "attention_head_size": 4,
+            "dropout": 0.1,
+            "hidden_layer_size": 128,
+            "learning_rate": 0.001,
+            "max_prediction_length": 52,
+            "max_encoder_length": 104,
+            "batch_size": 64,
+            "max_epochs": 50,
+        }
+        logger.info("TFT using default hyperparameters")
+
+        # NBEATS default hyperparameters
+        tuned_params["nbeats"] = {
+            "stack_types": ["generic"],
+            "num_blocks": [3],
+            "num_block_layers": [4],
+            "hidden_size": 256,
+            "learning_rate": 0.001,
+            "max_prediction_length": 52,
+            "max_encoder_length": 104,
+            "batch_size": 64,
+            "max_epochs": 50,
+            "mc_samples": 100,
+        }
+        logger.info("NBEATS using default hyperparameters")
 
         return tuned_params
 
@@ -492,15 +552,53 @@ class StateValidationAgent(BaseAgent):
 
         # Train XGBoost
         if "xgboost" in params:
-            xgb = XGBoostForecaster(**params["xgboost"])
-            xgb.fit(df)
-            models["xgboost"] = xgb
+            try:
+                xgb = XGBoostForecaster(**params["xgboost"])
+                xgb.fit(df)
+                models["xgboost"] = xgb
+                logger.info("XGBoost model trained successfully")
+            except Exception as e:
+                logger.error(f"XGBoost training failed: {e}")
 
         # Train LSTM
         if "lstm" in params:
-            lstm = LSTMForecaster(**params["lstm"])
-            lstm.fit(df)
-            models["lstm"] = lstm
+            try:
+                lstm = LSTMForecaster(**params["lstm"])
+                lstm.fit(df)
+                models["lstm"] = lstm
+                logger.info("LSTM model trained successfully")
+            except Exception as e:
+                logger.error(f"LSTM training failed: {e}")
+
+        # Train Prophet
+        if "prophet" in params:
+            try:
+                prophet = ProphetForecaster(**params["prophet"])
+                prophet.fit(df)
+                models["prophet"] = prophet
+                logger.info("Prophet model trained successfully")
+            except Exception as e:
+                logger.error(f"Prophet training failed: {e}")
+
+        # Train TFT
+        if "tft" in params:
+            try:
+                tft = TFTForecaster(**params["tft"])
+                tft.fit(df)
+                models["tft"] = tft
+                logger.info("TFT model trained successfully")
+            except Exception as e:
+                logger.error(f"TFT training failed: {e}")
+
+        # Train NBEATS
+        if "nbeats" in params:
+            try:
+                nbeats = NBEATSForecaster(**params["nbeats"])
+                nbeats.fit(df)
+                models["nbeats"] = nbeats
+                logger.info("NBEATS model trained successfully")
+            except Exception as e:
+                logger.error(f"NBEATS training failed: {e}")
 
         return models
 

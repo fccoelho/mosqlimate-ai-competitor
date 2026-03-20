@@ -176,11 +176,63 @@ class ValidationOrchestrator:
                 results["final"] = final_result
 
             self.results[state] = results
+
+            # Save individual state results
+            self._save_state_results(state, results)
+
             logger.info(f"Completed validation for {state}")
 
         except Exception as e:
             logger.error(f"Validation failed for {state}: {e}")
             self.results[state] = {"state": state, "error": str(e), "status": "failed"}
+
+    def _save_state_results(self, state: str, results: Dict[str, Any]) -> None:
+        """Save validation results for a single state.
+
+        Args:
+            state: State UF code
+            results: Validation results dictionary
+        """
+        import json
+
+        # Create state directory
+        state_dir = self.output_dir / state
+        state_dir.mkdir(parents=True, exist_ok=True)
+
+        # Format results for validation report
+        formatted_results = {
+            "state": state,
+            "timestamp": datetime.now().isoformat(),
+            "validation_tests": {},
+            "top_models": [],
+        }
+
+        # Convert test results to expected format
+        for test_num, test_result in results.get("tests", {}).items():
+            if test_result and isinstance(test_result, dict):
+                formatted_test = {
+                    "test_number": test_num,
+                    "state": state,
+                    "status": test_result.get("status", "unknown"),
+                    "metrics": {},
+                }
+
+                # Extract metrics if available
+                if "metrics" in test_result:
+                    formatted_test["metrics"] = test_result["metrics"]
+
+                formatted_results["validation_tests"][str(test_num)] = formatted_test
+
+        # Add top models if available
+        if "top_models" in results:
+            formatted_results["top_models"] = results["top_models"]
+
+        # Save to file
+        results_file = state_dir / "validation_results.json"
+        with open(results_file, "w") as f:
+            json.dump(formatted_results, f, indent=2, default=str)
+
+        logger.info(f"Saved validation results for {state} to {results_file}")
 
     def _generate_summary(self, elapsed_seconds: float) -> Dict[str, Any]:
         """Generate validation summary report."""

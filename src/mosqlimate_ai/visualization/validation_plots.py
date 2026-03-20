@@ -32,7 +32,7 @@ plt.rcParams["figure.dpi"] = 300
 
 def plot_validation_test_timeseries(
     observed_df: pd.DataFrame,
-    forecast_df: pd.DataFrame,
+    forecasts_by_model: Dict[str, pd.DataFrame],
     state: str,
     test_num: int,
     train_end_date: str,
@@ -41,12 +41,13 @@ def plot_validation_test_timeseries(
 ) -> Figure:
     """Create time series plot for a single validation test.
 
-    Shows the training period, prediction period, forecast with all prediction
-    intervals, and observed data for comparison.
+    Shows the training period, prediction period, forecasts from all models
+    (XGBoost, LSTM, Ensemble), and observed data for comparison.
 
     Args:
         observed_df: DataFrame with observed data (date, casos columns)
-        forecast_df: DataFrame with forecast (date, median, lower_50/80/95, upper_50/80/95)
+        forecasts_by_model: Dictionary mapping model names to forecast DataFrames
+            Each forecast DataFrame should have columns: date, median, lower_50/80/95, upper_50/80/95
         state: State name/code
         test_num: Test number (1, 2, or 3)
         train_end_date: Training end date (e.g., "2022-06-26")
@@ -60,6 +61,10 @@ def plot_validation_test_timeseries(
 
     # Parse dates
     train_cutoff = pd.to_datetime(train_end_date)
+
+    # Get forecast dates from first available model
+    first_model = list(forecasts_by_model.keys())[0]
+    forecast_df = forecasts_by_model[first_model]
     forecast_start = forecast_df["date"].min()
     forecast_end = forecast_df["date"].max()
 
@@ -101,38 +106,50 @@ def plot_validation_test_timeseries(
             zorder=10,
         )
 
-    # Plot forecast median
-    if "median" in forecast_df.columns:
-        ax.plot(
-            forecast_df["date"],
-            forecast_df["median"],
-            "b-",
-            linewidth=2.5,
-            label="Forecast (Median)",
-            zorder=8,
-        )
+    # Model colors
+    model_colors = {
+        "xgboost": "#1f77b4",  # Blue
+        "lstm": "#ff7f0e",  # Orange
+        "ensemble": "#2ca02c",  # Green
+    }
 
-    # Plot prediction intervals with distinct colors
-    interval_specs = [
-        ("95", "#d62728", 0.15),  # Red, light
-        ("80", "#ff7f0e", 0.25),  # Orange, medium
-        ("50", "#2ca02c", 0.4),  # Green, darker
-    ]
+    # Plot forecast for each model
+    for model_name, forecast_df in forecasts_by_model.items():
+        color = model_colors.get(model_name.lower(), "#9467bd")
 
-    for level, color, alpha in interval_specs:
-        lower_col = f"lower_{level}"
-        upper_col = f"upper_{level}"
-
-        if lower_col in forecast_df.columns and upper_col in forecast_df.columns:
-            ax.fill_between(
+        if "median" in forecast_df.columns:
+            ax.plot(
                 forecast_df["date"],
-                forecast_df[lower_col],
-                forecast_df[upper_col],
-                alpha=alpha,
+                forecast_df["median"],
                 color=color,
-                label=f"{level}% Prediction Interval",
-                zorder=5,
+                linewidth=2.5,
+                label=f"{model_name.title()} Forecast",
+                zorder=8,
             )
+
+    # Plot prediction intervals for ensemble model only (to avoid clutter)
+    if "ensemble" in forecasts_by_model:
+        ensemble_forecast = forecasts_by_model["ensemble"]
+        interval_specs = [
+            ("95", "#d62728", 0.15),  # Red, light
+            ("80", "#ff7f0e", 0.25),  # Orange, medium
+            ("50", "#2ca02c", 0.4),  # Green, darker
+        ]
+
+        for level, color, alpha in interval_specs:
+            lower_col = f"lower_{level}"
+            upper_col = f"upper_{level}"
+
+            if lower_col in ensemble_forecast.columns and upper_col in ensemble_forecast.columns:
+                ax.fill_between(
+                    ensemble_forecast["date"],
+                    ensemble_forecast[lower_col],
+                    ensemble_forecast[upper_col],
+                    alpha=alpha,
+                    color=color,
+                    label=f"Ensemble {level}% PI",
+                    zorder=5,
+                )
 
     # Add training cutoff line
     ax.axvline(
@@ -155,11 +172,11 @@ def plot_validation_test_timeseries(
         pad=15,
     )
 
-    # Legend
+    # Legend - use 3 columns to fit all entries
     ax.legend(
         loc="upper left",
-        fontsize=8,
-        ncol=2,
+        fontsize=7,
+        ncol=3,
         framealpha=0.95,
         fancybox=True,
         shadow=True,
@@ -180,7 +197,7 @@ def plot_validation_test_timeseries(
 
 def plot_all_validation_tests(
     observed_df: pd.DataFrame,
-    test_forecasts: Dict[int, pd.DataFrame],
+    test_forecasts: Dict[int, Dict[str, pd.DataFrame]],
     state: str,
     train_end_dates: Dict[int, str],
     seasons: Dict[int, str],
@@ -189,8 +206,9 @@ def plot_all_validation_tests(
     """Create figure with 3 subplots, one for each validation test.
 
     Args:
-        observed_df: DataFrame with observed data (date, casos columns)
-        test_forecasts: Dictionary mapping test numbers (1, 2, 3) to forecast DataFrames
+        observed_df: DataFrame with observed data
+        test_forecasts: Dictionary mapping test numbers (1, 2, 3) to
+                       dictionaries of {model_name: forecast_df}
         state: State name/code
         train_end_dates: Dictionary of training end dates for each test
         seasons: Dictionary of season strings for each test
@@ -200,6 +218,13 @@ def plot_all_validation_tests(
         Matplotlib Figure object with 3 subplots
     """
     fig, axes = plt.subplots(3, 1, figsize=figsize, sharey=True)
+
+    # Model colors
+    model_colors = {
+        "xgboost": "#1f77b4",  # Blue
+        "lstm": "#ff7f0e",  # Orange
+        "ensemble": "#2ca02c",  # Green
+    }
 
     for idx, test_num in enumerate([1, 2, 3]):
         ax = axes[idx]
@@ -215,7 +240,7 @@ def plot_all_validation_tests(
             )
             continue
 
-        forecast_df = test_forecasts[test_num]
+        forecasts_by_model = test_forecasts[test_num]
         train_end_date = train_end_dates.get(test_num)
         season = seasons.get(test_num, f"Test {test_num}")
 
@@ -224,6 +249,10 @@ def plot_all_validation_tests(
 
         # Parse dates
         train_cutoff = pd.to_datetime(train_end_date)
+
+        # Get forecast dates from first available model
+        first_model = list(forecasts_by_model.keys())[0]
+        forecast_df = forecasts_by_model[first_model]
         forecast_start = forecast_df["date"].min()
         forecast_end = forecast_df["date"].max()
 
@@ -247,7 +276,7 @@ def plot_all_validation_tests(
                 obs_training["date"],
                 obs_training["casos"],
                 "k-",
-                label="Training Data",
+                label="Training" if idx == 0 else "",
                 linewidth=1.5,
                 alpha=0.9,
                 zorder=10,
@@ -259,44 +288,52 @@ def plot_all_validation_tests(
                 obs_prediction["date"],
                 obs_prediction["casos"],
                 "k--",
-                label="Observed",
+                label="Observed" if idx == 0 else "",
                 linewidth=2,
                 alpha=0.9,
                 zorder=10,
             )
 
-        # Plot forecast median
-        if "median" in forecast_df.columns:
-            ax.plot(
-                forecast_df["date"],
-                forecast_df["median"],
-                "b-",
-                linewidth=2.5,
-                label="Forecast",
-                zorder=8,
-            )
+        # Plot forecast for each model
+        for model_name, forecast_df in forecasts_by_model.items():
+            color = model_colors.get(model_name.lower(), "#9467bd")
 
-        # Plot prediction intervals
-        interval_specs = [
-            ("95", "#d62728", 0.15),
-            ("80", "#ff7f0e", 0.25),
-            ("50", "#2ca02c", 0.4),
-        ]
-
-        for level, color, alpha in interval_specs:
-            lower_col = f"lower_{level}"
-            upper_col = f"upper_{level}"
-
-            if lower_col in forecast_df.columns and upper_col in forecast_df.columns:
-                ax.fill_between(
+            if "median" in forecast_df.columns:
+                ax.plot(
                     forecast_df["date"],
-                    forecast_df[lower_col],
-                    forecast_df[upper_col],
-                    alpha=alpha,
+                    forecast_df["median"],
                     color=color,
-                    label=f"{level}% PI",
-                    zorder=5,
+                    linewidth=2.5,
+                    label=f"{model_name.title()}" if idx == 0 else "",
+                    zorder=8,
                 )
+
+        # Plot prediction intervals for ensemble model only
+        if "ensemble" in forecasts_by_model:
+            ensemble_forecast = forecasts_by_model["ensemble"]
+            interval_specs = [
+                ("95", "#d62728", 0.15),
+                ("80", "#ff7f0e", 0.25),
+                ("50", "#2ca02c", 0.4),
+            ]
+
+            for level, color, alpha in interval_specs:
+                lower_col = f"lower_{level}"
+                upper_col = f"upper_{level}"
+
+                if (
+                    lower_col in ensemble_forecast.columns
+                    and upper_col in ensemble_forecast.columns
+                ):
+                    ax.fill_between(
+                        ensemble_forecast["date"],
+                        ensemble_forecast[lower_col],
+                        ensemble_forecast[upper_col],
+                        alpha=alpha,
+                        color=color,
+                        label=f"{level}% PI" if idx == 0 else "",
+                        zorder=5,
+                    )
 
         # Training cutoff line
         ax.axvline(
@@ -309,11 +346,7 @@ def plot_all_validation_tests(
         )
 
         # Subplot title
-        ax.set_title(
-            f"Test {test_num}: {season} (Training ends {train_end_date})",
-            fontsize=12,
-            fontweight="bold",
-        )
+        ax.set_title(f"Test {test_num}: {season}", fontsize=12, fontweight="bold")
 
         # Legend for first subplot only
         if idx == 0:
@@ -322,7 +355,6 @@ def plot_all_validation_tests(
                 fontsize=7,
                 ncol=3,
                 framealpha=0.95,
-                fancybox=True,
             )
 
         ax.grid(True, alpha=0.3, linestyle="-", linewidth=0.5)
@@ -596,9 +628,14 @@ def plot_model_performance_heatmap(
 def plot_coverage_analysis(
     results_by_test: Dict[int, Dict[str, Any]],
     models: Optional[List[str]] = None,
-    figsize: Tuple[float, float] = (14, 6),
+    figsize: Tuple[float, float] = (16, 10),
 ) -> Figure:
-    """Create bar chart showing coverage analysis for all prediction intervals.
+    """Create improved bar chart showing prediction interval coverage analysis.
+
+    Coverage measures what percentage of actual observed values fell within the
+    prediction intervals. A well-calibrated model should have coverage close to
+    the nominal interval level (e.g., 95% of observations should fall within the
+    95% prediction interval).
 
     Args:
         results_by_test: Results by test number
@@ -606,9 +643,13 @@ def plot_coverage_analysis(
         figsize: Figure dimensions
 
     Returns:
-        Matplotlib Figure
+        Matplotlib Figure with annotated coverage analysis
     """
-    fig, axes = plt.subplots(1, 3, figsize=figsize, sharey=True)
+    fig = plt.figure(figsize=figsize)
+    gs = fig.add_gridspec(3, 3, height_ratios=[1, 1, 0.3], hspace=0.4, wspace=0.3)
+
+    # Main coverage plots
+    axes = [fig.add_subplot(gs[0, i]) for i in range(3)]
 
     test_nums = sorted(results_by_test.keys())
     coverage_levels = ["50", "80", "95"]
@@ -619,11 +660,13 @@ def plot_coverage_analysis(
         all_models = set(first_test.get("metrics", {}).keys())
         models = sorted(all_models)
 
-    colors = plt.cm.Set2(np.linspace(0, 1, len(models)))
+    # Use distinct colors for models
+    model_colors = {"xgboost": "#1f77b4", "lstm": "#ff7f0e", "ensemble": "#2ca02c"}
 
     for idx, (level, target) in enumerate(zip(coverage_levels, target_coverage)):
         ax = axes[idx]
         metric_name = f"coverage_{level}"
+        target_pct = target * 100
 
         x = np.arange(len(test_nums))
         width = 0.25
@@ -643,50 +686,215 @@ def plot_coverage_analysis(
                     coverage_values.append(0)
 
             offset = (model_idx - len(models) / 2 + 0.5) * width
+            color = model_colors.get(model.lower(), plt.cm.Set2(model_idx))
+
             bars = ax.bar(
                 x + offset,
                 coverage_values,
                 width,
                 label=model.title(),
-                color=colors[model_idx],
-                alpha=0.8,
+                color=color,
+                alpha=0.85,
                 edgecolor="black",
-                linewidth=0.5,
+                linewidth=1,
             )
 
-            # Color bars based on coverage quality
+            # Add value labels on bars
             for bar, val in zip(bars, coverage_values):
-                if abs(val - target * 100) < 5:  # Within 5%
-                    bar.set_edgecolor("green")
+                height = bar.get_height()
+                ax.text(
+                    bar.get_x() + bar.get_width() / 2.0,
+                    height + 2,
+                    f"{val:.0f}%",
+                    ha="center",
+                    va="bottom",
+                    fontsize=8,
+                    fontweight="bold",
+                )
+
+                # Color code bars based on coverage quality
+                deviation = abs(val - target_pct)
+                if deviation < 3:  # Excellent: within 3%
+                    bar.set_edgecolor("darkgreen")
+                    bar.set_linewidth(2.5)
+                elif deviation < 7:  # Good: within 7%
+                    bar.set_edgecolor("orange")
+                    bar.set_linewidth(2)
+                else:  # Poor: more than 7% off
+                    bar.set_edgecolor("darkred")
                     bar.set_linewidth(2)
 
-        # Target line
+        # Target line with clear label
         ax.axhline(
-            y=target * 100,
+            y=target_pct,
             color="red",
             linestyle="--",
-            linewidth=2,
-            label=f"Target ({target:.0%})",
+            linewidth=2.5,
+            alpha=0.8,
+            label=f"Target: {target:.0%}",
         )
 
-        ax.set_xlabel("Validation Test", fontsize=11, fontweight="bold")
-        if idx == 0:
-            ax.set_ylabel("Coverage (%)", fontsize=11, fontweight="bold")
-        ax.set_title(f"{level}% Interval", fontsize=12, fontweight="bold")
-        ax.set_xticks(x)
-        ax.set_xticklabels([f"Test {t}" for t in test_nums])
-        ax.set_ylim(0, 100)
-        ax.legend(fontsize=8, loc="lower right")
-        ax.grid(True, alpha=0.3, axis="y")
+        # Add shaded "good coverage" zone
+        ax.axhspan(
+            target_pct - 5,
+            target_pct + 5,
+            alpha=0.1,
+            color="green",
+            label="Good Coverage Zone (±5%)",
+        )
 
-    fig.suptitle(
-        "Prediction Interval Coverage Analysis",
-        fontsize=14,
-        fontweight="bold",
-        y=1.02,
+        # Improved labels
+        ax.set_xlabel("Validation Test Number", fontsize=11, fontweight="bold")
+        if idx == 0:
+            ax.set_ylabel(
+                "Coverage (% of observations\nwithin prediction interval)",
+                fontsize=11,
+                fontweight="bold",
+            )
+
+        # Clear title with explanation
+        ax.set_title(
+            f"{level}% Prediction Interval\n({level}% of observations should fall within)",
+            fontsize=12,
+            fontweight="bold",
+            pad=10,
+        )
+
+        ax.set_xticks(x)
+        ax.set_xticklabels([f"Test {t}" for t in test_nums], fontsize=10)
+        ax.set_ylim(0, 105)
+
+        # Legend with better placement
+        if idx == 2:  # Only on last plot
+            ax.legend(
+                fontsize=9, loc="upper left", framealpha=0.95, title="Models", title_fontsize=10
+            )
+
+        ax.grid(True, alpha=0.3, axis="y", linestyle="--")
+
+        # Add annotation explaining this panel
+        ax.text(
+            0.98,
+            0.02,
+            f"Target: {target:.0%}\nObservations should\nfall in this interval",
+            transform=ax.transAxes,
+            fontsize=8,
+            verticalalignment="bottom",
+            horizontalalignment="right",
+            bbox=dict(
+                boxstyle="round,pad=0.5", facecolor="lightyellow", alpha=0.8, edgecolor="gray"
+            ),
+        )
+
+    # Add coverage summary table below
+    ax_table = fig.add_subplot(gs[1, :])
+    ax_table.axis("off")
+
+    # Create summary statistics
+    table_data = []
+    table_data.append(
+        ["Model", "Test", "50% Interval", "80% Interval", "95% Interval", "Avg Error"]
     )
 
-    plt.tight_layout()
+    for model in models:
+        for test_num in test_nums:
+            test_results = results_by_test.get(test_num, {})
+            metrics = test_results.get("metrics", {})
+            model_metrics = metrics.get(model, {})
+
+            cov_50 = model_metrics.get("coverage_50", 0) * 100
+            cov_80 = model_metrics.get("coverage_80", 0) * 100
+            cov_95 = model_metrics.get("coverage_95", 0) * 100
+
+            # Calculate average deviation from targets
+            errors = [abs(cov_50 - 50), abs(cov_80 - 80), abs(cov_95 - 95)]
+            avg_error = sum(errors) / len(errors)
+
+            table_data.append(
+                [
+                    model.title(),
+                    f"Test {test_num}",
+                    f"{cov_50:.1f}%",
+                    f"{cov_80:.1f}%",
+                    f"{cov_95:.1f}%",
+                    f"±{avg_error:.1f}%",
+                ]
+            )
+
+    # Create table
+    table = ax_table.table(
+        cellText=table_data[1:],
+        colLabels=table_data[0],
+        cellLoc="center",
+        loc="center",
+        colWidths=[0.15, 0.12, 0.18, 0.18, 0.18, 0.15],
+    )
+
+    table.auto_set_font_size(False)
+    table.set_fontsize(9)
+    table.scale(1, 2)
+
+    # Style header
+    for i in range(len(table_data[0])):
+        table[(0, i)].set_facecolor("#34495e")
+        table[(0, i)].set_text_props(weight="bold", color="white")
+
+    # Style cells
+    for i in range(1, len(table_data)):
+        for j in range(len(table_data[0])):
+            if i % 2 == 0:
+                table[(i, j)].set_facecolor("#ecf0f1")
+            else:
+                table[(i, j)].set_facecolor("white")
+
+    ax_table.set_title(
+        "Coverage Summary by Model and Test\n(Lower avg error = better calibration)",
+        fontsize=12,
+        fontweight="bold",
+        pad=20,
+    )
+
+    # Add explanation text at bottom
+    ax_explain = fig.add_subplot(gs[2, :])
+    ax_explain.axis("off")
+
+    explanation = (
+        "WHAT IS COVERAGE?  Coverage measures what percentage of actual dengue cases fell within the predicted "
+        "intervals. For example, if the 95% prediction interval has 90% coverage, it means 90% of actual cases "
+        "fell within the predicted 95% interval. Well-calibrated models should have coverage close to the nominal "
+        "interval level (e.g., ~95% for 95% intervals).  "
+        "COLOR CODING:  Green border = Excellent (within 3% of target)  |  "
+        "Orange border = Good (within 7% of target)  |  "
+        "Red border = Poor (more than 7% off target)  |  "
+        "Red dashed line = Target coverage level"
+    )
+
+    ax_explain.text(
+        0.5,
+        0.5,
+        explanation,
+        transform=ax_explain.transAxes,
+        fontsize=9,
+        verticalalignment="center",
+        horizontalalignment="center",
+        wrap=True,
+        bbox=dict(
+            boxstyle="round,pad=0.8",
+            facecolor="lightblue",
+            alpha=0.3,
+            edgecolor="navy",
+            linewidth=2,
+        ),
+    )
+
+    # Main title
+    fig.suptitle(
+        "Prediction Interval Coverage Analysis: How Well Calibrated Are the Forecasts?",
+        fontsize=15,
+        fontweight="bold",
+        y=0.98,
+    )
+
     return fig
 
 
@@ -713,7 +921,7 @@ def save_figure_for_pdf(fig: Figure, filepath: Path, dpi: int = 300) -> None:
 def create_validation_figure_set(
     state: str,
     observed_df: pd.DataFrame,
-    test_forecasts: Dict[int, pd.DataFrame],
+    test_forecasts: Dict[int, Any],
     results_by_test: Dict[int, Dict[str, Any]],
     output_dir: Path,
     train_end_dates: Optional[Dict[int, str]] = None,
@@ -722,12 +930,14 @@ def create_validation_figure_set(
     """Generate complete set of validation figures.
 
     Creates individual plots for each validation test showing training period,
-    prediction period, forecast, and prediction intervals.
+    prediction period, forecast from all models, and prediction intervals.
 
     Args:
         state: State code
         observed_df: Observed data
-        test_forecasts: Forecasts by test number
+        test_forecasts: Dictionary mapping test numbers to either:
+                       - Dict[str, pd.DataFrame]: forecasts by model (new format)
+                       - pd.DataFrame: single forecast (old format, will be treated as ensemble)
         results_by_test: Results by test number
         output_dir: Directory to save figures
         train_end_dates: Training end dates for each test
@@ -760,9 +970,18 @@ def create_validation_figure_set(
     # Generate individual test plots (Pages 2-4)
     for test_num in [1, 2, 3]:
         if test_num in test_forecasts:
+            # Handle both old format (single DataFrame) and new format (dict of DataFrames)
+            forecast_data = test_forecasts[test_num]
+            if isinstance(forecast_data, pd.DataFrame):
+                # Old format: wrap in dict as ensemble
+                forecasts_by_model = {"ensemble": forecast_data}
+            else:
+                # New format: already a dict
+                forecasts_by_model = forecast_data
+
             fig = plot_validation_test_timeseries(
                 observed_df=observed_df,
-                forecast_df=test_forecasts[test_num],
+                forecasts_by_model=forecasts_by_model,
                 state=state,
                 test_num=test_num,
                 train_end_date=train_end_dates[test_num],
@@ -774,9 +993,17 @@ def create_validation_figure_set(
             logger.info(f"Generated Test {test_num} time series plot")
 
     # Combined view with all 3 tests (for overview)
+    # Convert test_forecasts to new format if needed
+    test_forecasts_by_model = {}
+    for test_num, forecast_data in test_forecasts.items():
+        if isinstance(forecast_data, pd.DataFrame):
+            test_forecasts_by_model[test_num] = {"ensemble": forecast_data}
+        else:
+            test_forecasts_by_model[test_num] = forecast_data
+
     fig = plot_all_validation_tests(
         observed_df=observed_df,
-        test_forecasts=test_forecasts,
+        test_forecasts=test_forecasts_by_model,
         state=state,
         train_end_dates=train_end_dates,
         seasons=seasons,

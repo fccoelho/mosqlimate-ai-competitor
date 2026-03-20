@@ -18,7 +18,14 @@ from mosqlimate_ai.agents.knowledge_base import (
     ValidationResult,
 )
 from mosqlimate_ai.agents.model_agent import ModelArchitectAgent
-from mosqlimate_ai.agents.orchestrator import AgentOrchestrator, Task, Workflow
+from mosqlimate_ai.agents.orchestrator import (
+    AgentOrchestrator,
+    FineTuningConfig,
+    FineTuningResult,
+    PerformanceTracker,
+    Task,
+    Workflow,
+)
 from mosqlimate_ai.agents.prompts import AGENT_PROMPTS, get_prompt, list_agents
 from mosqlimate_ai.agents.selection_agent import TopNModelSelectionAgent
 from mosqlimate_ai.agents.state_validation_agent import StateValidationAgent
@@ -54,6 +61,9 @@ __all__ = [
     "AgentOrchestrator",
     "Task",
     "Workflow",
+    "FineTuningConfig",
+    "FineTuningResult",
+    "PerformanceTracker",
     "AGENT_PROMPTS",
     "get_prompt",
     "list_agents",
