@@ -21,6 +21,7 @@ from mosqlimate_ai.agents.model_agent import ModelArchitectAgent
 from mosqlimate_ai.agents.orchestrator import AgentOrchestrator, Task, Workflow
 from mosqlimate_ai.agents.prompts import AGENT_PROMPTS, get_prompt, list_agents
 from mosqlimate_ai.agents.selection_agent import TopNModelSelectionAgent
+from mosqlimate_ai.agents.state_validation_agent import StateValidationAgent
 from mosqlimate_ai.agents.tuner_agent import EfficientHyperparameterTuner
 from mosqlimate_ai.agents.validator_agent import ValidatorAgent
 
@@ -42,6 +43,8 @@ __all__ = [
     # Tuning & Selection
     "EfficientHyperparameterTuner",
     "TopNModelSelectionAgent",
+    # Validation
+    "StateValidationAgent",
     # Existing agents
     "DataEngineerAgent",
     "ModelArchitectAgent",

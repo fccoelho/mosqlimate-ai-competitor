@@ -1063,6 +1063,219 @@ def report_cmd(
         console.print(f"\n[green]✓ Report generated: {output}[/green]")
 
 
+@app.command("validate")
+def validate_cmd(
+    config: Optional[Path] = config_file_option,
+    full_pipeline: bool = typer.Option(
+        False,
+        "--full-pipeline",
+        help="Run complete 4-stage validation (3 tests + final forecast)",
+    ),
+    final_forecast: bool = typer.Option(
+        False,
+        "--final-forecast",
+        help="Run only final forecast",
+    ),
+    test: Optional[int] = typer.Option(
+        None,
+        "--test",
+        help="Run specific test (1, 2, or 3)",
+    ),
+    states: Optional[str] = typer.Option(
+        None,
+        "--states",
+        "-s",
+        help="Comma-separated state UFs (e.g., SP,RJ,MG)",
+    ),
+    output: Path = typer.Option(
+        Path("validation_results"),
+        "--output",
+        "-o",
+        help="Output directory for validation results",
+    ),
+    max_concurrent: int = typer.Option(
+        5,
+        "--max-concurrent",
+        help="Maximum concurrent states",
+    ),
+    show_logs: bool = typer.Option(
+        False,
+        "--show-logs",
+        help="Show agent communication logs",
+    ),
+    export_audit: Optional[Path] = typer.Option(
+        None,
+        "--export-audit",
+        help="Export audit trail to markdown file",
+    ),
+) -> None:
+    """Run validation pipeline for Mosqlimate competition.
+
+    Implements the 4-run validation pipeline according to competition rules:
+    - 3 validation tests (2022-2023, 2023-2024, 2024-2025)
+    - 1 final forecast (2025-2026)
+
+    Examples:
+        mosqlimate-ai validate --full-pipeline
+        mosqlimate-ai validate --test 1 --states SP,RJ
+        mosqlimate-ai validate --final-forecast --states SP
+    """
+    from mosqlimate_ai.validation import ValidationOrchestrator
+
+    # Parse states
+    state_list = None
+    if states:
+        state_list = [s.strip() for s in states.split(",")]
+
+    # Determine what to run
+    test_numbers = None
+    run_final = False
+
+    if full_pipeline:
+        test_numbers = [1, 2, 3]
+        run_final = True
+    elif final_forecast:
+        run_final = True
+    elif test:
+        test_numbers = [test]
+    else:
+        console.print("[red]Error: Must specify --full-pipeline, --final-forecast, or --test[/red]")
+        raise typer.Exit(1)
+
+    console.print("[cyan]Starting validation pipeline...[/cyan]")
+    if state_list:
+        console.print(f"[cyan]States: {', '.join(state_list)}[/cyan]")
+    console.print(f"[cyan]Tests: {test_numbers or 'None'}[/cyan]")
+    console.print(f"[cyan]Final forecast: {run_final}[/cyan]")
+    console.print()
+
+    # Create orchestrator and run
+    orchestrator = ValidationOrchestrator(output_dir=output)
+    orchestrator.config.max_concurrent_states = max_concurrent
+
+    try:
+        results = orchestrator.run_full_pipeline(
+            states=state_list,
+            test_numbers=test_numbers,
+            run_final=run_final,
+        )
+
+        # Display results
+        console.print("\n[green]✓ Validation pipeline completed[/green]")
+        console.print(f"[green]  Total states: {results['total_states']}[/green]")
+        console.print(f"[green]  Successful: {results['successful_states']}[/green]")
+        if results["failed_states"] > 0:
+            console.print(f"[red]  Failed: {results['failed_states']}[/red]")
+        console.print(f"[green]  Elapsed time: {results['elapsed_seconds']:.1f}s[/green]")
+        console.print(f"\n[cyan]Results saved to: {output}[/cyan]")
+
+        if show_logs:
+            console.print("\n[cyan]Agent Communication Logs:[/cyan]")
+            logs = orchestrator.message_bus.get_message_history()
+            for msg in logs[:20]:  # Show last 20 messages
+                console.print(f"  [{msg.timestamp}] {msg.sender}: {msg.message_type}")
+
+        if export_audit:
+            audit = orchestrator.message_bus.export_audit_trail(export_audit)
+            console.print(f"[green]✓ Audit trail exported to: {audit}[/green]")
+
+    except Exception as e:
+        console.print(f"[red]Validation failed: {e}[/red]")
+        raise typer.Exit(1)
+
+
+@app.command("validation-report")
+def validation_report_cmd(
+    state: str = typer.Argument(
+        ...,
+        help="State UF code (e.g., SP, RJ, MG)",
+    ),
+    results_dir: Path = typer.Option(
+        Path("validation_results"),
+        "--results-dir",
+        "-r",
+        help="Directory containing validation results",
+    ),
+    output: Optional[Path] = typer.Option(
+        None,
+        "--output",
+        "-o",
+        help="Output PDF file path (default: {state}_validation_report.pdf)",
+    ),
+) -> None:
+    """Generate PDF validation report for a specific state.
+
+    Creates a comprehensive 6-page PDF report including:
+    - Executive summary with performance metrics
+    - Time series analysis (observed vs predicted)
+    - CRPS and WIS metric analysis
+    - Model performance comparison
+    - Prediction interval coverage analysis
+
+    The report reads validation results from the validation_results directory
+    and outputs a publication-quality PDF.
+
+    Examples:
+        mosqlimate-ai validation-report SP
+        mosqlimate-ai validation-report RJ --results-dir ./my_results
+        mosqlimate-ai validation-report MG -o ./reports/MG_report.pdf
+    """
+    from mosqlimate_ai.visualization.validation_report import ValidationPDFReport
+
+    state = state.upper()
+    results_dir = Path(results_dir)
+
+    # Validate state
+    if len(state) != 2:
+        console.print(f"[red]Error: State code must be 2 letters (e.g., SP, RJ)[/red]")
+        raise typer.Exit(1)
+
+    # Check if results exist
+    state_dir = results_dir / state
+    if not state_dir.exists():
+        console.print(f"[red]No validation results found for {state} in {results_dir}[/red]")
+        console.print(
+            f"[yellow]Run validation first: mosqlimate-ai validate --states {state}[/yellow]"
+        )
+        raise typer.Exit(1)
+
+    results_file = state_dir / "validation_results.json"
+    if not results_file.exists():
+        console.print(f"[red]Validation results file not found: {results_file}[/red]")
+        raise typer.Exit(1)
+
+    console.print(f"[cyan]Generating validation report for {state}...[/cyan]")
+
+    try:
+        # Generate report
+        report = ValidationPDFReport(state, results_dir)
+        pdf_path = report.generate_from_files()
+
+        # Rename if custom output specified
+        if output:
+            output = Path(output)
+            output.parent.mkdir(parents=True, exist_ok=True)
+            pdf_path.rename(output)
+            pdf_path = output
+
+        console.print(f"\n[green]✓ Validation report generated successfully![/green]")
+        console.print(f"[green]  State: {state}[/green]")
+        console.print(f"[green]  Report: {pdf_path.absolute()}[/green]")
+        console.print(f"\n[cyan]Report includes:[/cyan]")
+        console.print("  • Executive summary with performance metrics")
+        console.print("  • Time series analysis (observed vs predicted)")
+        console.print("  • CRPS and WIS metric analysis")
+        console.print("  • Model performance comparison")
+        console.print("  • Prediction interval coverage analysis")
+
+    except FileNotFoundError as e:
+        console.print(f"[red]Error: {e}[/red]")
+        raise typer.Exit(1)
+    except Exception as e:
+        console.print(f"[red]Failed to generate report: {e}[/red]")
+        raise typer.Exit(1)
+
+
 @app.command("init-config")
 def init_config_cmd(
     output: Path = typer.Option(

@@ -2,56 +2,20 @@
 
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Code style: ruff](https://img.shields.io/badge/code%20style-ruff-blue.svg)](https://github.com/astral-sh/ruff)
 
-AI-powered dengue forecasting system for the [Infodengue-Mosqlimate Dengue Challenge (IMDC)](https://sprint.mosqlimate.org), leveraging multi-agent coding with **Karl DBot**.
-
-## 🎯 Objective
-
-Predict probable dengue cases in Brazil (nationally and by state) for upcoming epidemic seasons using machine learning and multi-agent AI systems.
-
-## 🏗️ Architecture
-
-```
-mosqlimate-ai-competitor/
-├── src/mosqlimate_ai/
-│   ├── data/           # Data ingestion & preprocessing
-│   ├── models/         # ML/DL forecasting models
-│   ├── agents/         # Karl DBot multi-agent system
-│   ├── evaluation/     # Model validation & metrics
-│   └── submission/     # Competition submission format
-├── notebooks/          # Exploratory analysis
-├── tests/              # Unit tests
-└── docs/               # Documentation
-```
+AI-powered dengue forecasting system for the [Infodengue-Mosqlimate Dengue Challenge](https://sprint.mosqlimate.org), leveraging multi-agent coding with **Karl DBot**.
 
 ## 🚀 Quick Start
 
-### Prerequisites
-
-- Python 3.9+
-- Git
-- [Karl DBot](https://github.com/Deeplearn-PeD/KarlDBot) (multi-agent coding tool)
-
-### Installation
-
 ```bash
-# Clone repository
-git clone git@github.com:fccoelho/mosqlimate-ai-competitor.git
-cd mosqlimate-ai-competitor
-
-# Install with uv (recommended)
-uv sync
-
-# Or with pip
+# Install
 pip install -e ".[dev]"
-```
 
-### CLI Quick Reference
-
-```bash
 # Download competition data
 mosqlimate-ai download-data
+
+# Run full validation pipeline
+mosqlimate-ai validate --full-pipeline
 
 # Train models
 mosqlimate-ai train --states SP,RJ
@@ -59,44 +23,41 @@ mosqlimate-ai train --states SP,RJ
 # Generate forecasts
 mosqlimate-ai forecast --weeks 52
 
-# Evaluate forecasts
-mosqlimate-ai evaluate --state SP
-
-# Generate performance report
+# Evaluate and report
 mosqlimate-ai report --output report.md
-
-# Submit to competition
-mosqlimate-ai submit --model-id 123
-
-# View all commands
-mosqlimate-ai --help
 ```
 
-## 📊 Data Sources
+## 📦 Installation
 
-The system integrates data from [Mosqlimate Platform](https://mosqlimate.org/):
+Requires Python 3.9+ and Git:
 
-- **Epidemiological**: SINAN dengue cases (weekly)
-- **Climate**: Temperature, precipitation, humidity
-- **Demographic**: Population data by municipality
-- **Historical**: 5-10 years of time series data
+```bash
+git clone git@github.com:fccoelho/mosqlimate-ai-competitor.git
+cd mosqlimate-ai-competitor
 
-### Downloading Competition Data
+# Recommended: use uv
+uv sync
 
-Download the Sprint 2025 competition data using the CLI:
+# Or pip
+pip install -e ".[dev]"
+```
+
+## 📊 Get the Data
+
+Download competition data from the Mosqlimate Platform:
 
 ```bash
 # Download all required data files
 mosqlimate-ai download-data
 
-# Force re-download (overwrite existing files)
-mosqlimate-ai download-data --force
+# View cache status
+mosqlimate-ai cache-info
 
-# Specify custom cache directory
-mosqlimate-ai download-data --cache-dir /path/to/data
+# Clear cache if needed
+mosqlimate-ai clear-cache
 ```
 
-**Available Data Files:**
+**Available Data:**
 
 | File | Description |
 |------|-------------|
@@ -105,297 +66,249 @@ mosqlimate-ai download-data --cache-dir /path/to/data
 | `climate_forecast.csv.gz` | Monthly climate forecasts (ECMWF) |
 | `datasus_population_2001_2024.csv.gz` | Population by municipality and year |
 | `environ_vars.csv.gz` | Environmental variables (Koppen, Biome) |
-| `map_regional_health.csv` | City to health region mapping |
-| `shape_muni.gpkg` | Municipality geometries |
-| `shape_regional_health.gpkg` | Regional health geometries |
-| `shape_macroregional_health.gpkg` | Macroregional health geometries |
 | `ocean_climate_oscillations.csv.gz` | ENSO, IOD, PDO ocean indices |
 
-**Other CLI commands:**
+## ⚙️ Configuration
+
+Initialize a configuration file for reusable settings:
 
 ```bash
-# View cached data status
-mosqlimate-ai cache-info
-
-# Clear the data cache
-mosqlimate-ai clear-cache
+mosqlimate-ai init-config
 ```
 
-## 🤖 Multi-Agent System (Karl DBot)
+**Example `mosqlimate.yaml`:**
 
-Our AI competitor uses specialized agents:
+```yaml
+models:
+  xgboost:
+    n_estimators: 500
+    max_depth: 6
+    learning_rate: 0.05
+  lstm:
+    hidden_size: 128
+    num_layers: 2
+    dropout: 0.2
+    epochs: 100
 
-| Agent | Responsibility |
-|-------|---------------|
-| **Data Engineer** | Data collection, cleaning, feature engineering |
-| **Model Architect** | Design ML/DL architectures, hyperparameter tuning |
-| **Forecaster** | Generate predictions, uncertainty quantification |
-| **Validator** | Cross-validation, backtesting, metrics calculation |
-| **Ensembler** | Combine multiple models for robust forecasts |
+paths:
+  models_dir: "./models"
+  forecasts_dir: "./forecasts"
 
-### Agent Workflow
-
-```
-┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-│   Data      │────▶│   Model      │────▶│  Forecast   │
-│  Engineer   │     │  Architect   │     │     Agent   │
-└─────────────┘     └──────────────┘     └──────┬──────┘
-                                                │
-                       ┌────────────────────────┘
-                       ▼
-┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-│  Submission │◀────│  Ensembler   │◀────│  Validator  │
-│   Formatter │     │     Agent    │     │    Agent    │
-└─────────────┘     └──────────────┘     └─────────────┘
+states: []  # Empty = all states
 ```
 
-## 🏋️ Model Training
-
-Train forecasting models using the CLI. Models are trained per state and saved for later use.
-
-### Train All States
+Use configuration in any command:
 
 ```bash
-# Train XGBoost and LSTM models for all states
+mosqlimate-ai train --config myconfig.yaml
+mosqlimate-ai validate --full-pipeline --config myconfig.yaml
+```
+
+## 🔄 Run Validation Tests
+
+The validation pipeline trains models 4 times following competition rules: 3 validation tests (2022-2025) + 1 final forecast (2025-2026).
+
+| Test | Training Data | Forecast Period |
+|------|---------------|-----------------|
+| **Test 1** | 2010-EW25 2022 | EW41 2022 - EW40 2023 |
+| **Test 2** | 2010-EW25 2023 | EW41 2023 - EW40 2024 |
+| **Test 3** | 2010-EW25 2024 | EW41 2024 - EW40 2025 |
+| **Final** | 2010-EW25 2025 | EW41 2025 - EW40 2026 |
+
+### Run Validation
+
+```bash
+# Complete 4-stage validation for all states
+mosqlimate-ai validate --full-pipeline
+
+# Validation for specific states
+mosqlimate-ai validate --full-pipeline --states SP,RJ,MG
+
+# Run single test
+mosqlimate-ai validate --test 1 --states SP,RJ
+
+# Final forecast only
+mosqlimate-ai validate --final-forecast
+```
+
+### View Logs
+
+```bash
+# Show agent communication logs
+mosqlimate-ai validate --show-logs
+
+# Export audit trail
+mosqlimate-ai validate --export-audit --output audit_report.md
+```
+
+### Validation Features
+
+- **Multi-Agent System**: StateValidationAgent per state with cross-state learning
+- **Hyperparameter Tuning**: Bayesian optimization with warm start from similar states
+- **Model Selection**: Top 3 models by weighted composite score (CRPS, WIS, MAE, Coverage)
+- **Audit Logging**: Complete log of all agent decisions in `logs/agent_communications/`
+
+## 🏋️ Train Models
+
+Train forecasting models per state:
+
+```bash
+# Train all states
 mosqlimate-ai train
+
+# Train specific states
+mosqlimate-ai train --states SP,RJ
 
 # Train only XGBoost
 mosqlimate-ai train --models xgboost
 
-# Train only LSTM
-mosqlimate-ai train --models lstm
-
-# Specify output directory
-mosqlimate-ai train --output ./my_models
+# With custom config
+mosqlimate-ai train --config myconfig.yaml
 ```
 
-### Train Specific States
-
-```bash
-# Train models for São Paulo and Rio de Janeiro only
-mosqlimate-ai train --states SP,RJ
-
-# Train single state with verbose output
-mosqlimate-ai train --states SP --verbose
-```
-
-### Training Options
+**Options:**
 
 | Option | Description | Default |
 |--------|-------------|---------|
-| `--output, -o` | Directory to save trained models | `models/` |
-| `--states, -s` | Comma-separated state UFs | all states |
-| `--models, -m` | Models to train (xgboost,lstm) | `xgboost,lstm` |
-| `--val-size` | Validation data fraction | `0.1` |
-| `--verbose, -v` | Show detailed training output | `false` |
+| `--output, -o` | Save directory | `models/` |
+| `--states, -s` | State UFs (comma-separated) | all states |
+| `--models, -m` | Models to train | `xgboost,lstm` |
+| `--val-size` | Validation fraction | `0.1` |
+| `--verbose, -v` | Detailed output | `false` |
 
-### Model Output Structure
+## 🔮 Generate Forecasts
 
-```
-models/
-├── SP/
-│   ├── xgboost/
-│   │   ├── model.json
-│   │   └── scaler.pkl
-│   └── lstm/
-│       ├── model.pt
-│       └── scaler.pkl
-├── RJ/
-│   ├── xgboost/
-│   └── lstm/
-└── ...
-```
-
-## 🔮 Generating Forecasts
-
-After training, generate forecasts with prediction intervals.
-
-### Generate Forecasts
+Generate forecasts with prediction intervals:
 
 ```bash
-# Generate 52-week forecasts for all trained states
+# Generate 52-week forecasts for all states
 mosqlimate-ai forecast
 
 # Forecast specific states
 mosqlimate-ai forecast --states SP,RJ
 
-# Custom forecast period
+# Custom period
 mosqlimate-ai forecast --weeks 26 --start-date 2026-01-01
 
 # Output to specific directory
 mosqlimate-ai forecast --output ./my_forecasts
 ```
 
-### Forecast Options
-
-| Option | Description | Default |
-|--------|-------------|---------|
-| `--model-dir, -m` | Directory with trained models | `models/` |
-| `--output, -o` | Directory for forecast files | `forecasts/` |
-| `--states, -s` | Comma-separated state UFs | all states |
-| `--start-date` | Start date (YYYY-MM-DD) | next Sunday |
-| `--weeks, -w` | Number of weeks to forecast | `52` |
-| `--ensemble/--no-ensemble` | Create ensemble from models | `true` |
-
-### Forecast Output Format
-
-Each state generates a CSV file with prediction intervals:
+**Output Format:**
 
 ```csv
 date,median,lower_50,upper_50,lower_80,upper_80,lower_95,upper_95
 2026-01-05,1250,1000,1500,850,1650,700,1800
-2026-01-12,1180,950,1410,800,1560,650,1710
 ...
 ```
 
-## 📤 Submitting Forecasts
+## 📈 Evaluate & Report
 
-Submit forecasts to the Mosqlimate API for competition evaluation.
+### Evaluate Forecasts
 
-### Submit to API
+```bash
+# Evaluate specific state
+mosqlimate-ai evaluate --state SP
+
+# Evaluate up to date
+mosqlimate-ai evaluate --state RJ --end-date 2025-12-31
+```
+
+**Metrics:** CRPS, WIS, Coverage 95%/50%, MAE, RMSE
+
+### Generate Report
+
+```bash
+# Full report with visualizations
+mosqlimate-ai report
+
+# Text-only report (faster)
+mosqlimate-ai report --no-plots
+
+# Specific states
+mosqlimate-ai report --states SP,RJ --output my_report.md
+```
+
+**Report includes:**
+- Executive summary with average metrics
+- Best model by metric
+- Detailed results per state
+- Visualizations: timeseries, residuals, calibration, heatmaps
+
+## 📤 Submit to Competition
+
+Submit forecasts to the Mosqlimate API:
 
 ```bash
 # Submit all forecasts (requires API key)
 mosqlimate-ai submit --model-id 123
 
-# Dry run to preview submissions
+# Dry run to preview
 mosqlimate-ai submit --model-id 123 --dry-run
 
-# Save submissions to JSON for review
+# Save to JSON for review
 mosqlimate-ai submit --model-id 123 --dry-run --output-json submissions.json
-
-# Specify forecast directory
-mosqlimate-ai submit --forecast-dir ./my_forecasts --model-id 123
 ```
 
-### Submit Options
-
-| Option | Description | Required |
-|--------|-------------|----------|
-| `--model-id, -m` | Registered model ID from Mosqlimate | Yes |
-| `--forecast-dir, -f` | Directory with forecast files | No (`forecasts/`) |
-| `--predict-date` | Prediction date (YYYY-MM-DD) | No (today) |
-| `--description, -d` | Prediction description | No |
-| `--dry-run` | Prepare without submitting | No |
-| `--output-json` | Save submissions to JSON | No |
-
-### API Key Setup
-
-Set your Mosqlimate API key as an environment variable:
+**Setup API Key:**
 
 ```bash
 export MOSQLIMATE_API_KEY="your-api-key-here"
 ```
 
-Or enter it interactively when prompted.
+## 🤖 Multi-Agent System
 
-## 📈 Evaluating Forecasts
+The system uses specialized agents working together:
 
-Evaluate forecast accuracy against historical data for backtesting.
+| Agent | Responsibility |
+|-------|---------------|
+| **Data Engineer** | Data collection, cleaning, feature engineering |
+| **Model Architect** | ML/DL architectures, hyperparameter tuning |
+| **Forecaster** | Predictions, uncertainty quantification |
+| **Validator** | Cross-validation, backtesting, metrics |
+| **Ensembler** | Combine models for robust forecasts |
+| **StateValidationAgent** | Manages 4-run validation pipeline |
+| **CrossStateKnowledgeBase** | Shares insights between states |
 
-### Run Evaluation
+### Architecture
 
-```bash
-# Evaluate forecasts for a specific state
-mosqlimate-ai evaluate --state SP
-
-# Evaluate against data up to a specific date
-mosqlimate-ai evaluate --state RJ --end-date 2025-12-31
 ```
-
-### Evaluation Metrics
-
-| Metric | Description |
-|--------|-------------|
-| **CRPS** | Continuous Ranked Probability Score |
-| **WIS** | Weighted Interval Score |
-| **Coverage 95%** | Percentage of true values in 95% interval |
-| **Coverage 50%** | Percentage of true values in 50% interval |
-| **MAE** | Mean Absolute Error |
-| **RMSE** | Root Mean Square Error |
-
-## 📊 Performance Reports
-
-Generate comprehensive markdown reports comparing model performance across states.
-
-### Generate Report
-
-```bash
-# Generate report for all states
-mosqlimate-ai report
-
-# Generate report for specific states
-mosqlimate-ai report --states SP,RJ
-
-# Specify custom output path
-mosqlimate-ai report --output my_report.md
-
-# Use custom model and forecast directories
-mosqlimate-ai report --model-dir ./my_models --forecast-dir ./my_forecasts
+mosqlimate-ai-competitor/
+├── src/mosqlimate_ai/
+│   ├── data/           # Data ingestion & preprocessing
+│   ├── models/         # XGBoost, LSTM, Ensemble
+│   ├── agents/         # Karl DBot multi-agent system
+│   ├── evaluation/     # Validation & metrics
+│   └── validation/     # Competition validation pipeline
+├── notebooks/          # Exploratory analysis
+├── tests/              # Unit tests
+└── docs/               # Documentation
 ```
-
-### Report Options
-
-| Option | Description | Default |
-|--------|-------------|---------|
-| `--model-dir, -m` | Directory with trained models | `models/` |
-| `--forecast-dir, -f` | Directory with forecast files | `forecasts/` |
-| `--output, -o` | Output markdown file path | `forecast_report.md` |
-| `--states, -s` | Comma-separated state UFs | all states |
-| `--end-date` | End date for evaluation data | all data |
-
-### Report Contents
-
-The generated report includes:
-
-1. **Executive Summary** - Average performance metrics across all states
-2. **Best Model by Metric** - Which model performs best for each metric
-3. **Detailed Results by State** - Per-state breakdown for all models
-4. **Metric Definitions** - Explanations of each evaluation metric
 
 ## 🔬 Models
 
 ### Ensemble Approach
 
-1. **ML Models**
-   - XGBoost with quantile regression
-   - Feature importance analysis
-
-2. **Deep Learning**
-   - LSTM with Monte Carlo dropout for uncertainty
-
-3. **Ensemble**
-   - Weighted average of model predictions
-   - Automatic model selection based on validation performance
-
-## 📝 Submission Format
-
-Following [Mosqlimate submission template](https://github.com/Mosqlimate/mosqlimate-competition):
-
-```csv
-date,uf,cases,lower_95,upper_95
-2026-01-01,SP,1500,1200,1800
-2026-01-01,RJ,800,600,1000
-...
-```
+1. **XGBoost**: Quantile regression with feature importance
+2. **LSTM**: Deep learning with Monte Carlo dropout
+3. **Ensemble**: Weighted average based on validation performance
 
 ## 🛠️ Development
 
-### Running Tests
-
 ```bash
+# Run tests
 pytest tests/ -v --cov=src/mosqlimate_ai
-```
 
-### Code Quality
-
-```bash
-# Linting and formatting
+# Lint and format
 ruff check src/ tests/
 ruff format src/ tests/
 
 # Type checking
 mypy src/mosqlimate_ai
+
+# Feature caching
+mosqlimate-ai feature-cache-info
+mosqlimate-ai clear-feature-cache
 ```
 
 ## 📚 Documentation
@@ -404,6 +317,8 @@ mypy src/mosqlimate_ai
 - [Data Pipeline](docs/data_pipeline.md)
 - [Model Documentation](docs/models.md)
 - [Agent Configuration](docs/agents.md)
+- [Validation Pipeline](VALIDATION_PIPELINE_SUMMARY.md)
+- [Report Enhancements](REPORT_ENHANCEMENTS.md)
 
 ## 🏆 Competition Results
 
@@ -414,22 +329,17 @@ mypy src/mosqlimate_ai
 
 ## 🤝 Contributing
 
-We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ## 📄 License
 
-This project is licensed under the MIT License - see [LICENSE](LICENSE) file.
+MIT License - see [LICENSE](LICENSE) file.
 
 ## 🙏 Acknowledgments
 
 - [Mosqlimate Platform](https://mosqlimate.org/) for organizing the challenge
 - [Infodengue](https://info.dengue.mat.br/) for epidemiological data
 - [Karl DBot](https://github.com/Deeplearn-PeD/KarlDBot) for multi-agent AI support
-
-## 📧 Contact
-
-- **Project Lead**: [Flávio Codeço Coelho](https://github.com/fccoelho)
-- **Issues**: [GitHub Issues](https://github.com/fccoelho/mosqlimate-ai-competitor/issues)
 
 ---
 
