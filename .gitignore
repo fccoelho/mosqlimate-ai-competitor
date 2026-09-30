@@ -210,3 +210,14 @@ __marimo__/
 # Models
 *.json
 *.pt
+# Pipeline artifacts (regenerable)
+models/
+logs/
+checkpoints/
+lightning_logs/
+exploratory_plots/
+figures/
+forecasts/
+graphify-out/
+validation_results/
+submissions/

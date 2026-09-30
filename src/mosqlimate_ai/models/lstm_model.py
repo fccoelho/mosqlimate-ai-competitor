@@ -7,7 +7,7 @@ probabilistic predictions via MC Dropout at inference time.
 import json
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Optional, Union
 
 import numpy as np
 import pandas as pd
@@ -44,10 +44,10 @@ class LSTMModel:
     def __init__(
         self,
         hidden_size: int = 128,
-        num_layers: int = 2,
+        num_layers: int = 8,
         dropout: float = 0.2,
-        output_size: int = 1,
-        quantiles: Optional[List[float]] = None,
+        output_size: int = 52,
+        quantiles: Optional[list[float]] = None,
         learning_rate: float = 0.001,
         batch_size: int = 32,
         epochs: int = 200,
@@ -55,6 +55,8 @@ class LSTMModel:
         device: str = "auto",
         mc_samples: int = 100,
     ):
+        if quantiles is None:
+            quantiles = [25, 50, 75.0]
         self.hidden_size = hidden_size
         self.num_layers = num_layers
         self.dropout = dropout
@@ -148,7 +150,7 @@ class LSTMModel:
         X: np.ndarray,
         y: Optional[np.ndarray] = None,
         sequence_length: int = 52,
-    ) -> Tuple[np.ndarray, Optional[np.ndarray]]:
+    ) -> tuple[np.ndarray, Optional[np.ndarray]]:
         """Prepare sequences for LSTM.
 
         Args:
@@ -344,7 +346,7 @@ class LSTMModel:
         self,
         X: np.ndarray,
         n_samples: Optional[int] = None,
-    ) -> Dict[str, np.ndarray]:
+    ) -> dict[str, np.ndarray]:
         """Predict with MC Dropout uncertainty estimation.
 
         Args:
@@ -497,7 +499,7 @@ class LSTMForecaster:
     def __init__(
         self,
         target_col: str = "casos",
-        feature_cols: Optional[List[str]] = None,
+        feature_cols: Optional[list[str]] = None,
         sequence_length: int = 52,
         **model_kwargs,
     ):
@@ -595,7 +597,7 @@ class LSTMForecaster:
 
         return predictions
 
-    def _infer_features(self, df: pd.DataFrame) -> List[str]:
+    def _infer_features(self, df: pd.DataFrame) -> list[str]:
         """Infer feature columns from DataFrame."""
         exclude = [
             "date",
@@ -606,9 +608,11 @@ class LSTMForecaster:
             "train_1",
             "train_2",
             "train_3",
+            "train_4",
             "target_1",
             "target_2",
             "target_3",
+            "target_4",
             self.target_col,
         ]
         features = [

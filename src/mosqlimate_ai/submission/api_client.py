@@ -6,7 +6,7 @@ Mosqlimate API for the Sprint 2025 competition.
 
 import logging
 import os
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 import requests
 
@@ -120,8 +120,8 @@ class MosqlimateClient:
         predict_date: str,
         adm_0: str,
         adm_1: Optional[str],
-        prediction: Dict[str, Any],
-    ) -> Dict[str, Any]:
+        prediction: dict[str, Any],
+    ) -> dict[str, Any]:
         """Submit a prediction to Mosqlimate.
 
         Args:
@@ -163,8 +163,8 @@ class MosqlimateClient:
     def submit_all_predictions(
         self,
         model_id: int,
-        submissions: List[Dict[str, Any]],
-    ) -> List[Dict[str, Any]]:
+        submissions: list[dict[str, Any]],
+    ) -> list[dict[str, Any]]:
         """Submit multiple predictions.
 
         Args:
@@ -191,7 +191,7 @@ class MosqlimateClient:
         logger.info(f"Submitted {len(responses)} predictions")
         return responses
 
-    def get_model(self, model_id: int) -> Dict[str, Any]:
+    def get_model(self, model_id: int) -> dict[str, Any]:
         """Get model information.
 
         Args:
@@ -208,7 +208,7 @@ class MosqlimateClient:
         else:
             raise RuntimeError(f"Failed to get model: {response.status_code}")
 
-    def list_models(self) -> List[Dict[str, Any]]:
+    def list_models(self) -> list[dict[str, Any]]:
         """List all models registered by the user.
 
         Returns:
@@ -226,7 +226,7 @@ class MosqlimateClient:
         self,
         model_id: Optional[int] = None,
         adm_1: Optional[str] = None,
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """Get predictions.
 
         Args:
@@ -303,9 +303,9 @@ def get_git_commit_hash() -> str:
 
 def submit_forecasts(
     model_id: int,
-    submissions: List[Dict[str, Any]],
+    submissions: list[dict[str, Any]],
     api_key: Optional[str] = None,
-) -> List[Dict[str, Any]]:
+) -> list[dict[str, Any]]:
     """Convenience function to submit forecasts.
 
     Args:

@@ -1,18 +1,45 @@
-"""Data loader for Mosqlimate Sprint 2025 competition data.
+"""Data loader for Mosqlimate competition data.
 
-Loads and merges cached competition data from the local data/ directory.
+Loads and merges cached competition data from the local data/{challenge}/ directory.
+Supports both 2nd IMDC (2025) and 3rd IMDC (2026) challenges.
 """
 
 import logging
 import warnings
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Optional
 
 import pandas as pd
 
 logger = logging.getLogger(__name__)
 
-DATA_DIR = Path(__file__).parent.parent.parent.parent / "data"
+DEFAULT_CHALLENGE = "3rd_IMDC"
+
+
+def _get_default_data_dir(challenge: str = DEFAULT_CHALLENGE) -> Path:
+    """Get default data directory for the given challenge.
+
+    Prefers ``data/{challenge}/`` when it exists; falls back to the flat
+    ``data/`` directory where the FTP files are usually cached.
+    """
+    project_root = Path(__file__).parent.parent.parent.parent
+    challenge_dir = project_root / "data" / challenge
+    if challenge_dir.exists():
+        return challenge_dir
+    return project_root / "data"
+
+
+def _merge_with_update(base: pd.DataFrame, update: pd.DataFrame, key_cols: list[str]) -> pd.DataFrame:
+    """Merge a base dataset with a newer partial update.
+
+    Rows from ``update`` take precedence over base rows sharing the same key.
+    """
+    if update.empty:
+        return base
+    combined = pd.concat([base, update], ignore_index=True)
+    combined = combined.drop_duplicates(subset=key_cols, keep="last")
+    return combined.sort_values(key_cols).reset_index(drop=True)
+
 
 BRAZILIAN_STATES = {
     "AC": "Acre",
@@ -97,22 +124,82 @@ class CompetitionDataLoader:
         >>> df_aggregated = loader.aggregate_to_state(df)
     """
 
-    def __init__(self, data_dir: Optional[Path] = None):
+    def __init__(self, data_dir: Optional[Path] = None, challenge: str = DEFAULT_CHALLENGE):
         """Initialize data loader.
 
         Args:
-            data_dir: Path to data directory. Defaults to project's data/ folder.
+            data_dir: Path to data directory. Defaults to project's data/{challenge}/ folder.
+            challenge: Which challenge dataset to use ("2nd_IMDC" or "3rd_IMDC").
         """
-        self.data_dir = Path(data_dir) if data_dir else DATA_DIR
+        self.challenge = challenge
+        self.data_dir = Path(data_dir) if data_dir else _get_default_data_dir(challenge)
         self._dengue_df: Optional[pd.DataFrame] = None
+        self._chikungunya_df: Optional[pd.DataFrame] = None
         self._climate_df: Optional[pd.DataFrame] = None
         self._climate_forecast_df: Optional[pd.DataFrame] = None
         self._population_df: Optional[pd.DataFrame] = None
         self._environ_df: Optional[pd.DataFrame] = None
         self._ocean_df: Optional[pd.DataFrame] = None
         self._regional_map_df: Optional[pd.DataFrame] = None
+        self._merged_cache: dict[str, pd.DataFrame] = {}
 
         logger.info(f"CompetitionDataLoader initialized with data_dir: {self.data_dir}")
+
+    def _merged_cache_get(self, disease: str) -> pd.DataFrame:
+        """Build (once) and return the full merged municipality table."""
+        if disease not in self._merged_cache:
+            base = self.chikungunya_df if disease == "chikungunya" else self.dengue_df
+            if base.empty:
+                raise FileNotFoundError(
+                    f"{disease} data is not available in {self.data_dir}; "
+                    "run 'mosqlimate-ai download-data' first."
+                )
+            merged = self._merge_auxiliary(base)
+            self._merged_cache[disease] = merged
+        return self._merged_cache[disease].copy()
+
+    def _merge_auxiliary(self, df: pd.DataFrame) -> pd.DataFrame:
+        """Merge climate, population and environmental tables into a case table."""
+        if not self.climate_df.empty:
+            climate_cols = [
+                "date",
+                "epiweek",
+                "geocode",
+                "temp_min",
+                "temp_med",
+                "temp_max",
+                "precip_min",
+                "precip_med",
+                "precip_max",
+                "pressure_min",
+                "pressure_med",
+                "pressure_max",
+                "rel_humid_min",
+                "rel_humid_med",
+                "rel_humid_max",
+                "thermal_range",
+                "rainy_days",
+            ]
+            climate_merge = self.climate_df[climate_cols].drop_duplicates(
+                subset=["date", "geocode"]
+            )
+            df = df.merge(climate_merge, on=["date", "geocode", "epiweek"], how="left")
+
+        if not self.population_df.empty:
+            df["year"] = df["date"].dt.year
+            pop_merge = self.population_df[["geocode", "year", "population"]].drop_duplicates(
+                subset=["geocode", "year"]
+            )
+            df = df.merge(pop_merge, on=["geocode", "year"], how="left")
+
+        if not self.environ_df.empty:
+            environ_merge = self.environ_df[["geocode", "koppen", "biome"]].drop_duplicates(
+                subset=["geocode"]
+            )
+            df = df.merge(environ_merge, on=["geocode"], how="left")
+
+        logger.info(f"Merged data shape: {df.shape}")
+        return df
 
     @property
     def dengue_df(self) -> pd.DataFrame:
@@ -120,6 +207,13 @@ class CompetitionDataLoader:
         if self._dengue_df is None:
             self._dengue_df = self._load_dengue_data()
         return self._dengue_df
+
+    @property
+    def chikungunya_df(self) -> pd.DataFrame:
+        """Lazy load chikungunya data."""
+        if self._chikungunya_df is None:
+            self._chikungunya_df = self._load_chikungunya_data()
+        return self._chikungunya_df
 
     @property
     def climate_df(self) -> pd.DataFrame:
@@ -163,27 +257,62 @@ class CompetitionDataLoader:
             self._regional_map_df = self._load_regional_map()
         return self._regional_map_df
 
-    def _load_dengue_data(self) -> pd.DataFrame:
-        """Load dengue cases data."""
-        filepath = self.data_dir / "dengue.csv.gz"
-        if not filepath.exists():
+    def _find_update_files(self, stem_patterns: list[str]) -> list[Path]:
+        """All ``*update*`` files for the given stems, oldest vintage first."""
+        updates: list[Path] = []
+        for pat in stem_patterns:
+            updates.extend(self.data_dir.glob(f"{pat}_updated_*.csv.gz"))
+            updates.extend(self.data_dir.glob(f"{pat}_update_*.csv.gz"))
+        return sorted(set(updates))
+
+    def _load_epiweek_case_data(self, disease: str) -> pd.DataFrame:
+        """Load case data for a disease, merging newer update files when present.
+
+        Args:
+            disease: "dengue" or "chikungunya"
+
+        Returns:
+            DataFrame with date, epiweek, geocode, casos columns
+        """
+        base_path = self.data_dir / f"{disease}.csv.gz"
+        if not base_path.exists():
+            if disease == "chikungunya":
+                warnings.warn(f"Chikungunya data not found at {base_path}")
+                return pd.DataFrame()
             raise FileNotFoundError(
-                f"Dengue data not found at {filepath}. " "Run 'mosqlimate-ai download-data' first."
+                f"{disease} data not found at {base_path}. "
+                "Run 'mosqlimate-ai download-data' first."
             )
 
-        logger.info(f"Loading dengue data from {filepath}")
-        df = pd.read_csv(filepath, compression="gzip")
+        logger.info(f"Loading {disease} data from {base_path}")
+        df = pd.read_csv(base_path, compression="gzip")
+
+        for update_path in self._find_update_files([disease]):
+            logger.info(f"Merging {disease} update file {update_path.name}")
+            update_df = pd.read_csv(update_path, compression="gzip")
+            df = _merge_with_update(df, update_df, key_cols=["date", "geocode"])
 
         df["date"] = pd.to_datetime(df["date"])
         df["epiweek"] = df["epiweek"].astype(int)
         df["geocode"] = df["geocode"].astype(int)
         df["casos"] = df["casos"].fillna(0).astype(int)
+        if "uf_code" in df.columns:
+            # only newer update vintages carry uf_code; keep it nullable
+            df["uf_code"] = df["uf_code"].astype("Int64")
 
-        logger.info(f"Loaded {len(df)} dengue records")
+        logger.info(f"Loaded {len(df)} {disease} records")
         return df
 
+    def _load_dengue_data(self) -> pd.DataFrame:
+        """Load dengue cases data."""
+        return self._load_epiweek_case_data("dengue")
+
+    def _load_chikungunya_data(self) -> pd.DataFrame:
+        """Load chikungunya cases data."""
+        return self._load_epiweek_case_data("chikungunya")
+
     def _load_climate_data(self) -> pd.DataFrame:
-        """Load climate reanalysis data."""
+        """Load climate reanalysis data (merging newer update files when present)."""
         filepath = self.data_dir / "climate.csv.gz"
         if not filepath.exists():
             raise FileNotFoundError(
@@ -193,6 +322,11 @@ class CompetitionDataLoader:
         logger.info(f"Loading climate data from {filepath}")
         df = pd.read_csv(filepath, compression="gzip")
 
+        for update_path in self._find_update_files(["climate"]):
+            logger.info(f"Merging climate update file {update_path.name}")
+            update_df = pd.read_csv(update_path, compression="gzip")
+            df = _merge_with_update(df, update_df, key_cols=["date", "geocode"])
+
         df["date"] = pd.to_datetime(df["date"])
         df["epiweek"] = df["epiweek"].astype(int)
         df["geocode"] = df["geocode"].astype(int)
@@ -201,14 +335,45 @@ class CompetitionDataLoader:
         return df
 
     def _load_climate_forecast_data(self) -> pd.DataFrame:
-        """Load climate forecast data."""
-        filepath = self.data_dir / "climate_forecast.csv.gz"
-        if not filepath.exists():
-            warnings.warn(f"Climate forecast data not found at {filepath}")
+        """Load monthly climate forecast data (ECMWF).
+
+        The 3rd IMDC FTP server publishes this as ``forecasting_climate.csv.gz``
+        (with a ``*_updated_2025`` extension); the 2nd IMDC name was
+        ``climate_forecast.csv.gz``. Both are supported.
+        """
+        candidates = [
+            self.data_dir / "forecasting_climate.csv.gz",
+            self.data_dir / "climate_forecast.csv.gz",
+        ]
+        filepath = next((p for p in candidates if p.exists()), None)
+        if filepath is None:
+            warnings.warn(
+                f"Climate forecast data not found at {self.data_dir} "
+                "(expected forecasting_climate.csv.gz or climate_forecast.csv.gz)"
+            )
             return pd.DataFrame()
 
         logger.info(f"Loading climate forecast data from {filepath}")
         df = pd.read_csv(filepath, compression="gzip")
+
+        update_paths = self._find_update_files(
+            ["forecasting_climate", "climate_forecast"]
+        )
+        for update_path in update_paths:
+            logger.info(f"Merging climate forecast update file {update_path.name}")
+            update_df = pd.read_csv(update_path, compression="gzip")
+            # The 2025+ updates renamed umid_med -> rel_umid_med
+            if "umid_med" not in update_df.columns and "rel_umid_med" in update_df.columns:
+                update_df = update_df.rename(columns={"rel_umid_med": "umid_med"})
+            key = ["geocode", "reference_month"]
+            if "forecast_months_ahead" in df.columns and "forecast_months_ahead" in update_df.columns:
+                # leads are distinct rows; keep all of them
+                key = key + ["forecast_months_ahead"]
+            df = _merge_with_update(df, update_df, key_cols=key)
+
+        # Keep a single humidity column name regardless of source vintage
+        if "umid_med" not in df.columns and "rel_umid_med" in df.columns:
+            df = df.rename(columns={"rel_umid_med": "umid_med"})
 
         df["reference_month"] = pd.to_datetime(df["reference_month"])
         df["geocode"] = df["geocode"].astype(int)
@@ -218,7 +383,10 @@ class CompetitionDataLoader:
 
     def _load_population_data(self) -> pd.DataFrame:
         """Load population data."""
-        filepath = self.data_dir / "datasus_population_2001_2024.csv.gz"
+        filepath_2025 = self.data_dir / "datasus_population_2001_2025.csv.gz"
+        filepath_2024 = self.data_dir / "datasus_population_2001_2024.csv.gz"
+
+        filepath = filepath_2025 if filepath_2025.exists() else filepath_2024
         if not filepath.exists():
             raise FileNotFoundError(
                 f"Population data not found at {filepath}. "
@@ -230,6 +398,19 @@ class CompetitionDataLoader:
 
         df["geocode"] = df["geocode"].astype(int)
         df["year"] = df["year"].astype(int)
+
+        # Forward-fill population up to 2027 so forecast years (2025-2027)
+        # inherit the most recent official estimate instead of NaN/0.
+        latest_year = df["year"].max()
+        if latest_year < 2027:
+            geocodes = df["geocode"].unique()
+            full = pd.MultiIndex.from_product(
+                [geocodes, range(latest_year + 1, 2028)], names=["geocode", "year"]
+            ).to_frame(index=False)
+            df = pd.concat([df, full], ignore_index=True)
+            df = df.sort_values(["geocode", "year"])
+            df["population"] = df.groupby("geocode")["population"].ffill()
+            df = df.dropna(subset=["population"])
 
         logger.info(f"Loaded {len(df)} population records")
         return df
@@ -250,16 +431,65 @@ class CompetitionDataLoader:
         return df
 
     def _load_ocean_data(self) -> pd.DataFrame:
-        """Load ocean climate oscillation data."""
-        filepath = self.data_dir / "ocean_climate_oscillations.csv.gz"
-        if not filepath.exists():
-            warnings.warn(f"Ocean oscillation data not found at {filepath}")
+        """Load ocean climate oscillation data.
+
+        Handles both 2nd IMDC (single file) and 3rd IMDC (separate files)
+        formats. Update files (``*update*.csv.gz``) are revised full
+        series and take precedence over the base combined file.
+        """
+        enso_file = self.data_dir / "enso.csv.gz"
+        iod_file = self.data_dir / "iod.csv.gz"
+        pdo_file = self.data_dir / "pdo.csv.gz"
+        combined_file = self.data_dir / "ocean_climate_oscillations.csv.gz"
+
+        update_files = self._find_update_files(["ocean_climate_oscillations"])
+        if combined_file.exists() or update_files:
+            # Update files are append segments: merge base + updates,
+            # latest values win on duplicate dates.
+            frames = []
+            if combined_file.exists():
+                logger.info(f"Loading ocean oscillation data from {combined_file.name}")
+                frames.append(pd.read_csv(combined_file, compression="gzip"))
+            for update_file in update_files:
+                logger.info(f"Merging ocean oscillation update file {update_file.name}")
+                frames.append(pd.read_csv(update_file, compression="gzip"))
+            df = _merge_with_update(frames[0], pd.concat(frames[1:], ignore_index=True), key_cols=["date"])
+            df["date"] = pd.to_datetime(df["date"])
+            logger.info(f"Loaded {len(df)} ocean oscillation records")
+            return df
+
+        if not enso_file.exists() and not iod_file.exists() and not pdo_file.exists():
+            warnings.warn(f"Ocean oscillation data not found at {self.data_dir}")
             return pd.DataFrame()
 
-        logger.info(f"Loading ocean oscillation data from {filepath}")
-        df = pd.read_csv(filepath, compression="gzip")
+        dfs = []
+        if enso_file.exists():
+            logger.info(f"Loading ENSO data from {enso_file}")
+            enso_df = pd.read_csv(enso_file, compression="gzip")
+            enso_df = enso_df[["date", "enso"]].rename(columns={"enso": "enso"})
+            dfs.append(enso_df)
+
+        if iod_file.exists():
+            logger.info(f"Loading IOD data from {iod_file}")
+            iod_df = pd.read_csv(iod_file, compression="gzip")
+            iod_df = iod_df[["date", "iod"]].rename(columns={"iod": "iod"})
+            dfs.append(iod_df)
+
+        if pdo_file.exists():
+            logger.info(f"Loading PDO data from {pdo_file}")
+            pdo_df = pd.read_csv(pdo_file, compression="gzip")
+            pdo_df = pdo_df[["date", "pdo"]].rename(columns={"pdo": "pdo"})
+            dfs.append(pdo_df)
+
+        if not dfs:
+            return pd.DataFrame()
+
+        df = dfs[0]
+        for other_df in dfs[1:]:
+            df = df.merge(other_df, on="date", how="outer")
 
         df["date"] = pd.to_datetime(df["date"])
+        df = df.sort_values("date").reset_index(drop=True)
 
         logger.info(f"Loaded {len(df)} ocean oscillation records")
         return df
@@ -302,6 +532,7 @@ class CompetitionDataLoader:
         include_climate: bool = True,
         include_population: bool = True,
         include_environmental: bool = True,
+        disease: str = "dengue",
     ) -> pd.DataFrame:
         """Load and merge all data sources.
 
@@ -312,11 +543,15 @@ class CompetitionDataLoader:
             include_climate: Whether to merge climate data
             include_population: Whether to merge population data
             include_environmental: Whether to merge environmental data
+            disease: Which disease cases to load ("dengue" or "chikungunya")
 
         Returns:
             Merged DataFrame with all data sources
         """
-        df = self.dengue_df.copy()
+        if disease == "chikungunya":
+            df = self._merged_cache_get("chikungunya")
+        else:
+            df = self._merged_cache_get("dengue")
 
         if uf:
             df = df[df["uf"] == uf]
@@ -325,44 +560,6 @@ class CompetitionDataLoader:
             df = df[df["date"] >= pd.to_datetime(start_date)]
         if end_date:
             df = df[df["date"] <= pd.to_datetime(end_date)]
-
-        if include_climate and not self.climate_df.empty:
-            climate_cols = [
-                "date",
-                "epiweek",
-                "geocode",
-                "temp_min",
-                "temp_med",
-                "temp_max",
-                "precip_min",
-                "precip_med",
-                "precip_max",
-                "pressure_min",
-                "pressure_med",
-                "pressure_max",
-                "rel_humid_min",
-                "rel_humid_med",
-                "rel_humid_max",
-                "thermal_range",
-                "rainy_days",
-            ]
-            climate_merge = self.climate_df[climate_cols].drop_duplicates(
-                subset=["date", "geocode"]
-            )
-            df = df.merge(climate_merge, on=["date", "geocode", "epiweek"], how="left")
-
-        if include_population and not self.population_df.empty:
-            df["year"] = df["date"].dt.year
-            pop_merge = self.population_df[["geocode", "year", "population"]].drop_duplicates(
-                subset=["geocode", "year"]
-            )
-            df = df.merge(pop_merge, on=["geocode", "year"], how="left")
-
-        if include_environmental and not self.environ_df.empty:
-            environ_merge = self.environ_df[["geocode", "koppen", "biome"]].drop_duplicates(
-                subset=["geocode"]
-            )
-            df = df.merge(environ_merge, on=["geocode"], how="left")
 
         logger.info(f"Merged data shape: {df.shape}")
         return df
@@ -407,12 +604,12 @@ class CompetitionDataLoader:
         if "population" in df.columns:
             agg_dict["population"] = "sum"
 
-        train_cols = ["train_1", "train_2", "train_3"]
+        train_cols = ["train_1", "train_2", "train_3", "train_4"]
         for col in train_cols:
             if col in df.columns:
                 agg_dict[col] = "max"
 
-        target_cols = ["target_1", "target_2", "target_3"]
+        target_cols = ["target_1", "target_2", "target_3", "target_4"]
         for col in target_cols:
             if col in df.columns:
                 agg_dict[col] = "max"
@@ -431,6 +628,7 @@ class CompetitionDataLoader:
         start_date: Optional[str] = None,
         end_date: Optional[str] = None,
         aggregate: bool = True,
+        disease: str = "dengue",
     ) -> pd.DataFrame:
         """Load data for a specific state.
 
@@ -439,11 +637,14 @@ class CompetitionDataLoader:
             start_date: Start date filter
             end_date: End date filter
             aggregate: Whether to aggregate municipalities to state level
+            disease: Which disease cases to load ("dengue" or "chikungunya")
 
         Returns:
             DataFrame for the specified state
         """
-        df = self.load_merged_data(uf=uf, start_date=start_date, end_date=end_date)
+        df = self.load_merged_data(
+            uf=uf, start_date=start_date, end_date=end_date, disease=disease
+        )
 
         if aggregate:
             df = self.aggregate_to_state(df)
@@ -456,32 +657,49 @@ class CompetitionDataLoader:
         start_date: Optional[str] = None,
         end_date: Optional[str] = None,
         aggregate: bool = True,
-    ) -> Dict[str, pd.DataFrame]:
+        disease: str = "dengue",
+    ) -> dict[str, pd.DataFrame]:
         """Load data for all states.
+
+        Aggregates the merged municipality table in a single pass
+        (memory-bounded: no full-table copy).
 
         Args:
             start_date: Start date filter
             end_date: End date filter
             aggregate: Whether to aggregate municipalities to state level
+            disease: Which disease cases to load ("dengue" or "chikungunya")
 
         Returns:
             Dictionary mapping state abbreviations to DataFrames
         """
-        states_data = {}
+        states_data: dict[str, pd.DataFrame] = {}
 
-        df = self.load_merged_data(start_date=start_date, end_date=end_date)
-
-        for uf in df["uf"].unique():
-            uf_df = df[df["uf"] == uf].copy()
-            if aggregate:
-                uf_df = self.aggregate_to_state(uf_df)
-            uf_df = uf_df.sort_values("date").reset_index(drop=True)
-            states_data[uf] = uf_df
+        if aggregate:
+            if disease not in self._merged_cache:
+                base = self.chikungunya_df if disease == "chikungunya" else self.dengue_df
+                self._merged_cache[disease] = self._merge_auxiliary(base)
+            df = self._merged_cache[disease]
+            if start_date:
+                df = df[df["date"] >= pd.to_datetime(start_date)]
+            if end_date:
+                df = df[df["date"] <= pd.to_datetime(end_date)]
+            aggregated = self.aggregate_to_state(df)
+            for uf, group in aggregated.groupby("uf"):
+                states_data[uf] = group.sort_values("date").reset_index(drop=True)
+        else:
+            df = self.load_merged_data(
+                start_date=start_date, end_date=end_date, disease=disease
+            )
+            for uf in df["uf"].unique():
+                uf_df = df[df["uf"] == uf].copy()
+                uf_df = uf_df.sort_values("date").reset_index(drop=True)
+                states_data[uf] = uf_df
 
         logger.info(f"Loaded data for {len(states_data)} states")
         return states_data
 
-    def get_available_states(self) -> List[str]:
+    def get_available_states(self) -> list[str]:
         """Get list of states with available data.
 
         Returns:
@@ -489,7 +707,7 @@ class CompetitionDataLoader:
         """
         return sorted(self.dengue_df["uf"].unique().tolist())
 
-    def get_date_range(self) -> Dict[str, str]:
+    def get_date_range(self) -> dict[str, str]:
         """Get the date range of available data.
 
         Returns:

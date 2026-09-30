@@ -4,12 +4,13 @@ Provides caching functionality for processed features to speed up
 iterative development and model training.
 """
 
+import contextlib
 import hashlib
 import json
 import logging
 import pickle
 from pathlib import Path
-from typing import Any, Optional
+from typing import Optional
 
 import pandas as pd
 
@@ -48,9 +49,9 @@ class FeatureCache:
         """Load cache metadata from disk."""
         if self._metadata_file.exists():
             try:
-                with open(self._metadata_file, "r") as f:
+                with open(self._metadata_file) as f:
                     return json.load(f)
-            except (json.JSONDecodeError, IOError) as e:
+            except (OSError, json.JSONDecodeError) as e:
                 logger.warning(f"Could not load cache metadata: {e}")
                 return {}
         return {}
@@ -60,7 +61,7 @@ class FeatureCache:
         try:
             with open(self._metadata_file, "w") as f:
                 json.dump(self._metadata, f, indent=2)
-        except IOError as e:
+        except OSError as e:
             logger.warning(f"Could not save cache metadata: {e}")
 
     def _compute_data_hash(self, df: pd.DataFrame) -> str:
@@ -187,7 +188,7 @@ class FeatureCache:
             logger.info(f"Cache hit: {cache_key} ({len(cached_df)} rows)")
             return cached_df
 
-        except (pickle.PickleError, IOError) as e:
+        except (OSError, pickle.PickleError) as e:
             logger.warning(f"Could not load cache {cache_key}: {e}")
             return None
 
@@ -223,7 +224,7 @@ class FeatureCache:
 
             logger.info(f"Cached features: {cache_key} ({len(features)} rows)")
 
-        except (pickle.PickleError, IOError) as e:
+        except (OSError, pickle.PickleError) as e:
             logger.warning(f"Could not save cache {cache_key}: {e}")
 
     def get_or_compute(
@@ -297,10 +298,8 @@ class FeatureCache:
         # Clear metadata
         self._metadata = {}
         if self._metadata_file.exists():
-            try:
+            with contextlib.suppress(OSError):
                 self._metadata_file.unlink()
-            except OSError:
-                pass
 
         logger.info(f"Cleared {count} cached feature files")
         return count

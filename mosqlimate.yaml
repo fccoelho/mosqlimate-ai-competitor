@@ -11,10 +11,10 @@ models:
     n_estimators: 500
     max_depth: 6
     learning_rate: 0.05
-    
+
   lstm:
     hidden_size: 128
-    num_layers: 2
+    num_layers: 20
     dropout: 0.2
     epochs: 100
 

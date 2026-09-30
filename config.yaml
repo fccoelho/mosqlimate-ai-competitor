@@ -2,10 +2,11 @@
 # =====================================
 
 competition:
-  name: "Mosqlimate Sprint 2025"
-  forecast_start: "2025-10-05"  # EW 41 2025 (first Sunday)
-  forecast_end: "2026-10-04"    # EW 40 2026
-  train_end: "2025-06-22"       # EW 25 2025
+  name: "Mosqlimate 3rd IMDC 2026"
+  # Final forecast target: 2026-2027 season
+  forecast_start: "2026-10-04"  # EW 41 2026 (first Sunday)
+  forecast_end: "2027-10-03"    # EW 40 2027
+  train_end: "2026-06-21"       # EW 25 2026
   seasons:
     - season: "2022-2023"
       train_end: "2022-06-26"   # EW 25 2022
@@ -19,6 +20,10 @@ competition:
       train_end: "2024-06-23"
       target_start: "2024-10-06"
       target_end: "2025-10-05"
+    - season: "2025-2026"
+      train_end: "2025-06-22"
+      target_start: "2025-10-05"
+      target_end: "2026-10-04"
 
 states:
   - AC  # Acre
@@ -28,7 +33,7 @@ states:
   - BA  # Bahia
   - CE  # Ceará
   - DF  # Distrito Federal
-  - ES  # Espírito Santo (data unavailable)
+  # ES (Espírito Santo) excluded by competition rules
   - GO  # Goiás
   - MA  # Maranhão
   - MT  # Mato Grosso

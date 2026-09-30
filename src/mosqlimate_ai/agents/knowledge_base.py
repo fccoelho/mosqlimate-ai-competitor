@@ -73,7 +73,7 @@ class ValidationResult:
 class HyperparameterConfig:
     """Hyperparameter configuration."""
 
-    model_type: str  # 'xgboost' or 'lstm'
+    model_type: str  # 'xgboost', 'lstm', 'prophet', 'tft', 'nbeats'
     params: Dict[str, Any]
     performance_score: float  # Weighted composite score
     source_state: str
@@ -254,28 +254,28 @@ class CrossStateKnowledgeBase:
 
         Args:
             states: List of state UFs to consider
-            model_type: Type of model ('xgboost' or 'lstm')
+            model_type: Type of model ('xgboost', 'lstm', 'prophet', 'tft', 'nbeats')
             metric: Primary metric for ranking
 
         Returns:
             Dictionary of recommended hyperparameters
         """
         configs = []
+        model_type = model_type.lower()
+
         for state in states:
             if state in self.best_hyperparameters:
                 if model_type in self.best_hyperparameters[state]:
                     configs.append(self.best_hyperparameters[state][model_type])
 
         if not configs:
-            logger.warning(f"No hyperparameter configs found for {states}")
+            logger.debug(f"No hyperparameter configs found for {model_type} in {states}")
             return {}
 
-        # Sort by performance score
         configs.sort(key=lambda c: c.performance_score)
 
-        # Return best config
         best = configs[0]
-        logger.info(f"Best params from {best.source_state}: {best.params}")
+        logger.info(f"Best {model_type} params from {best.source_state}: {best.params}")
         return best.params.copy()
 
     def get_tuning_recommendations(
