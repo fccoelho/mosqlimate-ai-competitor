@@ -9,6 +9,7 @@ import warnings
 from pathlib import Path
 from typing import Optional
 
+import numpy as np
 import pandas as pd
 
 from mosqlimate_ai.data.completeness import warn_missing_weeks
@@ -441,7 +442,9 @@ class CompetitionDataLoader:
 
         Result is cached per state code. When a state code is given, the
         CSV is read in filtered chunks so worker memory stays bounded
-        (the full table is >6M rows / >1.5GB).
+        (the full table is >6M rows / >1.5GB). Prefer
+        :meth:`pop_weighted_climate_forecast`, which needs only one pass
+        over the CSVs for all states.
         """
         key = int(state_code) if state_code is not None else None
         cache = getattr(self, "_cf_state_cache", None)
@@ -493,6 +496,149 @@ class CompetitionDataLoader:
         df["geocode"] = df["geocode"].astype(int)
         cache[key] = df
         return cache[key]
+
+    _CF_WEIGHTED_VARS = ("temp_med", "umid_med", "precip_tot")
+
+    def pop_weighted_climate_forecast(self, uf: str) -> pd.DataFrame:
+        """Population-weighted monthly climate-forecast aggregate for a state.
+
+        Wide frame indexed by issue month with ``<col>_lead<k>`` columns
+        — identical to applying ``future_exog._pop_weighted_monthly_state``
+        to the state's rows — but computed for **all** states in a single
+        streaming pass over the base + update CSVs. The tiny per-state
+        results are cached, so the large CSVs are read once per loader
+        instead of once per state.
+        """
+        if not getattr(self, "_cf_weighted_built", False):
+            self._cf_weighted_cache = self._build_pop_weighted_climate_forecast()
+            self._cf_weighted_built = True
+        state_code = STATE_CODES.get(uf)
+        if state_code is None:
+            return pd.DataFrame()
+        return self._cf_weighted_cache.get(state_code, pd.DataFrame())
+
+    def _build_pop_weighted_climate_forecast(self) -> dict[int, pd.DataFrame]:
+        """Stream the climate-forecast files into per-state weighted means.
+
+        Weighted means only need the sufficient statistics
+        (sum of w*x, sum of w) per (state, issue month, lead), so the
+        full >6M-row table is never held in memory.
+        """
+        keys = ["geocode", "reference_month", "forecast_months_ahead"]
+
+        filepath = next(
+            (
+                p
+                for p in [
+                    self.data_dir / "forecasting_climate.csv.gz",
+                    self.data_dir / "climate_forecast.csv.gz",
+                ]
+                if p.exists()
+            ),
+            None,
+        )
+        update_frames = []
+        for update_path in self._find_update_files(["forecasting_climate", "climate_forecast"]):
+            logger.info(f"Loading climate forecast update file {update_path.name}")
+            update_df = pd.read_csv(update_path, compression="gzip")
+            if "umid_med" not in update_df.columns and "rel_umid_med" in update_df.columns:
+                update_df = update_df.rename(columns={"rel_umid_med": "umid_med"})
+            update_frames.append(update_df)
+        updates = (
+            pd.concat(update_frames, ignore_index=True).drop_duplicates(subset=keys, keep="last")
+            if update_frames
+            else pd.DataFrame()
+        )
+
+        if filepath is None:
+            if updates.empty:
+                return {}
+            logger.info("Building pop-weighted climate forecasts from update files only")
+        else:
+            logger.info(
+                f"Building pop-weighted climate forecasts for all states "
+                f"from {filepath.name} (single pass)"
+            )
+
+        pop = (
+            self.population_df.sort_values("year")
+            .drop_duplicates(subset=["geocode"], keep="last")
+            .set_index("geocode")["population"]
+        )
+
+        var_names = self._CF_WEIGHTED_VARS
+        present_vars: set[str] = set()
+        state_geocodes: dict[int, set] = {}
+        totals: Optional[pd.DataFrame] = None
+
+        def feed(frame: pd.DataFrame) -> None:
+            nonlocal totals
+            cols = keys + [v for v in var_names if v in frame.columns]
+            sub = frame[cols]
+            sub = sub.assign(_state=sub["geocode"] // 100000, _w=sub["geocode"].map(pop))
+            present_vars.update(v for v in var_names if v in frame.columns)
+            for st, codes in sub.groupby("_state")["geocode"].unique().items():
+                state_geocodes.setdefault(int(st), set()).update(codes.tolist())
+
+            tmp = pd.DataFrame(
+                {
+                    "reference_month": sub["reference_month"].values,
+                    "lead": sub["forecast_months_ahead"].values,
+                    "_state": sub["_state"].values,
+                }
+            )
+            for var in var_names:
+                if var not in sub.columns:
+                    continue
+                x = pd.to_numeric(sub[var], errors="coerce")
+                finite = x.notna()
+                known = finite & sub["_w"].notna()
+                tmp[f"wx_{var}"] = (sub["_w"] * x).where(known).values
+                tmp[f"w_{var}"] = sub["_w"].where(known).values
+                tmp[f"sx_{var}"] = x.where(finite & sub["_w"].isna()).values
+                tmp[f"n_{var}"] = (finite & sub["_w"].isna()).values
+            sums = tmp.groupby(["_state", "reference_month", "lead"], sort=False).sum()
+            totals = sums if totals is None else totals.add(sums, fill_value=0)
+
+        if filepath is not None:
+            upd_keys = updates[keys] if not updates.empty else None
+            for chunk in pd.read_csv(filepath, compression="gzip", chunksize=500_000):
+                if upd_keys is not None:
+                    merged = chunk.merge(upd_keys, on=keys, how="left", indicator=True)
+                    chunk = merged[merged["_merge"] == "left_only"].drop(columns="_merge")
+                feed(chunk)
+        if not updates.empty:
+            feed(updates)
+
+        if totals is None or totals.empty:
+            return {}
+
+        # Per-state fallback weight for municipalities missing from the
+        # population table: mean of the state's known weights (1.0 when
+        # none are known) — same rule as _pop_weighted_monthly_state.
+        fill_weight = {}
+        for st, codes in state_geocodes.items():
+            known = pop.reindex(sorted(codes)).dropna()
+            fill_weight[st] = float(known.mean()) if len(known) else 1.0
+
+        results: dict[int, pd.DataFrame] = {}
+        for st in sorted(set(totals.index.get_level_values("_state"))):
+            part = totals.xs(st, level="_state")
+            means = {}
+            for var in sorted(present_vars):
+                num = part[f"wx_{var}"] + fill_weight.get(st, 1.0) * part[f"sx_{var}"]
+                den = part[f"w_{var}"] + fill_weight.get(st, 1.0) * part[f"n_{var}"]
+                means[var] = num.divide(den).replace([np.inf, -np.inf], np.nan)
+            wide = pd.DataFrame(means).unstack("lead")
+            wide.columns = [f"{c}_lead{int(ld)}" for c, ld in wide.columns]
+            wide.index = pd.to_datetime(wide.index)
+            results[int(st)] = wide.sort_index()
+
+        logger.info(
+            f"Built pop-weighted climate forecasts for {len(results)} states "
+            f"({len(totals)} month/lead groups)"
+        )
+        return results
 
     def _load_environmental_data(self) -> pd.DataFrame:
         """Load environmental variables."""

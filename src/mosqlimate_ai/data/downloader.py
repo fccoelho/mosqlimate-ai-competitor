@@ -232,17 +232,31 @@ class DataDownloader:
         return size if size else 0
 
     def _file_exists_and_valid(self, filename: str) -> bool:
-        """Check if local file exists and has correct size."""
+        """Check if local file exists and is complete.
+
+        A local copy is trusted (no re-download) when any of:
+        - it is recorded as *verified complete* in the completeness
+          manifest (written by ``check-data``) and unchanged on disk;
+        - its size matches the remote size;
+        - the remote size is unavailable (server won't report it).
+        """
         local_path = self.cache_dir / filename
         if not local_path.exists():
             return False
 
+        from mosqlimate_ai.data.completeness import file_is_verified
+
+        if file_is_verified(self.cache_dir, filename):
+            return True
+
         try:
             remote_size = self._get_remote_file_size(filename)
+            if not remote_size:
+                return True
             local_size = local_path.stat().st_size
             return local_size == remote_size
         except Exception:
-            return local_path.exists()
+            return True
 
     def download_file(
         self,
@@ -250,6 +264,10 @@ class DataDownloader:
         force: bool = False,
     ) -> Path:
         """Download a single file from FTP server.
+
+        Interrupted transfers leave a ``.tmp`` file behind which is
+        resumed (via FTP REST) on the next attempt instead of
+        restarting the download from byte zero.
 
         Args:
             filename: Name of the file to download.
@@ -262,23 +280,37 @@ class DataDownloader:
             FileNotFoundError: If file doesn't exist on server.
         """
         local_path = self.cache_dir / filename
+        temp_path = local_path.with_suffix(local_path.suffix + ".tmp")
 
         if not force and self._file_exists_and_valid(filename):
+            if temp_path.exists():
+                temp_path.unlink()
             console.print(f"[green]✓[/green] {filename} already cached")
             return local_path
 
         if self._ftp is None:
             self.connect()
 
-        remote_size = self._get_remote_file_size(filename)
+        remote_size = self._get_remote_file_size(filename) or 0
 
+        resume_from = 0
+        if temp_path.exists() and temp_path.stat().st_size:
+            if remote_size and temp_path.stat().st_size > remote_size:
+                temp_path.unlink()  # stale temp from an older, larger remote
+            else:
+                resume_from = temp_path.stat().st_size
+
+        if remote_size and resume_from == remote_size:
+            temp_path.rename(local_path)  # transfer had finished; finalize
+            console.print(f"[green]✓[/green] Resumed {filename} to completion")
+            return local_path
+
+        action = "Resuming" if resume_from else "Downloading"
         console.print(
-            f"[yellow]↓[/yellow] Downloading {filename} ({self._format_size(remote_size)})..."
+            f"[yellow]↓[/yellow] {action} {filename} ({self._format_size(remote_size)})..."
         )
 
-        temp_path = local_path.with_suffix(local_path.suffix + ".tmp")
-
-        with Progress(
+        with open(temp_path, "ab") as temp_fh, Progress(
             SpinnerColumn(),
             TextColumn("[progress.description]{task.description}"),
             BarColumn(),
@@ -287,17 +319,31 @@ class DataDownloader:
             TimeRemainingColumn(),
             console=console,
         ) as progress:
-            task = progress.add_task(filename, total=remote_size)
-            downloaded = [0]
+            task = progress.add_task(filename, total=remote_size or None)
+            downloaded = [resume_from]
+            if resume_from:
+                progress.update(task, completed=resume_from)
 
             def callback(data: bytes) -> None:
-                temp_path.write_bytes(temp_path.read_bytes() + data)
+                temp_fh.write(data)
                 downloaded[0] += len(data)
                 progress.update(task, completed=downloaded[0])
 
-            temp_path.write_bytes(b"")
             assert self._ftp is not None
-            self._ftp.retrbinary(f"RETR {filename}", callback)
+            self._ftp.retrbinary(
+                f"RETR {filename}", callback, rest=resume_from or None
+            )
+
+        if remote_size and temp_path.stat().st_size != remote_size:
+            logger.warning(
+                f"Incomplete download of {filename} "
+                f"({temp_path.stat().st_size}/{remote_size} bytes); "
+                "keeping .tmp for resume on the next attempt"
+            )
+            raise OSError(
+                f"Incomplete download of {filename}: got "
+                f"{temp_path.stat().st_size} of {remote_size} bytes"
+            )
 
         temp_path.rename(local_path)
         console.print(f"[green]✓[/green] Downloaded {filename}")
@@ -327,7 +373,7 @@ class DataDownloader:
             try:
                 path = self.download_file(filename, force=force)
                 results[filename] = path
-                table.add_row(filename, "✓ Downloaded", info["description"])
+                table.add_row(filename, "✓ Ready", info["description"])
             except Exception as e:
                 failed.append(filename)
                 table.add_row(filename, f"✗ Failed: {e}", info["description"])

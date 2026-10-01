@@ -170,14 +170,21 @@ def build_future_exog(
 
     if use_climate_forecast:
         try:
-            cf = loader.climate_forecast_df
-            pop = loader.population_df
-            if not cf.empty:
-                wide = _pop_weighted_monthly_state(cf, pop, uf, STATE_CODES)
-                origin = train_end if train_end is not None else dates.min()
-                weekly = _climate_forecast_weekly(wide, dates, origin)
-                if not weekly.empty and weekly.notna().any().any():
-                    frames.append(weekly.add_prefix("cf_"))
+            if hasattr(loader, "pop_weighted_climate_forecast"):
+                # single streaming pass, cached per state on the loader
+                wide = loader.pop_weighted_climate_forecast(uf)
+            else:
+                cf = loader.climate_forecast_df
+                pop = loader.population_df
+                wide = (
+                    _pop_weighted_monthly_state(cf, pop, uf, STATE_CODES)
+                    if not cf.empty
+                    else pd.DataFrame()
+                )
+            origin = train_end if train_end is not None else dates.min()
+            weekly = _climate_forecast_weekly(wide, dates, origin)
+            if not weekly.empty and weekly.notna().any().any():
+                frames.append(weekly.add_prefix("cf_"))
         except Exception as exc:  # pragma: no cover - defensive
             logger.warning("climate forecast features unavailable for %s: %s", uf, exc)
 
@@ -235,15 +242,19 @@ class ExogLookup:
 
         self.cf_wide_ = None
         try:
-            state_code = STATE_CODES.get(uf)
-            if hasattr(loader, "load_climate_forecast_for_state"):
-                cf = loader.load_climate_forecast_for_state(state_code)
+            if hasattr(loader, "pop_weighted_climate_forecast"):
+                # single streaming pass, cached per state on the loader
+                self.cf_wide_ = loader.pop_weighted_climate_forecast(uf)
             else:
-                cf = loader.climate_forecast_df
-            if cf is not None and not cf.empty:
-                self.cf_wide_ = _pop_weighted_monthly_state(
-                    cf, loader.population_df, uf, STATE_CODES
-                )
+                state_code = STATE_CODES.get(uf)
+                if hasattr(loader, "load_climate_forecast_for_state"):
+                    cf = loader.load_climate_forecast_for_state(state_code)
+                else:
+                    cf = loader.climate_forecast_df
+                if cf is not None and not cf.empty:
+                    self.cf_wide_ = _pop_weighted_monthly_state(
+                        cf, loader.population_df, uf, STATE_CODES
+                    )
         except Exception as exc:  # pragma: no cover - defensive
             logger.warning("climate forecast table unavailable for %s: %s", uf, exc)
 

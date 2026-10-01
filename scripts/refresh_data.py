@@ -51,9 +51,7 @@ def main() -> None:
                 skipped_verified.append(filename)
                 continue
             try:
-                remote_size = downloader._get_remote_file_size(filename)
-                local = downloader.cache_dir / filename
-                if not force and local.exists() and local.stat().st_size == remote_size:
+                if not force and downloader._file_exists_and_valid(filename):
                     logger.info("skip %s: local copy matches remote", filename)
                     skipped_fresh.append(filename)
                     continue
