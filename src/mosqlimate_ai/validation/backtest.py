@@ -42,6 +42,7 @@ def default_model_registry(
     future_exog: Optional[pd.DataFrame] = None,
     params: Optional[Dict] = None,
     include_tft: bool = False,
+    include_timesfm: bool = False,
     exog_lookup=None,
     params_by_model: Optional[Dict[str, Dict]] = None,
 ) -> Dict[str, BaseForecaster]:
@@ -51,6 +52,8 @@ def default_model_registry(
         future_exog: Unused legacy hook (kept for API compatibility).
         params: Base GBM hyperparameters shared by both GBM families.
         include_tft: Add the (slower, GPU) TFT for extra diversity.
+        include_timesfm: Add the zero-shot TimesFM foundation model
+            (downloads a ~500 MB checkpoint on first use).
         exog_lookup: :class:`ExogLookup` for target-time known covariates.
         params_by_model: Optional per-model overrides (merged over
             ``params``). A ``recency_halflife_weeks`` key is routed to
@@ -89,6 +92,10 @@ def default_model_registry(
         from mosqlimate_ai.models.tft_direct import TFTDirectForecaster
 
         registry["tft_direct"] = TFTDirectForecaster(epochs=15)
+    if include_timesfm:
+        from mosqlimate_ai.models.timesfm_forecaster import TimesFMForecaster
+
+        registry["timesfm"] = TimesFMForecaster()
     return registry
 
 
@@ -266,18 +273,27 @@ def run_single_backtest(
 
 _WORKER_LOOKUP_CACHE: Dict[tuple, object] = {}
 _WORKER_PARAMS_CACHE: Dict[tuple, Optional[Dict]] = {}
+_WORKER_LOADER: Optional[object] = None
 
 
 def _worker_lookup(uf: str, train_end) -> object:
     """Worker-local ExogLookup cache (loads the light exogenous sources)."""
+    global _WORKER_LOADER
     from mosqlimate_ai.data.future_exog import ExogLookup
-    from mosqlimate_ai.data.loader import CompetitionDataLoader
 
     key = (uf, str(pd.Timestamp(train_end)))
     if key not in _WORKER_LOOKUP_CACHE:
-        # Light loader: only climate_forecast/ocean/population are touched.
-        loader = CompetitionDataLoader()
-        _WORKER_LOOKUP_CACHE[key] = ExogLookup(loader, uf, train_end=pd.Timestamp(train_end))
+        # One shared light loader per worker process: ocean/population are
+        # global tables (cached on the loader) and climate forecasts are
+        # cached per state, so reusing it avoids re-reading the CSVs for
+        # every (state, window) job.
+        if _WORKER_LOADER is None:
+            from mosqlimate_ai.data.loader import CompetitionDataLoader
+
+            _WORKER_LOADER = CompetitionDataLoader()
+        _WORKER_LOOKUP_CACHE[key] = ExogLookup(
+            _WORKER_LOADER, uf, train_end=pd.Timestamp(train_end)
+        )
     return _WORKER_LOOKUP_CACHE[key]
 
 
@@ -341,6 +357,7 @@ def _test_job(args: tuple) -> dict:
         actual_df,
         calibrate,
         include_tft,
+        include_timesfm,
         booster_n_jobs,
         cache_dir,
     ) = args
@@ -373,6 +390,7 @@ def _test_job(args: tuple) -> dict:
     registry = default_model_registry(
         exog_lookup=lookup,
         include_tft=include_tft,
+        include_timesfm=include_timesfm,
         params=params,
         params_by_model=params_by_model,
     )
@@ -397,20 +415,22 @@ def _prepare_test_job_args(
     test_numbers: list[int] | None = None,
     max_workers: int = 4,
     cache_dir: Path = Path("validation_results/backtest"),
+    loader=None,
+    include_timesfm: bool = False,
 ) -> list[tuple]:
     """Prepare all worker job payloads in the main process.
 
     Keeps only the small per-state aggregated frames; the heavy merged
     municipality caches are released before workers are dispatched.
     """
-    import gc
     import os
 
     from mosqlimate_ai.data.loader import CompetitionDataLoader
 
     booster_n_jobs = max(1, (os.cpu_count() or 8) // max(1, max_workers))
 
-    loader = CompetitionDataLoader()
+    if loader is None:
+        loader = CompetitionDataLoader()
     cfg = get_validation_config()
 
     jobs: List[tuple] = []
@@ -468,14 +488,12 @@ def _prepare_test_job_args(
                         actual_df,
                         calibrate,
                         include_tft,
+                        include_timesfm,
                         booster_n_jobs,
                         str(Path(cache_dir)),
                     )
                 )
 
-    # release the heavy caches before dispatching workers
-    loader._merged_cache.clear()
-    gc.collect()
     return jobs
 
 
@@ -485,20 +503,21 @@ def _prepare_tune_job_args(
     tune_trials: int,
     max_workers: int,
     cache_dir: Path = Path("validation_results/backtest"),
+    loader=None,
 ) -> list[tuple]:
     """One tuning job per (state, disease): uses the earliest test window.
 
     Tuned configurations are cached on disk under
     ``<cache_dir>/hyperparams/`` and reused by the backtest jobs.
     """
-    import gc
     import os
 
     from mosqlimate_ai.data.loader import CompetitionDataLoader
 
     booster_n_jobs = max(1, (os.cpu_count() or 8) // max(1, max_workers))
 
-    loader = CompetitionDataLoader()
+    if loader is None:
+        loader = CompetitionDataLoader()
     cfg = get_validation_config()
 
     tune_jobs: List[tuple] = []
@@ -522,8 +541,6 @@ def _prepare_tune_job_args(
                 (uf, disease, train_df, tune_trials, booster_n_jobs, str(Path(cache_dir)))
             )
 
-    loader._merged_cache.clear()
-    gc.collect()
     return tune_jobs
 
 
@@ -532,6 +549,7 @@ def run_full_pipeline(
     diseases: tuple = ("dengue", "chikungunya"),
     include_final: bool = False,
     include_tft: bool = False,
+    include_timesfm: bool = False,
     calibrate: bool = True,
     max_workers: int = 5,
     out_dir: Path = Path("validation_results/backtest"),
@@ -550,6 +568,8 @@ def run_full_pipeline(
         tune_trials: Per-state random-search trials for the GBM
             hyperparameters (0 = use fixed defaults). Results are cached
             under ``<out_dir>/hyperparams/`` and reused on re-runs.
+        include_timesfm: Add the zero-shot TimesFM foundation model to
+            the registry (checkpoint downloaded on first use).
 """
     if states is None:
         states = get_validation_config().states
@@ -557,9 +577,17 @@ def run_full_pipeline(
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
 
+    # One shared loader: the heavy merged municipality tables are built
+    # once and reused by both prep phases (never rebuilt in between).
+    import gc
+
+    from mosqlimate_ai.data.loader import CompetitionDataLoader
+
+    loader = CompetitionDataLoader()
+
     if tune_trials > 0:
         tune_jobs = _prepare_tune_job_args(
-            states, diseases, tune_trials, max_workers, out_dir
+            states, diseases, tune_trials, max_workers, out_dir, loader=loader
         )
         logger.info("prepared %d tuning jobs (%d trials each)", len(tune_jobs), tune_trials)
         def _tune_failure(job, exc):
@@ -575,9 +603,14 @@ def run_full_pipeline(
         )
 
     jobs = _prepare_test_job_args(
-        states, diseases, include_final, include_tft, calibrate, test_numbers, max_workers, out_dir
+        states, diseases, include_final, include_tft, calibrate, test_numbers, max_workers,
+        out_dir, loader=loader, include_timesfm=include_timesfm,
     )
     logger.info("prepared %d test jobs", len(jobs))
+
+    # release the heavy caches before dispatching workers
+    loader._merged_cache.clear()
+    gc.collect()
 
     by_state: dict[tuple, dict] = {}
     summaries: list[pd.DataFrame] = []

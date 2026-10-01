@@ -1278,6 +1278,12 @@ def validate_cmd(
         help="Per-state GBM hyperparameter tuning trials (0 = fixed defaults; "
         "e.g. --tune 12). Results cached under <output>/hyperparams/.",
     ),
+    timesfm: bool = typer.Option(
+        False,
+        "--timesfm",
+        help="Add the zero-shot TimesFM foundation model to the registry "
+        "(downloads a ~500 MB checkpoint on first use)",
+    ),
     show_logs: bool = typer.Option(
         False,
         "--show-logs",
@@ -1318,11 +1324,14 @@ def validate_cmd(
     console.print(f"[cyan]Diseases: {', '.join(disease_list)}[/cyan]")
     if tune_trials:
         console.print(f"[cyan]Per-state tuning: {tune_trials} trials[/cyan]")
+    if timesfm:
+        console.print("[cyan]TimesFM foundation model: enabled[/cyan]")
 
     combined = run_full_pipeline(
         states=state_list,
         diseases=disease_list,
         include_final=full_pipeline or final_forecast,
+        include_timesfm=timesfm,
         max_workers=max_concurrent,
         out_dir=output,
         test_numbers=test_numbers,

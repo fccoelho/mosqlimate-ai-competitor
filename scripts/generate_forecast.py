@@ -13,7 +13,8 @@ Usage:
     python scripts/generate_forecast.py \
         [--states SP,RJ] [--diseases dengue,chikungunya] \
         [--model ens_qavg] [--cutoff 2026-06-21] \
-        [--out forecasts/final] [--no-calibrate] [--workers 4]
+        [--out forecasts/final] [--no-calibrate] [--workers 4] \
+        [--include-tft] [--timesfm]
 """
 
 import argparse
@@ -75,6 +76,9 @@ def main() -> None:
                     help="Skip conformal recalibration")
     ap.add_argument("--workers", type=int, default=1)
     ap.add_argument("--include-tft", action="store_true")
+    ap.add_argument("--timesfm", action="store_true",
+                    help="Add the zero-shot TimesFM foundation model to the "
+                         "registry (checkpoint downloaded on first use)")
     args = ap.parse_args()
 
     cfg_test = _final_test_config()
@@ -133,6 +137,7 @@ def main() -> None:
             registry = default_model_registry(
                 exog_lookup=lookup,
                 include_tft=args.include_tft,
+                include_timesfm=args.timesfm,
                 params_by_model=params_by_model,
             )
             registry.pop("seas_naive", None)  # ensembles exclude it anyway
