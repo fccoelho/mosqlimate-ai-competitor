@@ -76,6 +76,11 @@ def plot_state_panels(
     state_df = state_df.copy()
     state_df["date"] = pd.to_datetime(state_df["date"])
     observed_all = state_df.set_index("date")["casos"].astype(float)
+    # explicit weekly grid: missing weeks become NaN so matplotlib
+    # BREAKS lines instead of drawing straight connectors across gaps
+    observed_all = observed_all.reindex(
+        pd.date_range(observed_all.index.min(), observed_all.index.max(), freq="7D")
+    )
 
     n = len(tests)
     ncols = 2 if n > 1 else 1

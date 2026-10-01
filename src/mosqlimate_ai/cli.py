@@ -183,6 +183,74 @@ def explore_cmd(
         raise typer.Exit(1) from None
 
 
+@app.command("check-data")
+def check_data_cmd(
+    config: Optional[Path] = config_file_option,
+    states: Optional[str] = typer.Option(
+        None,
+        "--states",
+        "-s",
+        help="Comma-separated state UFs (e.g., SP,RJ). Default: all.",
+    ),
+    diseases: str = typer.Option(
+        "dengue,chikungunya",
+        "--diseases",
+        help="Comma-separated diseases (dengue,chikungunya)",
+    ),
+) -> None:
+    """Verify weekly completeness of the cached case series.
+
+    Reports every missing week per state so data problems are caught
+    before training. Exits with code 1 when gaps are found.
+    """
+    import warnings as _warnings
+
+    from mosqlimate_ai.data.completeness import find_missing_weeks
+
+    loader = CompetitionDataLoader()
+    state_list = [s.strip() for s in states.split(",")] if states else None
+    disease_list = tuple(d.strip() for d in diseases.split(",") if d.strip())
+
+    problems = 0
+    for disease in disease_list:
+        with _warnings.catch_warnings(record=True) as caught:
+            _warnings.simplefilter("always")
+            try:
+                states_data = loader.load_all_states(aggregate=True, disease=disease)
+            except FileNotFoundError as exc:
+                console.print(f"[red]{disease}: {exc}[/red]")
+                problems += 1
+                continue
+        if state_list:
+            states_data = {k: v for k, v in states_data.items() if k in state_list}
+
+        for uf, df in sorted(states_data.items()):
+            missing = find_missing_weeks(df)
+            if missing:
+                problems += 1
+                dates = ", ".join(pd.Timestamp(d).strftime("%Y-%m-%d") for d in missing[:12])
+                more = f" ... +{len(missing) - 12}" if len(missing) > 12 else ""
+                console.print(
+                    f"[red]✗ {uf}/{disease}: {len(missing)} missing weeks: {dates}{more}[/red]"
+                )
+
+    if problems:
+        console.print(
+            f"\n[red]Data completeness check FAILED ({problems} problem(s)). "
+            "Re-download with: mosqlimate-ai download-data --force[/red]"
+        )
+        raise typer.Exit(1)
+
+    # record the verified fingerprints so refresh tooling skips
+    # re-downloading case data that is known-complete
+    from mosqlimate_ai.data.completeness import mark_files_verified
+
+    case_bases = [f"{d}.csv.gz" for d in disease_list if (loader.data_dir / f"{d}.csv.gz").exists()]
+    mark_files_verified(loader.data_dir, case_bases)
+    console.print(f"[green]✓ Data completeness check passed: no missing weeks. "
+                  f"Verified: {', '.join(case_bases)}[/green]")
+
+
 @app.command("cache-info")
 def cache_info_cmd(
     cache_dir: Optional[Path] = typer.Option(

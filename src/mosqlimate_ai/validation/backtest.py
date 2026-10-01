@@ -22,6 +22,7 @@ from typing import Callable, Dict, List, Optional  # noqa: F401 - used in annota
 import numpy as np
 import pandas as pd
 
+from mosqlimate_ai.data.completeness import warn_missing_weeks
 from mosqlimate_ai.data.future_exog import build_future_exog
 from mosqlimate_ai.evaluation.metrics import evaluate_by_horizon, evaluate_forecast
 from mosqlimate_ai.evaluation.quantiles import quantiles_to_intervals
@@ -444,6 +445,20 @@ def _prepare_test_job_args(
                 ]
                 if len(train_df) < 60:
                     continue
+                # completeness gate: warn (never fail) before training so
+                # users know exactly which weeks are missing
+                warn_missing_weeks(
+                    train_df,
+                    f"{uf}/{disease}",
+                    context=f"{test_config.season} TRAINING window (cutoff {test_config.train_end})",
+                    end=test_config.train_end,
+                )
+                warn_missing_weeks(
+                    actual_df,
+                    f"{uf}/{disease}",
+                    context=f"{test_config.season} TARGET window",
+                    start=test_config.target_start,
+                )
                 jobs.append(
                     (
                         uf,

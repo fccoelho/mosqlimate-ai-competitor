@@ -11,6 +11,8 @@ from typing import Optional
 
 import pandas as pd
 
+from mosqlimate_ai.data.completeness import warn_missing_weeks
+
 logger = logging.getLogger(__name__)
 
 DEFAULT_CHALLENGE = "3rd_IMDC"
@@ -39,6 +41,25 @@ def _merge_with_update(base: pd.DataFrame, update: pd.DataFrame, key_cols: list[
     combined = pd.concat([base, update], ignore_index=True)
     combined = combined.drop_duplicates(subset=key_cols, keep="last")
     return combined.sort_values(key_cols).reset_index(drop=True)
+
+
+def reindex_weekly(df: pd.DataFrame, date_col: str = "date") -> pd.DataFrame:
+    """Reindex a state series onto a complete weekly grid.
+
+    Missing weeks become explicit NaN rows (never zero-filled), so
+    downstream lags stay date-aligned and gaps are visible to the user.
+    """
+    if df.empty:
+        return df
+    df = df.copy()
+    df[date_col] = pd.to_datetime(df[date_col])
+    df = df.drop_duplicates(subset=[date_col]).set_index(date_col).sort_index()
+    full = pd.date_range(df.index.min(), df.index.max(), freq="7D")
+    if len(full) == len(df):
+        return df.reset_index()
+    df = df.reindex(full)
+    df.index.name = date_col
+    return df.reset_index()
 
 
 BRAZILIAN_STATES = {
@@ -708,6 +729,15 @@ class CompetitionDataLoader:
             df = self.aggregate_to_state(df)
 
         df = df.sort_values("date").reset_index(drop=True)
+
+        # Reindex to a complete weekly grid: missing weeks become NaN
+        # (never zero-filled), so feature lags stay date-aligned and
+        # gaps are explicit. Completeness is reported to the user.
+        uf_name = f"{uf}/{disease}"
+        df = reindex_weekly(df)
+        warn_missing_weeks(df, uf_name, context="loaded state series")
+
+        logger.info(f"Loaded {uf} data: {len(df)} records")
         return df
 
     def load_all_states(
@@ -744,7 +774,10 @@ class CompetitionDataLoader:
                 df = df[df["date"] <= pd.to_datetime(end_date)]
             aggregated = self.aggregate_to_state(df)
             for uf, group in aggregated.groupby("uf"):
-                states_data[uf] = group.sort_values("date").reset_index(drop=True)
+                g = group.sort_values("date").reset_index(drop=True)
+                g = reindex_weekly(g)
+                warn_missing_weeks(g, f"{uf}/{disease}", context="loaded state series")
+                states_data[uf] = g
         else:
             df = self.load_merged_data(
                 start_date=start_date, end_date=end_date, disease=disease
