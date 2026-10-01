@@ -31,6 +31,13 @@ uv sync            # or: pip install -e .
 mosqlimate-ai download-data
 ```
 
+Complete files are never re-downloaded: a local copy is kept when it
+is verified complete (Step 2), when its size matches the remote file,
+or when the server reports no size. Interrupted transfers resume from
+where they stopped (`*.csv.gz.tmp`) instead of restarting, and partial
+files are only finalized after their size is verified. `--force`
+overrides every skip rule.
+
 Files land in `data/` (FTP: `info.dengue.mat.br/data_imdc_2026`):
 
 | File | Content |
@@ -74,8 +81,9 @@ Policy:
 1. Files recorded as **verified complete** in the manifest are
    **skipped** — the saved version is authoritative while unchanged
    (`skip dengue.csv.gz: verified complete — using saved version`).
+   Plain `download-data` honors the same manifest.
 2. Other files are fetched only when the remote size differs from the
-   local copy.
+   local copy; interrupted transfers resume from their `.tmp` offset.
 3. `--force` overrides everything.
 
 ### Step 3 — (Optional) tune hyperparameters per state
@@ -102,6 +110,9 @@ python scripts/run_backtests.py 4 - 12     # workers, states("-"=all), tune tria
 
 # quick subset
 mosqlimate-ai validate --test 1 --states SP,RJ --diseases dengue
+
+# add the zero-shot TimesFM foundation model to the registry
+mosqlimate-ai validate --full-pipeline --timesfm
 ```
 
 For every state × test, models train **strictly on data up to EW25**
@@ -212,8 +223,8 @@ Scoring: **Weighted Interval Score** (Bracher et al. 2021) on the
 ```
 src/mosqlimate_ai/
 ├── data/
-│   ├── downloader.py        # FTP download / size-checked cache
-│   ├── loader.py            # merge, weekly reindex (gaps -> NaN), state aggregation
+│   ├── downloader.py        # FTP download: resume, verified-manifest/size skip, no redundant fetches
+│   ├── loader.py            # merge, weekly reindex (gaps -> NaN), state aggregation, one-pass climate-forecast aggregates
 │   ├── completeness.py      # missing-week detection, user warnings, verification manifest
 │   ├── future_exog.py       # ExogLookup: ECMWF issue/lead semantics, ENSO/IOD/PDO persistence
 │   ├── features.py          # legacy feature engineering (unused by the pipeline)
@@ -222,6 +233,7 @@ src/mosqlimate_ai/
 │   ├── base.py              # unified interface: fit(df) / predict(horizon) -> q025..q975
 │   ├── gbm_direct.py        # direct multi-horizon XGBoost/LightGBM (log1p target)
 │   ├── tft_direct.py        # Temporal Fusion Transformer, native 9-quantile loss (GPU)
+│   ├── timesfm_forecaster.py # TimesFM 3.0 zero-shot foundation model (shared per-process engine)
 │   ├── baselines.py         # seasonal-naive, flat, log-linear trend
 │   └── ensemble.py, ...     # legacy models (retired from the pipeline)
 ├── evaluation/
@@ -230,7 +242,7 @@ src/mosqlimate_ai/
 │   └── metrics.py           # RMSE/MAE/coverage/... + evaluate_by_horizon
 ├── validation/
 │   ├── config.py            # IMDC calendar (4 tests + final 2026-27)
-│   ├── backtest.py          # deterministic parallel OOS harness
+│   ├── backtest.py          # deterministic parallel OOS harness (shared loaders: each dataset read once per process)
 │   ├── tuning.py            # per-state random-search tuning (cached)
 │   ├── selection.py         # skill-gated per-state model selection
 │   └── report_plots.py      # forecast-vs-observed figures
@@ -247,6 +259,7 @@ src/mosqlimate_ai/
 | `xgb_direct` | Direct multi-horizon XGBoost, log1p target | origin reanalysis + target-time ECMWF/ocean | quantile regression |
 | `lgbm_direct` | Same with LightGBM | same | quantile regression |
 | `tft_direct` | TFT (GPU), 67-step direct | calendar | native 9-quantile loss |
+| `timesfm` | TimesFM 3.0 zero-shot foundation model (opt-in: `--timesfm`; ~500 MB checkpoint on first use) | — | native quantile head (0.1–0.9) interpolated to the 9 IMDC levels, Gaussian tails |
 | `loglin_trend` | Log-linear trend + harmonics | — | Gaussian residual quantiles |
 | `seas_naive` | Seasonal naive (lag 52) | — | additive seasonal error quantiles |
 | `ens_qavg` / `ens_median` | Ensembles of calibrated members | — | averaged |
