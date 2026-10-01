@@ -1,6 +1,6 @@
 # IMDC Validation Report
 
-Generated: 2026-10-01 14:14 · states: 26 · diseases: chikungunya, dengue
+Generated: 2026-10-01 17:24 · states: 26 · diseases: chikungunya, dengue
 
 Metric: Weighted Interval Score (Bracher et al. 2021), lower is better,
 computed weekly over the 52-week target season on conformally
@@ -58,10 +58,10 @@ loglin_trend: 11, ens_median: 6, ens_qavg: 4, seas_naive: 3, lgbm_direct: 1, xgb
 | model        |     wis |   skill_vs_naive |   coverage_50 |
 |:-------------|--------:|-----------------:|--------------:|
 | loglin_trend | 1410.84 |             0.36 |          0.38 |
-| ens_qavg     | 1480.82 |             0.33 |          0.37 |
-| ens_median   | 1543.54 |             0.3  |          0.35 |
-| lgbm_direct  | 1561.67 |             0.29 |          0.34 |
-| xgb_direct   | 1562.33 |             0.29 |          0.34 |
+| ens_qavg     | 1481.12 |             0.33 |          0.37 |
+| ens_median   | 1543.85 |             0.3  |          0.35 |
+| lgbm_direct  | 1561.94 |             0.29 |          0.34 |
+| xgb_direct   | 1563.33 |             0.29 |          0.35 |
 | seas_naive   | 2209.05 |             0    |          0.39 |
 
 ### Best model per state (dengue)
@@ -73,8 +73,8 @@ loglin_trend: 16, ens_qavg: 9, xgb_direct: 1
 
 | state   |      1 |       2 |       3 |       4 |
 |:--------|-------:|--------:|--------:|--------:|
-| AC      |   29.6 |    81   |    55.6 |   106.6 |
-| AL      |  241.8 |   132.4 |    72.6 |    45   |
+| AC      |   29.1 |    86.3 |    57.1 |   104.3 |
+| AL      |  267.3 |   132.1 |    75.2 |    45.8 |
 | AM      |   25.1 |    72.8 |    28.4 |    49.5 |
 | AP      |   12.4 |   192.8 |    70.6 |    61.3 |
 | BA      |  263.6 |  3410.7 |  1610.3 |   468.2 |
