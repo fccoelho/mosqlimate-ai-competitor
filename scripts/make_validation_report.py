@@ -106,6 +106,71 @@ def main() -> None:
                   .round(1)
                   .to_markdown(index=False), ""]
 
+    # tuning summary (from the hyperparameter cache)
+    hp_dir = backtest_dir / "hyperparams"
+    if hp_dir.exists():
+        gains = []
+        for hp in sorted(hp_dir.glob("*.json")):
+            try:
+                data = json.loads(hp.read_text())
+                wis, base = data.get("wis"), data.get("baseline_wis")
+                if wis is None or base is None or not base:
+                    continue
+                gains.append(
+                    {
+                        "state": data.get("state"),
+                        "disease": data.get("disease"),
+                        "model": data.get("model"),
+                        "tuned_wis": round(wis, 2),
+                        "default_wis": round(base, 2),
+                        "gain_pct": round(100 * (1 - wis / base), 1),
+                        "max_depth": (data.get("best_params") or {}).get("max_depth"),
+                        "n_estimators": (data.get("best_params") or {}).get("n_estimators"),
+                    }
+                )
+            except Exception:
+                continue
+        if gains:
+            g = pd.DataFrame(gains)
+            lines += [
+                "## Per-state hyperparameter tuning",
+                "",
+                f"{len(g)} tuned configurations (random search on a held-out "
+                f"67-week window, WIS criterion; cached under `hyperparams/`). "
+                f"Mean gain over defaults: {g.gain_pct.mean():.1f}%; "
+                f"tuning improved WIS for {(g.gain_pct > 0).sum()}/{len(g)} configs.",
+                "",
+                g.sort_values("gain_pct", ascending=False)
+                .head(20)
+                .to_markdown(index=False),
+                "",
+            ]
+
+    # prediction-vs-observed plots (selected model per state)
+    try:
+        from mosqlimate_ai.data.loader import CompetitionDataLoader
+        from mosqlimate_ai.validation.report_plots import generate_all_plots
+
+        loader = CompetitionDataLoader()
+        embedded = generate_all_plots(backtest_dir, loader)
+    except Exception as exc:
+        embedded = {}
+        print(f"plot generation failed: {exc}")
+
+    if embedded:
+        lines += [
+            "## Forecasts vs observed",
+            "",
+            "Per-state panels: observed training tail, the selected model's",
+            "calibrated median with 50%/95% bands, the 15-week unobserved gap",
+            "(shaded), and the observed target season. WIS shown per panel",
+            "when the season has observed data.",
+            "",
+        ]
+        for key in sorted(embedded):
+            uf, disease = key.split("/")
+            lines += [f"### {uf} — {disease}", "", f"![{key}]({embedded[key]})", ""]
+
     out_path.write_text("\n".join(lines))
     print(f"Report written to {out_path}")
     print("\n".join(lines[:40]))

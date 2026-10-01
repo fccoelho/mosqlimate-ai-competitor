@@ -1,0 +1,28 @@
+{
+  "state": "AL",
+  "disease": "dengue",
+  "model": "xgb_direct",
+  "best_params": {
+    "n_estimators": 246,
+    "max_depth": 3,
+    "learning_rate": 0.04053151717980641,
+    "min_child_weight": 10.0,
+    "subsample": 0.943439167964553,
+    "colsample_bytree": 0.8789472116237456,
+    "recency_halflife_weeks": null
+  },
+  "wis": 273.61984296639764,
+  "baseline_wis": 373.5462546529659,
+  "n_trials": 8,
+  "trials_wis": [
+    373.5462546529659,
+    273.61984296639764,
+    343.98849089458014,
+    375.2924261475084,
+    319.6983803314158,
+    337.82607093189483,
+    368.6236418484455,
+    357.472485252004,
+    364.1997198768318
+  ]
+}

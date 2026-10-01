@@ -415,6 +415,64 @@ class CompetitionDataLoader:
         logger.info(f"Loaded {len(df)} population records")
         return df
 
+    def load_climate_forecast_for_state(self, state_code: Optional[int] = None) -> pd.DataFrame:
+        """Climate forecast rows for one state (or all when ``state_code`` is None).
+
+        Result is cached per state code. When a state code is given, the
+        CSV is read in filtered chunks so worker memory stays bounded
+        (the full table is >6M rows / >1.5GB).
+        """
+        key = int(state_code) if state_code is not None else None
+        cache = getattr(self, "_cf_state_cache", None)
+        if cache is None:
+            cache = self._cf_state_cache = {}
+        if key in cache:
+            return cache[key]
+
+        if key is None:
+            cache[key] = self.climate_forecast_df
+            return cache[key]
+
+        filepath = next(
+            (
+                p
+                for p in [
+                    self.data_dir / "forecasting_climate.csv.gz",
+                    self.data_dir / "climate_forecast.csv.gz",
+                ]
+                if p.exists()
+            ),
+            None,
+        )
+        if filepath is None:
+            cache[key] = pd.DataFrame()
+            return cache[key]
+
+        chunks = []
+        for chunk in pd.read_csv(filepath, compression="gzip", chunksize=500_000):
+            sel = chunk[chunk["geocode"] // 100000 == key]
+            if len(sel):
+                chunks.append(sel)
+        df = pd.concat(chunks, ignore_index=True) if chunks else pd.DataFrame()
+
+        for update_path in self._find_update_files(["forecasting_climate", "climate_forecast"]):
+            update_df = pd.read_csv(update_path, compression="gzip")
+            if "umid_med" not in update_df.columns and "rel_umid_med" in update_df.columns:
+                update_df = update_df.rename(columns={"rel_umid_med": "umid_med"})
+            update_df = update_df[update_df["geocode"] // 100000 == key]
+            df = _merge_with_update(
+                df,
+                update_df,
+                key_cols=["geocode", "reference_month", "forecast_months_ahead"],
+            )
+
+        if "umid_med" not in df.columns and "rel_umid_med" in df.columns:
+            df = df.rename(columns={"rel_umid_med": "umid_med"})
+        df["reference_month"] = pd.to_datetime(df["reference_month"])
+        df["geocode"] = df["geocode"].astype(int)
+        cache[key] = df
+        return cache[key]
+
     def _load_environmental_data(self) -> pd.DataFrame:
         """Load environmental variables."""
         filepath = self.data_dir / "environ_vars.csv.gz"

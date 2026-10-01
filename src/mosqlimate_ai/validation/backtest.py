@@ -3,7 +3,7 @@
 Implements the IMDC validation protocol without the legacy LLM-agent
 layer: for each state, disease and validation test, models are trained
 strictly on data up to EW25 of the training year and asked for a 67-week
-probabilistic forecast (16-week gap + 52 target weeks). Metrics are
+probabilistic forecast (15-week gap + 52 target weeks). Metrics are
 computed on the full target window (EW41..EW40) with the official
 Weighted Interval Score.
 
@@ -12,14 +12,12 @@ Results are plain dictionaries / parquet files; no agent chatter.
 
 from __future__ import annotations
 
-from typing import Dict, List, Optional  # noqa: F401 - used in annotations
-
 import json
 import logging
 import time
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from pathlib import Path
-from typing import Callable
+from typing import Callable, Dict, List, Optional  # noqa: F401 - used in annotations
 
 import numpy as np
 import pandas as pd
@@ -44,14 +42,18 @@ def default_model_registry(
     params: Optional[Dict] = None,
     include_tft: bool = False,
     exog_lookup=None,
+    params_by_model: Optional[Dict[str, Dict]] = None,
 ) -> Dict[str, BaseForecaster]:
     """Default model zoo for backtests (each entry is an unfitted forecaster).
 
     Args:
         future_exog: Unused legacy hook (kept for API compatibility).
-        params: GBM hyperparameters.
+        params: Base GBM hyperparameters shared by both GBM families.
         include_tft: Add the (slower, GPU) TFT for extra diversity.
         exog_lookup: :class:`ExogLookup` for target-time known covariates.
+        params_by_model: Optional per-model overrides (merged over
+            ``params``). A ``recency_halflife_weeks`` key is routed to
+            the forecaster constructor instead of the booster config.
     """
     from mosqlimate_ai.models.baselines import (
         LogLinearTrendForecaster,
@@ -62,16 +64,23 @@ def default_model_registry(
         XGBoostDirectForecaster,
     )
 
-    params = params or {}
+    base = {"n_estimators": 500, "max_depth": 5, "learning_rate": 0.05}
+    base.update(params or {})
+    overrides = params_by_model or {}
+
+    def _build(family: str, ctor) -> BaseForecaster:
+        cfg = dict(base)
+        cfg.update(overrides.get(family, {}))
+        halflife = cfg.pop("recency_halflife_weeks", 104)
+        return ctor(
+            exog_lookup=exog_lookup,
+            recency_halflife_weeks=None if halflife in (0, "none") else halflife,
+            params=cfg,
+        )
+
     registry = {
-        "xgb_direct": XGBoostDirectForecaster(
-            exog_lookup=exog_lookup,
-            params={"n_estimators": 500, "max_depth": 5, "learning_rate": 0.05, **params},
-        ),
-        "lgbm_direct": LightGBMDirectForecaster(
-            exog_lookup=exog_lookup,
-            params={"n_estimators": 500, "max_depth": 5, "learning_rate": 0.05, **params},
-        ),
+        "xgb_direct": _build("xgb_direct", XGBoostDirectForecaster),
+        "lgbm_direct": _build("lgbm_direct", LightGBMDirectForecaster),
         "seas_naive": SeasonalNaiveForecaster(),
         "loglin_trend": LogLinearTrendForecaster(),
     }
@@ -255,6 +264,65 @@ def run_single_backtest(
 
 
 _WORKER_LOOKUP_CACHE: Dict[tuple, object] = {}
+_WORKER_PARAMS_CACHE: Dict[tuple, Optional[Dict]] = {}
+
+
+def _worker_lookup(uf: str, train_end) -> object:
+    """Worker-local ExogLookup cache (loads the light exogenous sources)."""
+    from mosqlimate_ai.data.future_exog import ExogLookup
+    from mosqlimate_ai.data.loader import CompetitionDataLoader
+
+    key = (uf, str(pd.Timestamp(train_end)))
+    if key not in _WORKER_LOOKUP_CACHE:
+        # Light loader: only climate_forecast/ocean/population are touched.
+        loader = CompetitionDataLoader()
+        _WORKER_LOOKUP_CACHE[key] = ExogLookup(loader, uf, train_end=pd.Timestamp(train_end))
+    return _WORKER_LOOKUP_CACHE[key]
+
+
+def _tune_job(args: tuple) -> Dict:
+    """Worker entry point: tune one (state, disease) GBM pair.
+
+    Results are written to the on-disk cache; returns a small summary.
+    """
+    uf, disease, train_df, n_trials, booster_n_jobs, cache_dir = args
+
+    from mosqlimate_ai.models.gbm_direct import (
+        LightGBMDirectForecaster,
+        XGBoostDirectForecaster,
+    )
+    from mosqlimate_ai.validation.tuning import tune_all_cached
+
+    lookup = _worker_lookup(uf, train_df["date"].max())
+
+    def factory(family_ctor):
+        def build(params: Dict):
+            cfg = dict(params)
+            # keep every worker inside its thread budget: the search-space
+            # configs do not carry thread settings of their own
+            cfg.setdefault("thread_budget", max(1, int(booster_n_jobs)))
+            halflife = cfg.pop("recency_halflife_weeks", 104)
+            return family_ctor(
+                exog_lookup=lookup,
+                recency_halflife_weeks=None if halflife in (0, "none") else halflife,
+                params=cfg,
+            )
+
+        return build
+
+    params_map = tune_all_cached(
+        Path(cache_dir),
+        uf,
+        disease,
+        {
+            "xgb_direct": factory(XGBoostDirectForecaster),
+            "lgbm_direct": factory(LightGBMDirectForecaster),
+        },
+        train_df,
+        n_trials=n_trials,
+        booster_n_jobs=max(1, int(booster_n_jobs)),
+    )
+    return {"state": uf, "disease": disease, "params": params_map}
 
 
 def _test_job(args: tuple) -> dict:
@@ -262,23 +330,39 @@ def _test_job(args: tuple) -> dict:
 
     Receives small per-split frames prepared by the main process so that
     workers never hold the full municipality tables (memory-bounded).
-    The worker builds its own :class:`ExogLookup` from the light exogenous
-    sources (climate forecasts, ocean, population) only, cached across
-    the jobs it processes.
+    Applies cached per-state tuned hyperparameters when available.
     """
-    uf, test_config, disease, train_df, actual_df, calibrate, include_tft, booster_n_jobs = args
+    (
+        uf,
+        test_config,
+        disease,
+        train_df,
+        actual_df,
+        calibrate,
+        include_tft,
+        booster_n_jobs,
+        cache_dir,
+    ) = args
 
-    from mosqlimate_ai.data.future_exog import ExogLookup
-    from mosqlimate_ai.data.loader import CompetitionDataLoader
+    lookup = _worker_lookup(uf, test_config.train_end)
 
-    cache_key = (uf, str(test_config.train_end))
-    if cache_key not in _WORKER_LOOKUP_CACHE:
-        # Light loader: only climate_forecast/ocean/population are touched.
-        loader = CompetitionDataLoader()
-        _WORKER_LOOKUP_CACHE[cache_key] = ExogLookup(
-            loader, uf, train_end=pd.Timestamp(test_config.train_end)
-        )
-    lookup = _WORKER_LOOKUP_CACHE[cache_key]
+    cache_key = (uf, disease)
+    if cache_key not in _WORKER_PARAMS_CACHE:
+        from mosqlimate_ai.validation.tuning import DEFAULT_PARAMS, load_cached_params
+
+        per_model: Dict[str, Dict] = {}
+        for family in ("xgb_direct", "lgbm_direct"):
+            cached = load_cached_params(Path(cache_dir), uf, disease, family)
+            if cached:
+                tuned = dict(cached)
+                hl = tuned.pop(
+                    "recency_halflife_weeks", DEFAULT_PARAMS["recency_halflife_weeks"]
+                )
+                tuned.setdefault("n_estimators", DEFAULT_PARAMS["n_estimators"])
+                tuned["recency_halflife_weeks"] = hl
+                per_model[family] = tuned
+        _WORKER_PARAMS_CACHE[cache_key] = per_model or None
+    params_by_model = _WORKER_PARAMS_CACHE[cache_key]
 
     # Per-worker thread budget computed at job-prep time
     # (total cores / number of workers), so all workers together exactly
@@ -286,7 +370,10 @@ def _test_job(args: tuple) -> dict:
     thread_budget = max(1, int(booster_n_jobs))
     params = {"thread_budget": thread_budget}
     registry = default_model_registry(
-        exog_lookup=lookup, include_tft=include_tft, params=params
+        exog_lookup=lookup,
+        include_tft=include_tft,
+        params=params,
+        params_by_model=params_by_model,
     )
     return run_single_backtest(
         uf,
@@ -308,6 +395,7 @@ def _prepare_test_job_args(
     calibrate: bool,
     test_numbers: list[int] | None = None,
     max_workers: int = 4,
+    cache_dir: Path = Path("validation_results/backtest"),
 ) -> list[tuple]:
     """Prepare all worker job payloads in the main process.
 
@@ -366,6 +454,7 @@ def _prepare_test_job_args(
                         calibrate,
                         include_tft,
                         booster_n_jobs,
+                        str(Path(cache_dir)),
                     )
                 )
 
@@ -373,6 +462,54 @@ def _prepare_test_job_args(
     loader._merged_cache.clear()
     gc.collect()
     return jobs
+
+
+def _prepare_tune_job_args(
+    states: list[str],
+    diseases: tuple,
+    tune_trials: int,
+    max_workers: int,
+    cache_dir: Path = Path("validation_results/backtest"),
+) -> list[tuple]:
+    """One tuning job per (state, disease): uses the earliest test window.
+
+    Tuned configurations are cached on disk under
+    ``<cache_dir>/hyperparams/`` and reused by the backtest jobs.
+    """
+    import gc
+    import os
+
+    from mosqlimate_ai.data.loader import CompetitionDataLoader
+
+    booster_n_jobs = max(1, (os.cpu_count() or 8) // max(1, max_workers))
+
+    loader = CompetitionDataLoader()
+    cfg = get_validation_config()
+
+    tune_jobs: List[tuple] = []
+    for disease in diseases:
+        try:
+            states_data = loader.load_all_states(aggregate=True, disease=disease)
+        except FileNotFoundError:
+            logger.warning("skipping %s tuning: data unavailable", disease)
+            continue
+
+        first_train_end = cfg.validation_tests[0].train_end
+        for uf in states:
+            if uf not in states_data or uf not in cfg.states:
+                continue
+            state_df = states_data[uf]
+            state_df["date"] = pd.to_datetime(state_df["date"])
+            train_df = state_df[state_df["date"] <= pd.Timestamp(first_train_end)]
+            if len(train_df) < 60:
+                continue
+            tune_jobs.append(
+                (uf, disease, train_df, tune_trials, booster_n_jobs, str(Path(cache_dir)))
+            )
+
+    loader._merged_cache.clear()
+    gc.collect()
+    return tune_jobs
 
 
 def run_full_pipeline(
@@ -384,6 +521,7 @@ def run_full_pipeline(
     max_workers: int = 5,
     out_dir: Path = Path("validation_results/backtest"),
     test_numbers: list[int] | None = None,
+    tune_trials: int = 0,
 ) -> pd.DataFrame:
     """Backtest all states and diseases with process-level parallelism.
 
@@ -394,17 +532,37 @@ def run_full_pipeline(
     Args:
         test_numbers: Restrict to these test numbers (1..4 validation,
             5 = final forecast).
+        tune_trials: Per-state random-search trials for the GBM
+            hyperparameters (0 = use fixed defaults). Results are cached
+            under ``<out_dir>/hyperparams/`` and reused on re-runs.
 """
     if states is None:
         states = get_validation_config().states
 
-    jobs = _prepare_test_job_args(
-        states, diseases, include_final, include_tft, calibrate, test_numbers, max_workers
-    )
-    logger.info("prepared %d test jobs", len(jobs))
-
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
+
+    if tune_trials > 0:
+        tune_jobs = _prepare_tune_job_args(
+            states, diseases, tune_trials, max_workers, out_dir
+        )
+        logger.info("prepared %d tuning jobs (%d trials each)", len(tune_jobs), tune_trials)
+        def _tune_failure(job, exc):
+            logger.error("tuning job failed: %s/%s -> %s: %s",
+                         job[0], job[1], type(exc).__name__, exc)
+
+        _run_jobs(
+            _tune_job,
+            tune_jobs,
+            max_workers,
+            lambda job, result: logger.info("tuned %s/%s", job[0], job[1]),
+            _tune_failure,
+        )
+
+    jobs = _prepare_test_job_args(
+        states, diseases, include_final, include_tft, calibrate, test_numbers, max_workers, out_dir
+    )
+    logger.info("prepared %d test jobs", len(jobs))
 
     by_state: dict[tuple, dict] = {}
     summaries: list[pd.DataFrame] = []
@@ -413,26 +571,13 @@ def run_full_pipeline(
         key = (job[0], job[2])
         expected_counts[key] = expected_counts.get(key, 0) + 1
 
-    if max_workers <= 1:
-        results = (_test_job(job) for job in jobs)
-        for job, result in zip(jobs, results):
-            _collect_result(job, result, by_state, summaries, out_dir, expected_counts)
-    else:
-        # "spawn" is essential: forked workers inherit OpenMP/XGBoost
-        # thread state and deadlock on the first booster fit.
-        import multiprocessing as mp
+    def on_result(job, result):
+        _collect_result(job, result, by_state, summaries, out_dir, expected_counts)
 
-        ctx = mp.get_context("spawn")
-        with ProcessPoolExecutor(max_workers=max_workers, mp_context=ctx) as pool:
-            futures = {pool.submit(_test_job, job): job for job in jobs}
-            for future in as_completed(futures):
-                job = futures[future]
-                try:
-                    result = future.result()
-                except Exception:
-                    logger.exception("test job failed: %s/%s/%s", job[0], job[2], job[1].season)
-                    continue
-                _collect_result(job, result, by_state, summaries, out_dir, expected_counts)
+    def on_test_failure(job, result):
+        logger.error("test job failed: %s/%s/%s", job[0], job[2], job[1].season)
+
+    _run_jobs(_test_job, jobs, max_workers, on_result, on_test_failure)
 
     # persist any states whose jobs did not all complete
     for key, entry in list(by_state.items()):
@@ -445,6 +590,36 @@ def run_full_pipeline(
     combined = pd.concat(summaries, ignore_index=True) if summaries else pd.DataFrame()
     combined.to_csv(out_dir / "summary.csv", index=False)
     return combined
+
+
+def _run_jobs(fn, jobs, max_workers, on_success, on_failure) -> None:
+    """Dispatch jobs through a spawn-context process pool (or serially)."""
+    if max_workers <= 1:
+        for job in jobs:
+            try:
+                result = fn(job)
+            except Exception as exc:
+                logger.exception("job failed: %s", job[:2])
+                on_failure(job, exc)
+                continue
+            on_success(job, result)
+        return
+
+    # "spawn" is essential: forked workers inherit OpenMP/XGBoost
+    # thread state and deadlock on the first booster fit.
+    import multiprocessing as mp
+
+    ctx = mp.get_context("spawn")
+    with ProcessPoolExecutor(max_workers=max_workers, mp_context=ctx) as pool:
+        futures = {pool.submit(fn, job): job for job in jobs}
+        for future in as_completed(futures):
+            job = futures[future]
+            try:
+                result = future.result()
+            except Exception as exc:
+                on_failure(job, exc)
+                continue
+            on_success(job, result)
 
 
 def _collect_result(job, result, by_state, summaries, out_dir, expected_counts) -> None:

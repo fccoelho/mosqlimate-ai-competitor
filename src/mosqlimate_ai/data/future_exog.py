@@ -235,7 +235,11 @@ class ExogLookup:
 
         self.cf_wide_ = None
         try:
-            cf = loader.climate_forecast_df
+            state_code = STATE_CODES.get(uf)
+            if hasattr(loader, "load_climate_forecast_for_state"):
+                cf = loader.load_climate_forecast_for_state(state_code)
+            else:
+                cf = loader.climate_forecast_df
             if cf is not None and not cf.empty:
                 self.cf_wide_ = _pop_weighted_monthly_state(
                     cf, loader.population_df, uf, STATE_CODES

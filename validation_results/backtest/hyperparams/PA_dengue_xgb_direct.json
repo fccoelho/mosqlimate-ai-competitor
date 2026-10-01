@@ -1,0 +1,28 @@
+{
+  "state": "PA",
+  "disease": "dengue",
+  "model": "xgb_direct",
+  "best_params": {
+    "n_estimators": 246,
+    "max_depth": 3,
+    "learning_rate": 0.04053151717980641,
+    "min_child_weight": 10.0,
+    "subsample": 0.943439167964553,
+    "colsample_bytree": 0.8789472116237456,
+    "recency_halflife_weeks": null
+  },
+  "wis": 36.613488481412475,
+  "baseline_wis": 50.33190847827032,
+  "n_trials": 8,
+  "trials_wis": [
+    50.33190847827032,
+    36.613488481412475,
+    49.0291354721063,
+    48.83764524499377,
+    39.082703167328596,
+    41.92813518525752,
+    48.893765114551755,
+    47.3343140727845,
+    47.8881073218673
+  ]
+}

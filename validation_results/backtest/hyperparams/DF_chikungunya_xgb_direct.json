@@ -1,0 +1,28 @@
+{
+  "state": "DF",
+  "disease": "chikungunya",
+  "model": "xgb_direct",
+  "best_params": {
+    "n_estimators": 246,
+    "max_depth": 3,
+    "learning_rate": 0.04053151717980641,
+    "min_child_weight": 10.0,
+    "subsample": 0.943439167964553,
+    "colsample_bytree": 0.8789472116237456,
+    "recency_halflife_weeks": null
+  },
+  "wis": 8.594139496535872,
+  "baseline_wis": 10.175125698182987,
+  "n_trials": 8,
+  "trials_wis": [
+    10.175125698182987,
+    8.594139496535872,
+    9.249767930292062,
+    9.874682858598282,
+    9.603404521680192,
+    9.727685647571667,
+    10.174114052641203,
+    9.636095642776834,
+    9.700257875871957
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "state": "RJ",
+  "disease": "chikungunya",
+  "model": "xgb_direct",
+  "best_params": {
+    "n_estimators": 275,
+    "max_depth": 7,
+    "learning_rate": 0.03632508943782578,
+    "min_child_weight": 5.0,
+    "subsample": 0.9707059955394407,
+    "colsample_bytree": 0.8575460480322659,
+    "recency_halflife_weeks": 52
+  },
+  "wis": 9.904298586394656,
+  "baseline_wis": 11.475299400239443,
+  "n_trials": 8,
+  "trials_wis": [
+    11.475299400239443,
+    41.53893300694217,
+    16.13748352258756,
+    9.904298586394656,
+    22.236247811428157,
+    17.63239635824169,
+    13.263182542197544,
+    12.429399308577107,
+    10.562324779089018
+  ]
+}

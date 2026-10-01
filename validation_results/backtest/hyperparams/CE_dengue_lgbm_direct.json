@@ -1,0 +1,28 @@
+{
+  "state": "CE",
+  "disease": "dengue",
+  "model": "lgbm_direct",
+  "best_params": {
+    "n_estimators": 246,
+    "max_depth": 3,
+    "learning_rate": 0.04053151717980641,
+    "min_child_weight": 10.0,
+    "subsample": 0.943439167964553,
+    "colsample_bytree": 0.8789472116237456,
+    "recency_halflife_weeks": null
+  },
+  "wis": 360.0240835324889,
+  "baseline_wis": 558.1156699070744,
+  "n_trials": 8,
+  "trials_wis": [
+    558.1156699070744,
+    360.0240835324889,
+    486.8841276018865,
+    557.8537624118694,
+    427.9110514763348,
+    429.179315306495,
+    508.57181980004145,
+    544.8078520953218,
+    570.6638919566778
+  ]
+}

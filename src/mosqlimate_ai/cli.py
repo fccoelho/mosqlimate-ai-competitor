@@ -1204,6 +1204,12 @@ def validate_cmd(
         "--max-concurrent",
         help="Maximum concurrent worker processes",
     ),
+    tune_trials: int = typer.Option(
+        0,
+        "--tune",
+        help="Per-state GBM hyperparameter tuning trials (0 = fixed defaults; "
+        "e.g. --tune 12). Results cached under <output>/hyperparams/.",
+    ),
     show_logs: bool = typer.Option(
         False,
         "--show-logs",
@@ -1218,9 +1224,9 @@ def validate_cmd(
     """Run the deterministic out-of-sample validation pipeline.
 
     For each state and validation test, models are trained strictly on
-    data up to EW25 and forecast the full 52-week target season with
-    conformally calibrated quantiles. Results (WIS-based) are saved to
-    the output directory.
+    data up to EW25 and asked for the full 52-week target-season
+    forecast with conformally calibrated quantiles. Results (WIS-based)
+    are saved to the output directory.
     """
     from mosqlimate_ai.validation.backtest import run_full_pipeline
 
@@ -1242,6 +1248,8 @@ def validate_cmd(
     if state_list:
         console.print(f"[cyan]States: {', '.join(state_list)}[/cyan]")
     console.print(f"[cyan]Diseases: {', '.join(disease_list)}[/cyan]")
+    if tune_trials:
+        console.print(f"[cyan]Per-state tuning: {tune_trials} trials[/cyan]")
 
     combined = run_full_pipeline(
         states=state_list,
@@ -1250,6 +1258,7 @@ def validate_cmd(
         max_workers=max_concurrent,
         out_dir=output,
         test_numbers=test_numbers,
+        tune_trials=tune_trials,
     )
 
     if combined.empty:

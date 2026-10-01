@@ -1,0 +1,28 @@
+{
+  "state": "AM",
+  "disease": "chikungunya",
+  "model": "lgbm_direct",
+  "best_params": {
+    "n_estimators": 246,
+    "max_depth": 3,
+    "learning_rate": 0.04053151717980641,
+    "min_child_weight": 10.0,
+    "subsample": 0.943439167964553,
+    "colsample_bytree": 0.8789472116237456,
+    "recency_halflife_weeks": null
+  },
+  "wis": 2.136031322310627,
+  "baseline_wis": 2.860810637922332,
+  "n_trials": 8,
+  "trials_wis": [
+    2.860810637922332,
+    2.136031322310627,
+    2.5076713980568353,
+    2.659445730803858,
+    2.3302940844642848,
+    2.4471316935852316,
+    2.634041394528502,
+    2.6658458898135726,
+    2.6755365884676183
+  ]
+}
