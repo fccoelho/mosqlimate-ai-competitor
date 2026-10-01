@@ -27,8 +27,11 @@ class LSTMModel:
         hidden_size: LSTM hidden dimension
         num_layers: Number of LSTM layers
         dropout: Dropout rate (used at inference for MC Dropout)
-        output_size: Number of output neurons (1 for single step)
-        quantiles: Quantiles to estimate
+        output_size: Output neurons per sequence. The training path is
+            strictly one-step-ahead (each input window predicts the next
+            value), so this must be 1; kept as a parameter only for
+            backward compatibility with saved configs.
+        quantiles: Quantiles to estimate (fractions in [0, 1])
         learning_rate: Learning rate
         batch_size: Batch size
         epochs: Maximum training epochs
@@ -46,7 +49,7 @@ class LSTMModel:
         hidden_size: int = 128,
         num_layers: int = 8,
         dropout: float = 0.2,
-        output_size: int = 52,
+        output_size: int = 1,
         quantiles: Optional[list[float]] = None,
         learning_rate: float = 0.001,
         batch_size: int = 32,
@@ -56,12 +59,12 @@ class LSTMModel:
         mc_samples: int = 100,
     ):
         if quantiles is None:
-            quantiles = [25, 50, 75.0]
+            quantiles = QUANTILES
         self.hidden_size = hidden_size
         self.num_layers = num_layers
         self.dropout = dropout
         self.output_size = output_size
-        self.quantiles = quantiles or QUANTILES
+        self.quantiles = list(quantiles) or QUANTILES
         self.learning_rate = learning_rate
         self.batch_size = batch_size
         self.epochs = epochs
@@ -218,6 +221,12 @@ class LSTMModel:
         """
         X = np.asarray(X, dtype=np.float32)
         y = np.asarray(y, dtype=np.float32).ravel()
+
+        if self.output_size != 1:
+            raise ValueError(
+                f"LSTMModel trains one step ahead (one target per input "
+                f"window); output_size must be 1, got {self.output_size}."
+            )
 
         logger.info(f"LSTM received X shape: {X.shape}, y shape: {y.shape}")
 
@@ -419,7 +428,8 @@ class LSTMModel:
 
         df = pd.DataFrame()
         for q, col_name in quantile_map.items():
-            df[col_name] = results[f"q{q}"]
+            if f"q{q}" in results:
+                df[col_name] = results[f"q{q}"]
 
         return df
 
@@ -578,22 +588,13 @@ class LSTMForecaster:
         valid_mask = ~predictions["median"].isna()
         valid_indices = predictions.index[valid_mask].tolist()
 
+        # Padded predictions are row-aligned with the input: row i holds
+        # the one-step-ahead prediction for input row i (the first
+        # `sequence_length` rows are NaN warm-up).
         if "date" in df.columns and valid_indices:
-            dates = df["date"].values
-            date_vals = [
-                dates[i + self.sequence_length]
-                for i in valid_indices
-                if i + self.sequence_length < len(dates)
-            ]
-            predictions.loc[valid_indices[: len(date_vals)], "date"] = date_vals
+            predictions.loc[valid_indices, "date"] = df["date"].values[valid_indices]
         if "uf" in df.columns and valid_indices:
-            ufs = df["uf"].values
-            uf_vals = [
-                ufs[i + self.sequence_length]
-                for i in valid_indices
-                if i + self.sequence_length < len(ufs)
-            ]
-            predictions.loc[valid_indices[: len(uf_vals)], "uf"] = uf_vals
+            predictions.loc[valid_indices, "uf"] = df["uf"].values[valid_indices]
 
         return predictions
 
