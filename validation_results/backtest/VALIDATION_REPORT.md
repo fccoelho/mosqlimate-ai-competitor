@@ -1,6 +1,6 @@
 # IMDC Validation Report
 
-Generated: 2026-10-02 13:27 · states: 26 · diseases: chikungunya, dengue
+Generated: 2026-10-03 16:33 · states: 26 · diseases: chikungunya, dengue
 
 Metric: Weighted Interval Score (Bracher et al. 2021), lower is better,
 computed weekly over the 52-week target season on conformally
@@ -10,10 +10,9 @@ calibrated quantile forecasts.
 
 | model        |    wis |   skill_vs_naive |   coverage_50 |
 |:-------------|-------:|-----------------:|--------------:|
-| timesfm      |  82.55 |             0.38 |          0.39 |
-| ens_qavg     |  91.11 |             0.32 |          0.37 |
-| ens_median   |  91.26 |             0.32 |          0.36 |
 | xgb_direct   |  95.31 |             0.29 |          0.34 |
+| ens_median   |  95.73 |             0.28 |          0.34 |
+| ens_qavg     |  96.33 |             0.28 |          0.35 |
 | lgbm_direct  | 100.19 |             0.25 |          0.31 |
 | loglin_trend | 110.78 |             0.17 |          0.36 |
 | seas_naive   | 133.6  |             0    |          0.29 |
@@ -21,146 +20,145 @@ calibrated quantile forecasts.
 ### Best model per state (chikungunya)
 
 
-timesfm: 14, loglin_trend: 4, seas_naive: 2, xgb_direct: 2, lgbm_direct: 2, ens_median: 1, ens_qavg: 1
+loglin_trend: 8, lgbm_direct: 5, ens_median: 5, xgb_direct: 4, ens_qavg: 2, seas_naive: 2
 
 ### Mean WIS per state and test
 
 | state   |      1 |      2 |      3 |     4 |
 |:--------|-------:|-------:|-------:|------:|
-| AC      |    0.7 |    3.6 |    1.3 |   1.6 |
-| AL      |   59.7 |   53.4 |   41.7 |  27.9 |
-| AM      |    1.6 |    1.4 |    1.2 |   0.8 |
-| AP      |    0.4 |    5.2 |    1.5 |   0.7 |
-| BA      |  113.6 |  144.6 |  132.2 |  96.9 |
-| CE      |  412   |  155.4 |   20.1 |  23   |
-| DF      |    3.8 |    5.4 |    2.9 |   3.7 |
-| GO      |   25   |  120.1 |   81.1 | 142.8 |
-| MA      |   15.5 |   29.6 |    7.4 |   5.6 |
-| MG      | 1470.6 | 1171   | 1641.6 | 414   |
-| MS      |   86.4 |   39.2 |  113.8 |  76.9 |
-| MT      |    3.2 |  368.7 |  468.1 | 711.9 |
-| PA      |    5   |    9   |    4.5 |   3.6 |
-| PB      |  245.6 |   52.1 |   18.7 |   7.6 |
-| PE      |  299.3 |   56.2 |   24   |  30.9 |
-| PI      |   64.3 |   65.9 |   13.2 |  10.7 |
-| PR      |   49.2 |   21.7 |   59.1 |  59.6 |
-| RJ      |   35.7 |   49.2 |   29.8 |  36.4 |
-| RN      |  105.3 |   56.2 |   32.3 |  27.3 |
-| RO      |    0.9 |    3   |   81.3 |  34.4 |
-| RR      |    0.6 |    0.6 |    0.6 |   0.5 |
-| RS      |    1.5 |    2.8 |    4.1 |   5.1 |
-| SC      |    4.5 |    3.5 |    8.3 |   6.5 |
-| SE      |   29   |   32.8 |   10.4 |   5.3 |
-| SP      |   36.3 |  106.9 |   81.1 | 130.2 |
-| TO      |   42.4 |   46.1 |    6.1 |   4.7 |
+| AC      |    0.7 |    3.9 |    1.3 |   1.7 |
+| AL      |   66.1 |   60.1 |   48.8 |  31.5 |
+| AM      |    1.6 |    1.5 |    1.3 |   0.8 |
+| AP      |    0.4 |    5.1 |    1.5 |   0.8 |
+| BA      |  112.1 |  156.6 |  153.3 | 105.8 |
+| CE      |  468.3 |  188.6 |   23.3 |  25   |
+| DF      |    3.8 |    5.7 |    3.4 |   3.7 |
+| GO      |   26.6 |  116.5 |   86.1 | 142.2 |
+| MA      |   14.7 |   32.5 |    8.7 |   5.6 |
+| MG      | 1439.7 | 1091.8 | 1824.2 | 413   |
+| MS      |   86.9 |   41.7 |  116.1 |  78.1 |
+| MT      |    3.2 |  370.2 |  438.4 | 812   |
+| PA      |    5.6 |   10.4 |    4.2 |   3.1 |
+| PB      |  271.1 |   61.6 |   19.8 |   9   |
+| PE      |  335.3 |   63.5 |   23.8 |  32.8 |
+| PI      |   67.4 |   74.3 |   10.1 |   8.7 |
+| PR      |   49.7 |   24.3 |   68.2 |  70.8 |
+| RJ      |   17.2 |   45.1 |   26.6 |  38.8 |
+| RN      |  118.2 |   64.2 |   30.7 |  24.3 |
+| RO      |    0.9 |    3.1 |   81   |  37.4 |
+| RR      |    0.6 |    0.5 |    0.6 |   0.5 |
+| RS      |    1.5 |    3.2 |    4.1 |   4.9 |
+| SC      |    4.8 |    3.6 |    7.9 |   6.8 |
+| SE      |   31.6 |   32   |    9.4 |   5.3 |
+| SP      |   41.4 |  133.1 |   84.8 | 145.2 |
+| TO      |   43.2 |   50.6 |    7   |   4.7 |
 
 ## Dengue — mean WIS per model (tests with actuals)
 
 | model        |     wis |   skill_vs_naive |   coverage_50 |
 |:-------------|--------:|-----------------:|--------------:|
-| ens_median   | 1369.94 |             0.38 |          0.37 |
-| ens_qavg     | 1384.28 |             0.37 |          0.37 |
+| ens_qavg     | 1389.4  |             0.37 |          0.37 |
+| ens_median   | 1389.87 |             0.37 |          0.35 |
 | xgb_direct   | 1392.64 |             0.37 |          0.34 |
 | loglin_trend | 1410.84 |             0.36 |          0.38 |
 | lgbm_direct  | 1426.46 |             0.35 |          0.33 |
-| timesfm      | 1473.68 |             0.33 |          0.36 |
 | seas_naive   | 2209.05 |             0    |          0.39 |
 
 ### Best model per state (dengue)
 
 
-timesfm: 8, loglin_trend: 6, lgbm_direct: 5, xgb_direct: 3, ens_qavg: 2, ens_median: 2
+loglin_trend: 12, lgbm_direct: 6, ens_qavg: 4, xgb_direct: 3, ens_median: 1
 
 ### Mean WIS per state and test
 
 | state   |      1 |       2 |       3 |       4 |
 |:--------|-------:|--------:|--------:|--------:|
-| AC      |   33.5 |    70   |    60   |    66.5 |
-| AL      |  189.9 |   127.7 |    56.4 |    38.5 |
-| AM      |   25.8 |    62.7 |    26.4 |    54.3 |
-| AP      |   12.4 |   192.1 |    63.9 |    49.5 |
-| BA      |  300.8 |  3471.9 |  1332.2 |   470.4 |
-| CE      |  290.9 |   103.4 |    50   |   139.8 |
-| DF      |  271.2 |  4240.7 |  1823   |   202.1 |
-| GO      |  942.2 |  3496.3 |  1495.2 |   645.4 |
-| MA      |   25.2 |   111   |    41.7 |   115.9 |
-| MG      | 5106.6 | 23096.9 | 11288.3 |  2173.2 |
-| MS      |  430.4 |   346.7 |   157.4 |   160.5 |
-| MT      |  132.6 |   190.1 |   167.7 |   276.8 |
-| PA      |   23.8 |   255.2 |    88.3 |    89.4 |
-| PB      |  224.4 |    94   |    60.9 |    43.8 |
-| PE      |  201.4 |   245.2 |   142.1 |    90.2 |
-| PI      |  205.5 |   110.1 |    39.7 |   104.3 |
-| PR      | 1366.2 |  5333.4 |  6028   |  2033.7 |
-| RJ      |  486.2 |  4809   |  2093.5 |   483.1 |
-| RN      |  191.2 |   157.9 |    62.5 |    46.1 |
-| RO      |   82.2 |   100.9 |    26.9 |    18.7 |
-| RR      |    2.5 |     9.2 |     3.3 |     3.2 |
-| RS      |  471.8 |  2465.8 |  1380.1 |  1367.9 |
-| SC      | 1111.2 |  2506.9 |  4370.8 |  2341.5 |
-| SE      |   18.5 |    24.7 |    20.8 |    10.7 |
-| SP      | 1903.5 | 24720.9 | 11694.3 | 13940.7 |
-| TO      |  185.5 |    47.2 |    31.9 |   282.8 |
+| AC      |   28.3 |    78   |    57.6 |    66.5 |
+| AL      |  219.1 |   131.9 |    58.5 |    43.2 |
+| AM      |   25.3 |    64.9 |    27.6 |    47.1 |
+| AP      |   12.7 |   193.4 |    69.4 |    54.1 |
+| BA      |  297.7 |  3443.2 |  1434.6 |   490.9 |
+| CE      |  304.8 |    90.3 |    54.5 |   124.5 |
+| DF      |  280.9 |  4083.1 |  1982.1 |   212.8 |
+| GO      | 1081.4 |  3140.1 |  1538.8 |   705.1 |
+| MA      |   25.6 |   108.6 |    42.7 |   116.4 |
+| MG      | 5027.7 | 22159.5 | 12003   |  2356.7 |
+| MS      |  410.9 |   401   |   115.2 |   117.3 |
+| MT      |  136.2 |   160.7 |   149.4 |   270.5 |
+| PA      |   22.9 |   249.5 |    89.1 |   104.3 |
+| PB      |  271.2 |    90.9 |    54.3 |    46.3 |
+| PE      |  216.6 |   266.7 |   142.8 |    89.7 |
+| PI      |  224.5 |   112.8 |    37.8 |   104.2 |
+| PR      | 1255.6 |  4887.5 |  4960.9 |  2430.5 |
+| RJ      |  512.7 |  4748.7 |  2234.9 |   529.9 |
+| RN      |  226.7 |   171.5 |    54   |    47.8 |
+| RO      |   80.9 |   109.4 |    27.7 |    17.8 |
+| RR      |    2.6 |     9.3 |     3.1 |     3.3 |
+| RS      |  481.2 |  2390   |  1378.7 |  1272.2 |
+| SC      | 1011.1 |  2591   |  3831.5 |  1070.8 |
+| SE      |   19.7 |    27.2 |    20.6 |    10.8 |
+| SP      | 1756.6 | 26557   | 12627.3 | 15692.9 |
+| TO      |  214.9 |    49.3 |    18.4 |   279.3 |
 
 ## Selected model per state (skill-gated)
 
-**chikungunya**: timesfm: 14, loglin_trend: 4, seas_naive: 2, xgb_direct: 2, lgbm_direct: 2, ens_median: 1, ens_qavg: 1
+**chikungunya**: loglin_trend: 8, lgbm_direct: 5, ens_median: 5, xgb_direct: 4, ens_qavg: 2, seas_naive: 2
 
-**dengue**: timesfm: 8, loglin_trend: 6, lgbm_direct: 5, xgb_direct: 3, ens_qavg: 2, ens_median: 2
+**dengue**: loglin_trend: 12, lgbm_direct: 6, ens_qavg: 4, xgb_direct: 3, ens_median: 1
 
 | state   | disease     | selected     |   mean_wis | fallback   |
 |:--------|:------------|:-------------|-----------:|:-----------|
-| AC      | chikungunya | timesfm      |        1.6 | False      |
+| AC      | chikungunya | lgbm_direct  |        1.8 | False      |
 | AC      | dengue      | loglin_trend |       45.8 | False      |
-| AL      | chikungunya | timesfm      |       22.9 | False      |
-| AL      | dengue      | timesfm      |       60.6 | False      |
-| AM      | chikungunya | timesfm      |        1.1 | False      |
+| AL      | chikungunya | loglin_trend |       39.4 | False      |
+| AL      | dengue      | loglin_trend |       82.8 | False      |
+| AM      | chikungunya | loglin_trend |        1.2 | False      |
 | AM      | dengue      | loglin_trend |       35.5 | False      |
-| AP      | chikungunya | timesfm      |        1.8 | False      |
-| AP      | dengue      | timesfm      |       67.9 | False      |
-| BA      | chikungunya | ens_median   |       82.5 | False      |
+| AP      | chikungunya | lgbm_direct  |        1.9 | False      |
+| AP      | dengue      | loglin_trend |       72.6 | False      |
+| BA      | chikungunya | ens_median   |       90.9 | False      |
 | BA      | dengue      | lgbm_direct  |     1233.1 | False      |
-| CE      | chikungunya | timesfm      |       59.1 | False      |
-| CE      | dengue      | ens_qavg     |      125.8 | False      |
-| DF      | chikungunya | timesfm      |        3.3 | False      |
+| CE      | chikungunya | lgbm_direct  |      137.4 | False      |
+| CE      | dengue      | ens_qavg     |      126.7 | False      |
+| DF      | chikungunya | ens_qavg     |        3.9 | False      |
 | DF      | dengue      | xgb_direct   |     1420   | False      |
 | GO      | chikungunya | loglin_trend |       68.6 | False      |
 | GO      | dengue      | loglin_trend |     1304.5 | False      |
 | MA      | chikungunya | seas_naive   |       11.6 | True       |
 | MA      | dengue      | loglin_trend |       60.5 | False      |
-| MG      | chikungunya | ens_qavg     |     1077.1 | False      |
+| MG      | chikungunya | ens_qavg     |     1091.9 | False      |
 | MG      | dengue      | lgbm_direct  |     9164   | False      |
-| MS      | chikungunya | timesfm      |       73.1 | False      |
-| MS      | dengue      | ens_median   |      242.1 | False      |
+| MS      | chikungunya | ens_median   |       76.8 | False      |
+| MS      | dengue      | ens_qavg     |      243.3 | False      |
 | MT      | chikungunya | loglin_trend |      316   | False      |
 | MT      | dengue      | xgb_direct   |      159.3 | False      |
 | PA      | chikungunya | xgb_direct   |        3.8 | False      |
 | PA      | dengue      | loglin_trend |      104.9 | False      |
-| PB      | chikungunya | timesfm      |       41.8 | False      |
-| PB      | dengue      | timesfm      |       72.4 | False      |
-| PE      | chikungunya | timesfm      |       58   | False      |
-| PE      | dengue      | timesfm      |      142.1 | False      |
-| PI      | chikungunya | timesfm      |       31.2 | False      |
-| PI      | dengue      | ens_median   |       90.2 | False      |
-| PR      | chikungunya | timesfm      |       24.8 | False      |
+| PB      | chikungunya | lgbm_direct  |       66.2 | False      |
+| PB      | dengue      | loglin_trend |       88.8 | False      |
+| PE      | chikungunya | xgb_direct   |       97.4 | False      |
+| PE      | dengue      | loglin_trend |      154.6 | False      |
+| PI      | chikungunya | ens_median   |       34.8 | False      |
+| PI      | dengue      | ens_qavg     |       93.3 | False      |
+| PR      | chikungunya | loglin_trend |       42.1 | False      |
 | PR      | dengue      | lgbm_direct  |     2963.9 | False      |
-| RJ      | chikungunya | xgb_direct   |       20.3 | False      |
+| RJ      | chikungunya | ens_median   |       19.8 | False      |
 | RJ      | dengue      | lgbm_direct  |     1744.7 | False      |
-| RN      | chikungunya | timesfm      |       38.7 | False      |
-| RN      | dengue      | timesfm      |       74.3 | False      |
+| RN      | chikungunya | xgb_direct   |       40.7 | False      |
+| RN      | dengue      | loglin_trend |       81.7 | False      |
 | RO      | chikungunya | loglin_trend |       26.7 | False      |
-| RO      | dengue      | timesfm      |       50   | False      |
-| RR      | chikungunya | lgbm_direct  |        0.5 | False      |
-| RR      | dengue      | ens_qavg     |        4.2 | False      |
+| RO      | dengue      | ens_median   |       54.4 | False      |
+| RR      | chikungunya | ens_median   |        0.5 | False      |
+| RR      | dengue      | lgbm_direct  |        4.3 | False      |
 | RS      | chikungunya | loglin_trend |        3   | False      |
 | RS      | dengue      | xgb_direct   |     1227.1 | False      |
 | SC      | chikungunya | lgbm_direct  |        4.7 | False      |
 | SC      | dengue      | lgbm_direct  |     1777.9 | False      |
 | SE      | chikungunya | seas_naive   |       13.9 | True       |
-| SE      | dengue      | timesfm      |       15.8 | False      |
-| SP      | chikungunya | timesfm      |       50.2 | False      |
-| SP      | dengue      | timesfm      |     8849.3 | False      |
-| TO      | chikungunya | timesfm      |       18.3 | False      |
+| SE      | dengue      | ens_qavg     |       17.7 | False      |
+| SP      | chikungunya | loglin_trend |       84.4 | False      |
+| SP      | dengue      | loglin_trend |    12676.2 | False      |
+| TO      | chikungunya | xgb_direct   |       21.6 | False      |
 | TO      | dengue      | loglin_trend |      112.8 | False      |
 
 ## Per-state hyperparameter tuning
