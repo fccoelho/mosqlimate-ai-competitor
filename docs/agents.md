@@ -147,7 +147,7 @@ LLM anywhere in this codebase.
 | Validation / backtests | `validation/backtest.py` | `StateValidationAgent` + `ValidationOrchestrator` |
 | Hyperparameter tuning | `validation/tuning.py` (seeded random search, WIS-scored, cached under `validation_results/backtest/hyperparams/`) | `EfficientHyperparameterTuner` |
 | Model selection | `validation/selection.py` (skill-gated per state) | `TopNModelSelectionAgent`, `ModelPreSelector` |
-| Ensembles | `ens_qavg` / `ens_median` in `backtest.py` | `EnsembleAgent` |
+| Ensembles | `ens_qavg` / `ens_median` / `ens_vote` (inverse-WIS voting) in `backtest.py` | `EnsembleAgent` |
 
 When extending the system, prefer the deterministic modules: they are
 what the CLI (`mosqlimate-ai validate`), the scripts

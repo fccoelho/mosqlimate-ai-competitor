@@ -262,7 +262,8 @@ src/mosqlimate_ai/
 | `timesfm` | TimesFM 3.0 zero-shot foundation model (opt-in: `--timesfm`; ~500 MB checkpoint on first use) | — | native quantile head (0.1–0.9) interpolated to the 9 IMDC levels, Gaussian tails |
 | `loglin_trend` | Log-linear trend + harmonics | — | Gaussian residual quantiles |
 | `seas_naive` | Seasonal naive (lag 52) | — | additive seasonal error quantiles |
-| `ens_qavg` / `ens_median` | Ensembles of calibrated members | — | averaged |
+| `ens_qavg` / `ens_median` | Ensembles of calibrated members (baselines excluded) | — | averaged |
+| `ens_vote` | Voting ensemble of *all* trained models, inverse-WIS votes from the leakage-free calibration window | — | weighted average |
 
 Key properties:
 

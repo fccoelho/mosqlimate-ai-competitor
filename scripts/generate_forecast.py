@@ -140,7 +140,6 @@ def main() -> None:
                 include_timesfm=args.timesfm,
                 params_by_model=params_by_model,
             )
-            registry.pop("seas_naive", None)  # ensembles exclude it anyway
 
             result = run_single_backtest(
                 uf,
@@ -157,7 +156,7 @@ def main() -> None:
             models = result.get("models", {})
             fc_entry = models.get(chosen, {}).get("forecast")
             if fc_entry is None:
-                for fallback in ("ens_qavg", "ens_median"):
+                for fallback in ("ens_vote", "ens_qavg", "ens_median"):
                     fc_entry = models.get(fallback, {}).get("forecast")
                     if fc_entry is not None:
                         logger.info("%s/%s: %s unavailable, using %s",

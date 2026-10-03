@@ -36,6 +36,39 @@ FULL_HORIZON = GAP_WEEKS + 52  # 67; target window = horizons 15..66
 
 
 # ---------------------------------------------------------------------------
+# Voting ensemble weights
+# ---------------------------------------------------------------------------
+def voting_weights(
+    scores: dict[str, float],
+    regularization: float = 0.1,
+) -> dict[str, float]:
+    """Inverse-skill voting weights for ensemble members.
+
+    Each model's vote is proportional to ``1 / (score + reg)`` where
+    ``reg = regularization * median(score)``. The shrinkage term keeps a
+    single freak-perfect calibration window from monopolizing the vote
+    (a raw inverse score would let one near-zero WIS take all the
+    weight).
+
+    Args:
+        scores: Per-model skill scores (lower = better, e.g. WIS on the
+            calibration window). NaN/inf entries are dropped.
+        regularization: Shrinkage as a fraction of the median score.
+
+    Returns:
+        Normalized weights (sum to 1); empty when fewer than two valid
+        scores remain.
+    """
+    valid = {m: float(s) for m, s in scores.items() if np.isfinite(s)}
+    if len(valid) < 2:
+        return {}
+    reg = regularization * float(np.median(list(valid.values()))) + 1e-12
+    inv = {m: 1.0 / (s + reg) for m, s in valid.items()}
+    total = sum(inv.values())
+    return {m: v / total for m, v in inv.items()}
+
+
+# ---------------------------------------------------------------------------
 # Model registry
 # ---------------------------------------------------------------------------
 def default_model_registry(
@@ -135,7 +168,12 @@ def run_single_backtest(
 
     Returns:
         Result dictionary with per-model metrics, forecasts, and
-        quantile-averaged / median ensembles of the calibrated members.
+        ensembles of the calibrated members: ``ens_qavg`` (equal-weight
+        quantile average, baselines excluded), ``ens_median`` (per-date
+        median), and — when ``calibrate`` is on — ``ens_vote``, a
+        weighted average of *all* trained models with inverse-WIS votes
+        from the leakage-free calibration window (weights recorded under
+        ``ensemble_votes``).
     """
     if train_df is None or actual_df is None:
         if loader is None:
@@ -173,7 +211,7 @@ def run_single_backtest(
     if model_registry is None:
         model_registry = default_model_registry(future_exog=future_exog)
 
-    from mosqlimate_ai.evaluation.calibration import calibrate_forecast
+    from mosqlimate_ai.evaluation.calibration import calibrate_forecast_scored
 
     # Dynamic horizon: cover the full target window even when the local
     # data cache is older than the canonical cutoff (67 weeks from
@@ -183,12 +221,17 @@ def run_single_backtest(
     horizon = max(FULL_HORIZON, horizon_needed)
 
     models = {}
+    calib_wis: dict[str, float] = {}
     for name, model in model_registry.items():
         try:
             start = time.time()
             cloned = _clone_model(model, future_exog)
             if calibrate:
-                forecast = calibrate_forecast(cloned, train, horizon, calib_weeks=calib_weeks)
+                forecast, skill = calibrate_forecast_scored(
+                    cloned, train, horizon, calib_weeks=calib_weeks
+                )
+                if skill is not None:
+                    calib_wis[name] = skill
             else:
                 cloned.fit(train)
                 forecast = cloned.predict(horizon)
@@ -267,6 +310,32 @@ def run_single_backtest(
         stacked = pd.concat(aligned)
         ens_median = stacked.groupby(level=0).median()
         _evaluate("ens_median", ens_median, _time.time() - start)
+
+    # Voting ensemble: every trained model votes with weight proportional
+    # to its inverse WIS on the leakage-free calibration window (which
+    # only exists when conformal calibration ran). Unlike ens_qavg /
+    # ens_median this includes the baselines — a weak member is
+    # automatically down-weighted by its vote.
+    votes = voting_weights(calib_wis) if calibrate else {}
+    members = {
+        name: b["forecast"]
+        for name, b in models.items()
+        if name in votes and isinstance(b.get("forecast"), pd.DataFrame) and len(b["forecast"])
+    }
+    if len(members) >= 2:
+        import time as _time
+
+        ref_index = members[next(iter(members))].index
+        start = _time.time()
+        ens_vote = None
+        for name, fc in members.items():
+            term = fc.reindex(ref_index) * votes[name]
+            ens_vote = term if ens_vote is None else ens_vote + term
+        _evaluate("ens_vote", ens_vote, _time.time() - start)
+        results["ensemble_votes"] = {
+            "weights": {m: round(w, 6) for m, w in votes.items() if m in members},
+            "calib_wis": {m: round(s, 4) for m, s in calib_wis.items() if m in members},
+        }
 
     return results
 
