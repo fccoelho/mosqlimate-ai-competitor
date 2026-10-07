@@ -289,6 +289,7 @@ Key properties:
 | `scripts/download_baseline_predictions.py` | Fetch the 3rd IMDC procc baseline (`imdc_bb`) from Mosqlimate as forecast CSVs | `MOSQLIMATE_API=user:key download_baseline_predictions.py [--output-dir ..]` |
 | `scripts/score_forecast_csvs.py` | Score forecast CSVs not covered by backtest JSONs (e.g. `imdc_bb`, `timesfm`) | `score_forecast_csvs.py [--model imdc_bb] [--model timesfm]` |
 | `scripts/rebuild_ensembles_with_timesfm.py` | Rebuild `ens_qavg_tf`/`ens_median_tf` from saved member CSVs | `rebuild_ensembles_with_timesfm.py` |
+| `scripts/regenerate_timesfm_forecasts.py` | Re-run TimesFM-only backtests (covariate-aware) and overwrite its forecast CSVs | `regenerate_timesfm_forecasts.py [--states SP,RJ] [--workers 3]` |
 | `scripts/make_submission.py` | Build + validate the IMDC submission package | `make_submission.py [MODEL_ID]` |
 | `scripts/refresh_data.py` | Refresh stale data, skip verified files | `refresh_data.py [--force]` |
 

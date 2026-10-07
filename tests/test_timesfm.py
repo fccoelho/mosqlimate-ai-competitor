@@ -190,7 +190,72 @@ class TestEngineCache:
         assert len(loads) == 2
 
 
+class FakeLookup:
+    """Mimics ExogLookup: six features, as-of semantics."""
+
+    features_ = (
+        "cf_temp_med",
+        "cf_umid_med",
+        "cf_precip_tot",
+        "oc_enso",
+        "oc_iod",
+        "oc_pdo",
+    )
+
+    def __init__(self):
+        self.calls = []
+
+    def get(self, origin_date, target_date):
+        self.calls.append((origin_date, target_date))
+        return {f: float(pd.Timestamp(target_date).dayofyear) for f in self.features_}
+
+
+class TestCovariates:
+    def test_predict_passes_past_future_covariates(self, fake_engine):
+        df = make_synth_series(120)
+        lookup = FakeLookup()
+        model = TimesFMForecaster(exog_lookup=lookup).fit(df)
+        horizon = 10
+        qf = model.predict(horizon)
+
+        assert len(qf) == horizon
+        _, _, kwargs = fake_engine.calls[-1]
+        pf = kwargs["past_future_covariates"]
+        assert pf.shape == (len(FakeLookup.features_), len(df) + horizon)
+        assert np.isfinite(pf).all()
+        # future block queried at the training cutoff (leak-safe origin)
+        origins = {o for o, _ in lookup.calls}
+        assert pd.Timestamp(df["date"].max()) in origins
+
+    def test_without_lookup_stays_univariate(self, fake_engine):
+        df = make_synth_series(120)
+        model = TimesFMForecaster().fit(df)
+        model.predict(6)
+        _, _, kwargs = fake_engine.calls[-1]
+        assert kwargs["past_future_covariates"] is None
+
+    def test_empty_lookup_degrades_to_univariate(self, fake_engine):
+        df = make_synth_series(120)
+        empty = SimpleNamespace(features_=FakeLookup.features_, get=lambda o, t: {})
+        model = TimesFMForecaster(exog_lookup=empty).fit(df)
+        assert model.cov_history_ is None
+        model.predict(6)
+        _, _, kwargs = fake_engine.calls[-1]
+        assert kwargs["past_future_covariates"] is None
+
+
 class TestRegistry:
+    def test_default_includes_timesfm_with_exog(self):
+        from mosqlimate_ai.validation.backtest import default_model_registry
+
+        class Dummy:
+            pass
+
+        lookup = Dummy()
+        registry = default_model_registry(exog_lookup=lookup)
+        assert isinstance(registry["timesfm"], TimesFMForecaster)
+        assert registry["timesfm"].exog_lookup is lookup
+
     def test_default_includes_timesfm(self):
         from mosqlimate_ai.validation.backtest import default_model_registry
 

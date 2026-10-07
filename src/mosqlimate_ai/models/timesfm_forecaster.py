@@ -1,13 +1,22 @@
 """Google TimesFM (3.0) zero-shot foundation model on the unified interface.
 
 Role in the model zoo: a pretrained time-series foundation model that
-forecasts the weekly case counts *without local training* — a strong
-zero-shot reference that is independent of our feature engineering.
-``fit()`` only buffers the target history; ``predict()`` runs decoder
+forecasts the weekly case counts *without local training*. ``fit()``
+only buffers the target history (and, when an ``exog_lookup`` is
+supplied, the aligned covariate history); ``predict()`` runs decoder
 inference and maps the model's native quantile head onto the nine IMDC
 quantile levels (levels inside the head's range are interpolated; the
 outer tails are extended with Gaussian tails scaled from the inner 80%
 of the predicted distribution).
+
+Covariates: when constructed with an
+:class:`~mosqlimate_ai.data.future_exog.ExogLookup`, the six
+target-time-known covariates (ECMWF state temperature/humidity/
+precipitation forecasts and the ENSO/IOD/PDO ocean indices) are passed
+to TimesFM as ``past_future_covariates`` — the same leakage-safe values
+the GBM models consume: history weeks use each week's own as-of values,
+future weeks use the values known at the training cutoff. Without a
+lookup the model stays purely univariate.
 
 Requires the ``timesfm`` package (>= 3.0, already a project
 dependency). The pretrained checkpoint (default
@@ -68,8 +77,10 @@ def load_timesfm_engine(
             device=device,
             per_core_batch_size=per_core_batch_size,
         )
-        logger.info("TimesFM engine ready (quantile head: %s)",
-                    getattr(_ENGINE_CACHE[key].config, "quantiles", "?"))
+        logger.info(
+            "TimesFM engine ready (quantile head: %s)",
+            getattr(_ENGINE_CACHE[key].config, "quantiles", "?"),
+        )
     return _ENGINE_CACHE[key]
 
 
@@ -111,6 +122,10 @@ class TimesFMForecaster(BaseForecaster):
             ``google/timesfm-3.0-pytorch``).
         device: ``"cuda"``/``"cpu"``; ``None`` auto-detects.
         per_core_batch_size: Inference batch size.
+        exog_lookup: Optional
+            :class:`~mosqlimate_ai.data.future_exog.ExogLookup` whose six
+            target-time-known covariates (climate forecasts + ocean
+            indices) are fed to the model as ``past_future_covariates``.
     """
 
     def __init__(
@@ -118,11 +133,34 @@ class TimesFMForecaster(BaseForecaster):
         repo_id: str = DEFAULT_REPO_ID,
         device: str | None = None,
         per_core_batch_size: int = 4,
+        exog_lookup=None,
     ):
         super().__init__()
         self.repo_id = repo_id
         self.device = device
         self.per_core_batch_size = per_core_batch_size
+        self.exog_lookup = exog_lookup
+        self.cov_history_: pd.DataFrame | None = None
+
+    # ------------------------------------------------------------------
+    def _covariate_frame(
+        self, dates: pd.DatetimeIndex, origin: pd.Timestamp | None = None
+    ) -> pd.DataFrame | None:
+        """Covariate rows for ``dates`` as known at each date (or at one origin).
+
+        Returns None when the lookup carries no usable values at all;
+        remaining interior gaps are forward/backward-filled (the engine
+        would interpolate them anyway, but edge NaNs must not survive).
+        """
+        feats = list(self.exog_lookup.features_)
+        rows = []
+        for d in dates:
+            vals = self.exog_lookup.get(origin if origin is not None else d, d)
+            rows.append([vals.get(f, np.nan) for f in feats])
+        out = pd.DataFrame(rows, index=pd.DatetimeIndex(dates), columns=feats)
+        if not out.notna().any().any():
+            return None
+        return out.ffill().bfill().fillna(0.0)
 
     # ------------------------------------------------------------------
     def _fit(self, df: pd.DataFrame) -> None:
@@ -133,17 +171,27 @@ class TimesFMForecaster(BaseForecaster):
         self.history_ = s.ffill().dropna()
         if len(self.history_) < 2:
             raise ValueError("TimesFM needs at least two finite training weeks")
+        self.cov_history_ = self._covariate_frame(self.history_.index) if self.exog_lookup else None
 
     # ------------------------------------------------------------------
     def _predict(self, horizon: int) -> pd.DataFrame:
-        engine = load_timesfm_engine(
-            self.repo_id, self.device, self.per_core_batch_size
-        )
+        engine = load_timesfm_engine(self.repo_id, self.device, self.per_core_batch_size)
         context = self.history_.to_numpy(dtype=np.float64)
+
+        # covariates aligned with the context window plus the horizon:
+        # (n_covariates, context_len + horizon), the TimesFM 3.x layout
+        past_future_covariates = None
+        if self.cov_history_ is not None:
+            fut_dates = make_forecast_dates(self.last_train_date_, horizon)
+            cov_fut = self._covariate_frame(fut_dates, origin=self.last_train_date_)
+            frames = [self.cov_history_] + ([cov_fut] if cov_fut is not None else [])
+            full = pd.concat(frames)
+            past_future_covariates = full.to_numpy(dtype=np.float32).T
 
         out = engine.predict(
             context,
             horizon,
+            past_future_covariates=past_future_covariates,
             return_quantiles=True,
             make_positive=True,
             sort_quantiles=True,
@@ -170,9 +218,7 @@ class TimesFMForecaster(BaseForecaster):
                 quants = quants.T
             curves = quants[:horizon]
             for tau, col in QUANTILE_COLS.items():
-                qf[col] = [
-                    map_quantile_curve(levels, row, tau) for row in curves
-                ]
+                qf[col] = [map_quantile_curve(levels, row, tau) for row in curves]
         else:
             logger.warning(
                 "TimesFM returned no usable quantile head; issuing flat "

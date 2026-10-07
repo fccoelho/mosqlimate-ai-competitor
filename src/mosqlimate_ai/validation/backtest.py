@@ -130,7 +130,7 @@ def default_model_registry(
         try:
             from mosqlimate_ai.models.timesfm_forecaster import TimesFMForecaster
 
-            registry["timesfm"] = TimesFMForecaster()
+            registry["timesfm"] = TimesFMForecaster(exog_lookup=exog_lookup)
         except Exception as exc:  # environment-dependent (package/checkpoint)
             logger.warning("TimesFM unavailable, continuing without it: %s", exc)
     return registry
