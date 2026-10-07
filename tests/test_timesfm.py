@@ -191,13 +191,12 @@ class TestEngineCache:
 
 
 class TestRegistry:
-    def test_default_excludes_timesfm(self):
+    def test_default_includes_timesfm(self):
         from mosqlimate_ai.validation.backtest import default_model_registry
 
-        assert "timesfm" not in default_model_registry()
+        assert isinstance(default_model_registry()["timesfm"], TimesFMForecaster)
 
-    def test_flag_adds_timesfm(self):
+    def test_flag_excludes_timesfm(self):
         from mosqlimate_ai.validation.backtest import default_model_registry
 
-        registry = default_model_registry(include_timesfm=True)
-        assert isinstance(registry["timesfm"], TimesFMForecaster)
+        assert "timesfm" not in default_model_registry(include_timesfm=False)

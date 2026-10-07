@@ -1,10 +1,11 @@
-"""Score the downloaded 3rd IMDC procc baseline (``imdc_bb``) locally.
+"""Score forecast CSVs that are not covered by the backtest JSONs.
 
-Reads the forecast CSVs produced by ``download_baseline_predictions.py``
-(``<backtest_dir>/forecasts/{uf}_{disease}_{test}_imdc_bb.csv.gz``),
-evaluates them against the same observed state-level case counts and
-with the same WIS/coverage functions used by the backtests, and writes
-``<backtest_dir>/imdc_bb_scores.json`` with one row per
+Reads ``<backtest_dir>/forecasts/{uf}_{disease}_{test}_{model}.csv.gz``
+for one or more models (e.g. the downloaded ``imdc_bb`` baseline or
+``timesfm`` forecasts from an earlier run), evaluates them against the
+same observed state-level case counts and with the same WIS/coverage
+functions used by the backtests, and writes
+``<backtest_dir>/{model}_scores.json`` per model with one row per
 (state, disease, test) in the schema consumed by
 ``make_validation_report.py``:
 
@@ -12,13 +13,15 @@ with the same WIS/coverage functions used by the backtests, and writes
     coverage_50, coverage_95, n_eval_weeks
 
 The final 2026-2027 season has no observations yet and is not scored.
-Local scores may differ slightly from the platform's own scores (the
-registry uses its own case counts and case definition).
+For the Mosqlimate baseline, local scores may differ slightly from the
+platform's own scores (the registry uses its own case counts).
 
 Usage::
 
-    python scripts/score_imdc_baseline.py
-    python scripts/score_imdc_baseline.py --backtest-dir validation_results/backtest
+    python scripts/score_forecast_csvs.py                      # imdc_bb
+    python scripts/score_forecast_csvs.py --model timesfm
+    python scripts/score_forecast_csvs.py --model imdc_bb --model timesfm
+    python scripts/score_forecast_csvs.py --backtest-dir validation_results/backtest
 """
 
 from __future__ import annotations
@@ -34,7 +37,6 @@ from mosqlimate_ai.evaluation.metrics import evaluate_forecast
 from mosqlimate_ai.evaluation.quantiles import quantiles_to_intervals
 from mosqlimate_ai.validation.config import get_validation_config
 
-MODEL = "imdc_bb"
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -63,25 +65,20 @@ def score_series(fc_path: Path, actual: pd.DataFrame, test) -> dict:
     }
 
 
-def main() -> None:
-    parser = argparse.ArgumentParser(description="Score the imdc_bb baseline forecasts.")
-    parser.add_argument(
-        "--backtest-dir",
-        type=Path,
-        default=ROOT / "validation_results" / "backtest",
-    )
-    args = parser.parse_args()
-
-    fc_dir = args.backtest_dir / "forecasts"
-    loader = CompetitionDataLoader()
+def score_model(model: str, backtest_dir: Path, loader=None) -> pd.DataFrame:
+    """Score every forecast CSV of one model; writes {model}_scores.json."""
+    if loader is None:
+        loader = CompetitionDataLoader()
+    fc_dir = backtest_dir / "forecasts"
     tests = get_validation_config().validation_tests
 
     rows = []
     actual, loaded_key = None, None
-    for path in sorted(fc_dir.glob(f"*_{MODEL}.csv.gz")):
-        # stem = {uf}_{disease}_{test}_{MODEL}; MODEL itself has an underscore
+    for path in sorted(fc_dir.glob(f"*_{model}.csv.gz")):
+        # stem = {uf}_{disease}_{test}_{model}; the model name may
+        # itself contain underscores, so strip it as a whole suffix
         stem = path.name[: -len(".csv.gz")]
-        core = stem[: -len(f"_{MODEL}")]
+        core = stem[: -len(f"_{model}")]
         uf_disease, test_key = core.rsplit("_", 1)
         if test_key not in {str(t.test_number) for t in tests}:
             continue  # final season: no observations yet
@@ -100,7 +97,7 @@ def main() -> None:
                 "disease": disease,
                 "test": test_key,
                 "season": test.season,
-                "model": MODEL,
+                "model": model,
                 "wis": metrics.get("wis_total"),
                 "mae": metrics.get("mae"),
                 "coverage_50": metrics.get("coverage_50"),
@@ -109,16 +106,37 @@ def main() -> None:
             }
         )
 
-    out_path = args.backtest_dir / f"{MODEL}_scores.json"
+    out_path = backtest_dir / f"{model}_scores.json"
     out_path.write_text(json.dumps(rows, indent=2))
+    return pd.DataFrame(rows)
 
-    df = pd.DataFrame(rows)
-    print(f"scored {len(df)} forecasts -> {out_path}")
-    if not df.empty:
-        summary = df.groupby(["disease", "test"]).agg(
-            n=("wis", "size"), eval_weeks=("n_eval_weeks", "sum"), mean_wis=("wis", "mean")
-        )
-        print(summary.round(2).to_string())
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Score forecast CSVs of extra models.")
+    parser.add_argument(
+        "--model",
+        action="append",
+        dest="models",
+        help="Model name to score (repeatable; default: imdc_bb)",
+    )
+    parser.add_argument(
+        "--backtest-dir",
+        type=Path,
+        default=ROOT / "validation_results" / "backtest",
+    )
+    args = parser.parse_args()
+
+    models = args.models or ["imdc_bb"]
+    loader = CompetitionDataLoader()
+    for model in models:
+        df = score_model(model, args.backtest_dir, loader=loader)
+        out_path = args.backtest_dir / f"{model}_scores.json"
+        print(f"[{model}] scored {len(df)} forecasts -> {out_path}")
+        if not df.empty:
+            summary = df.groupby(["disease", "test"]).agg(
+                n=("wis", "size"), eval_weeks=("n_eval_weeks", "sum"), mean_wis=("wis", "mean")
+            )
+            print(summary.round(2).to_string())
 
 
 if __name__ == "__main__":

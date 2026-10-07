@@ -75,7 +75,7 @@ def default_model_registry(
     future_exog: Optional[pd.DataFrame] = None,
     params: Optional[Dict] = None,
     include_tft: bool = False,
-    include_timesfm: bool = False,
+    include_timesfm: bool = True,
     exog_lookup=None,
     params_by_model: Optional[Dict[str, Dict]] = None,
 ) -> Dict[str, BaseForecaster]:
@@ -86,7 +86,8 @@ def default_model_registry(
         params: Base GBM hyperparameters shared by both GBM families.
         include_tft: Add the (slower, GPU) TFT for extra diversity.
         include_timesfm: Add the zero-shot TimesFM foundation model
-            (downloads a ~500 MB checkpoint on first use).
+            (default on; downloads a ~500 MB checkpoint on first use and
+            is skipped with a warning when the package is unavailable).
         exog_lookup: :class:`ExogLookup` for target-time known covariates.
         params_by_model: Optional per-model overrides (merged over
             ``params``). A ``recency_halflife_weeks`` key is routed to
@@ -126,9 +127,12 @@ def default_model_registry(
 
         registry["tft_direct"] = TFTDirectForecaster(epochs=15)
     if include_timesfm:
-        from mosqlimate_ai.models.timesfm_forecaster import TimesFMForecaster
+        try:
+            from mosqlimate_ai.models.timesfm_forecaster import TimesFMForecaster
 
-        registry["timesfm"] = TimesFMForecaster()
+            registry["timesfm"] = TimesFMForecaster()
+        except Exception as exc:  # environment-dependent (package/checkpoint)
+            logger.warning("TimesFM unavailable, continuing without it: %s", exc)
     return registry
 
 
@@ -485,7 +489,7 @@ def _prepare_test_job_args(
     max_workers: int = 4,
     cache_dir: Path = Path("validation_results/backtest"),
     loader=None,
-    include_timesfm: bool = False,
+    include_timesfm: bool = True,
 ) -> list[tuple]:
     """Prepare all worker job payloads in the main process.
 
@@ -618,7 +622,7 @@ def run_full_pipeline(
     diseases: tuple = ("dengue", "chikungunya"),
     include_final: bool = False,
     include_tft: bool = False,
-    include_timesfm: bool = False,
+    include_timesfm: bool = True,
     calibrate: bool = True,
     max_workers: int = 5,
     out_dir: Path = Path("validation_results/backtest"),
@@ -638,7 +642,8 @@ def run_full_pipeline(
             hyperparameters (0 = use fixed defaults). Results are cached
             under ``<out_dir>/hyperparams/`` and reused on re-runs.
         include_timesfm: Add the zero-shot TimesFM foundation model to
-            the registry (checkpoint downloaded on first use).
+            the registry (default on; checkpoint downloaded on first
+            use, skipped with a warning when unavailable).
 """
     if states is None:
         states = get_validation_config().states

@@ -44,10 +44,11 @@ def load_all(backtest_dir: Path) -> pd.DataFrame:
                         "n_eval_weeks": model_res.get("n_eval_weeks", 0),
                     }
                 )
-    # locally scored 3rd IMDC procc baseline (scripts/score_imdc_baseline.py)
-    baseline_scores = backtest_dir / "imdc_bb_scores.json"
-    if baseline_scores.exists():
-        frames.extend(json.loads(baseline_scores.read_text()))
+    # locally scored extra models (scripts/score_forecast_csvs.py and
+    # rebuild_ensembles_with_timesfm.py), e.g. the imdc_bb baseline,
+    # timesfm, and the timesfm-inclusive ensembles
+    for scores_path in sorted(backtest_dir.glob("*_scores.json")):
+        frames.extend(json.loads(scores_path.read_text()))
     return pd.DataFrame(frames)
 
 

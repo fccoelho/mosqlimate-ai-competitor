@@ -1279,10 +1279,10 @@ def validate_cmd(
         "e.g. --tune 12). Results cached under <output>/hyperparams/.",
     ),
     timesfm: bool = typer.Option(
-        False,
-        "--timesfm",
-        help="Add the zero-shot TimesFM foundation model to the registry "
-        "(downloads a ~500 MB checkpoint on first use)",
+        True,
+        "--timesfm/--no-timesfm",
+        help="Include the zero-shot TimesFM foundation model in the registry "
+        "(default; downloads a ~500 MB checkpoint on first use)",
     ),
     show_logs: bool = typer.Option(
         False,
@@ -1324,8 +1324,11 @@ def validate_cmd(
     console.print(f"[cyan]Diseases: {', '.join(disease_list)}[/cyan]")
     if tune_trials:
         console.print(f"[cyan]Per-state tuning: {tune_trials} trials[/cyan]")
-    if timesfm:
-        console.print("[cyan]TimesFM foundation model: enabled[/cyan]")
+    console.print(
+        "[cyan]TimesFM foundation model: enabled[/cyan]"
+        if timesfm
+        else "[yellow]TimesFM foundation model: disabled[/yellow]"
+    )
 
     combined = run_full_pipeline(
         states=state_list,
