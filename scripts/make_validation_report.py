@@ -44,6 +44,10 @@ def load_all(backtest_dir: Path) -> pd.DataFrame:
                         "n_eval_weeks": model_res.get("n_eval_weeks", 0),
                     }
                 )
+    # locally scored 3rd IMDC procc baseline (scripts/score_imdc_baseline.py)
+    baseline_scores = backtest_dir / "imdc_bb_scores.json"
+    if baseline_scores.exists():
+        frames.extend(json.loads(baseline_scores.read_text()))
     return pd.DataFrame(frames)
 
 
@@ -68,7 +72,9 @@ def main() -> None:
         "",
         "Metric: Weighted Interval Score (Bracher et al. 2021), lower is better,",
         "computed weekly over the 52-week target season on conformally",
-        "calibrated quantile forecasts.",
+        "calibrated quantile forecasts. `imdc_bb` is the 3rd IMDC procc",
+        "reference baseline (Mosqlimate model 85), scored locally on the",
+        "same weeks; skill_vs_imdc_bb > 0 means better than the baseline.",
         "",
     ]
 
@@ -80,6 +86,8 @@ def main() -> None:
         pivot = d.pivot_table(index="model", values="wis", aggfunc="mean").sort_values("wis")
         skill = pivot.loc[BASELINE_MODEL, "wis"] if BASELINE_MODEL in pivot.index else np.nan
         pivot["skill_vs_naive"] = 1 - pivot["wis"] / skill
+        if "imdc_bb" in pivot.index:
+            pivot["skill_vs_imdc_bb"] = 1 - pivot["wis"] / pivot.loc["imdc_bb", "wis"]
         cov = d.pivot_table(index="model", values="coverage_50", aggfunc="mean")
         pivot["coverage_50"] = cov["coverage_50"]
         lines += [pivot.round(2).to_markdown(), ""]
