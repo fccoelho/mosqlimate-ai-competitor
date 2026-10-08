@@ -1,6 +1,6 @@
 # IMDC Validation Report
 
-Generated: 2026-10-07 08:39 · states: 26 · diseases: chikungunya, dengue
+Generated: 2026-10-08 16:43 · states: 26 · diseases: chikungunya, dengue
 
 Metric: Weighted Interval Score (Bracher et al. 2021), lower is better,
 computed weekly over the 52-week target season on conformally
@@ -10,109 +10,115 @@ same weeks; skill_vs_imdc_bb > 0 means better than the baseline.
 
 ## Chikungunya — mean WIS per model (tests with actuals)
 
-| model         |    wis |   skill_vs_naive |   skill_vs_imdc_bb |   coverage_50 |
-|:--------------|-------:|-----------------:|-------------------:|--------------:|
-| timesfm_base  |  82.55 |             0.38 |               0.08 |          0.39 |
-| timesfm       |  87.98 |             0.34 |               0.02 |          0.37 |
-| imdc_bb       |  90.03 |             0.33 |               0    |          0.48 |
-| ens_median_tf |  91.43 |             0.32 |              -0.02 |          0.35 |
-| ens_qavg_tf   |  91.74 |             0.31 |              -0.02 |          0.38 |
-| xgb_direct    |  95.31 |             0.29 |              -0.06 |          0.34 |
-| ens_median    |  95.73 |             0.28 |              -0.06 |          0.34 |
-| ens_qavg      |  96.33 |             0.28 |              -0.07 |          0.35 |
-| lgbm_direct   | 100.19 |             0.25 |              -0.11 |          0.31 |
-| ens_vote      | 104.04 |             0.22 |              -0.16 |          0.32 |
-| loglin_trend  | 110.78 |             0.17 |              -0.23 |          0.36 |
-| seas_naive    | 133.6  |             0    |              -0.48 |          0.29 |
+| model          |    wis |   skill_vs_naive |   skill_vs_imdc_bb |   coverage_50 |
+|:---------------|-------:|-----------------:|-------------------:|--------------:|
+| timesfm_base   |  82.55 |             0.38 |               0.08 |          0.39 |
+| timesfm_lagopt |  82.88 |             0.38 |               0.08 |          0.39 |
+| timesfm        |  87.98 |             0.34 |               0.02 |          0.37 |
+| imdc_bb        |  90.03 |             0.33 |               0    |          0.48 |
+| ens_median_tf  |  91.43 |             0.32 |              -0.02 |          0.35 |
+| ens_qavg_tf    |  91.74 |             0.31 |              -0.02 |          0.38 |
+| xgb_direct     |  95.31 |             0.29 |              -0.06 |          0.34 |
+| ens_median     |  95.73 |             0.28 |              -0.06 |          0.34 |
+| ens_qavg       |  96.33 |             0.28 |              -0.07 |          0.35 |
+| lgbm_direct    | 100.19 |             0.25 |              -0.11 |          0.31 |
+| ens_vote       | 104.04 |             0.22 |              -0.16 |          0.32 |
+| loglin_trend   | 110.78 |             0.17 |              -0.23 |          0.36 |
+| xgb_lagopt     | 119.72 |             0.1  |              -0.33 |          0.31 |
+| lgbm_lagopt    | 121.18 |             0.09 |              -0.35 |          0.3  |
+| seas_naive     | 133.6  |             0    |              -0.48 |          0.29 |
 
 ### Best model per state (chikungunya)
 
 
-imdc_bb: 10, timesfm_base: 7, timesfm: 3, seas_naive: 2, loglin_trend: 1, ens_qavg_tf: 1, ens_vote: 1, ens_median: 1
+imdc_bb: 9, timesfm_base: 5, timesfm_lagopt: 4, seas_naive: 2, timesfm: 2, loglin_trend: 1, ens_qavg_tf: 1, ens_vote: 1, ens_median: 1
 
 ### Mean WIS per state and test
 
 | state   |      1 |      2 |      3 |     4 |
 |:--------|-------:|-------:|-------:|------:|
 | AC      |    0.8 |    3.3 |    1.4 |   1.7 |
-| AL      |   58.8 |   52.4 |   44.5 |  26.5 |
-| AM      |    1.6 |    1.4 |    1.2 |   0.8 |
-| AP      |    0.5 |    4.9 |    1.4 |   0.7 |
-| BA      |  104.8 |  139.9 |  126.4 |  98.3 |
-| CE      |  371.9 |  147.1 |   25.5 |  26.7 |
-| DF      |    3.8 |    5.1 |    2.9 |   3.6 |
-| GO      |   22.8 |  127.8 |   71.9 | 155.3 |
-| MA      |   15.6 |   29   |    8.5 |   6.7 |
-| MG      | 1502.3 | 1263.6 | 1499.3 | 338.4 |
-| MS      |   86.8 |   35.3 |  125.9 |  90.7 |
-| MT      |    3.4 |  360   |  465.5 | 678.4 |
-| PA      |    6.1 |    9.2 |    5   |   4.5 |
-| PB      |  221.6 |   49.1 |   18   |   9.3 |
-| PE      |  281.7 |   57.2 |   25.6 |  33.1 |
-| PI      |   56.2 |   59.6 |   10.6 |   9.3 |
-| PR      |   48.7 |   19.2 |   64.5 |  54   |
-| RJ      |   39.1 |   48.4 |   34.4 |  36.2 |
-| RN      |   94.7 |   52.7 |   28.8 |  24.5 |
-| RO      |    0.9 |    2.8 |   81.3 |  32.7 |
-| RR      |    0.6 |    0.7 |    0.7 |   0.5 |
-| RS      |    1.5 |    2.9 |    4.3 |   4.4 |
-| SC      |    4.1 |    3.4 |    8.3 |   5.7 |
-| SE      |   31.9 |   31.3 |    9.8 |   5.8 |
-| SP      |   36.8 |  108.8 |   81.9 | 121.7 |
-| TO      |   42.5 |   41.4 |    6.4 |   4.6 |
+| AL      |   57.8 |   53.1 |   48.3 |  28.4 |
+| AM      |    1.6 |    1.6 |    1.2 |   0.9 |
+| AP      |    0.5 |    4.9 |    1.5 |   0.7 |
+| BA      |  100   |  143.1 |  125.7 | 100.8 |
+| CE      |  354.9 |  137.2 |   22.6 |  24.5 |
+| DF      |    3.7 |    5   |    2.7 |   3.9 |
+| GO      |   25.3 |  131.1 |   76.7 | 158.2 |
+| MA      |   15.4 |   30.1 |    7.8 |   6.4 |
+| MG      | 1523.4 | 1369.9 | 1593.9 | 297.8 |
+| MS      |   86.8 |   33.4 |  124.3 |  86.3 |
+| MT      |    3.2 |  362.5 |  469.2 | 701.5 |
+| PA      |    5.6 |    8.7 |    5.3 |   4.4 |
+| PB      |  235   |   46.2 |   15.6 |   7.8 |
+| PE      |  291.7 |   53.6 |   24.9 |  33.4 |
+| PI      |   54.6 |   62.9 |   10.8 |   9.1 |
+| PR      |   48.8 |   19.8 |   65   |  57.3 |
+| RJ      |   43.6 |   46.1 |   32.7 |  35.4 |
+| RN      |   89.7 |   52.4 |   29.2 |  23.9 |
+| RO      |    0.9 |    2.9 |   81.1 |  33.1 |
+| RR      |    0.6 |    0.8 |    0.7 |   0.5 |
+| RS      |    1.5 |    2.8 |    4.3 |   5.1 |
+| SC      |    4   |    3.5 |    8.2 |   6.1 |
+| SE      |   32.3 |   29.6 |    8.4 |   5.8 |
+| SP      |   36.1 |  116.9 |   84.4 | 114.9 |
+| TO      |   42   |   39.4 |    5.8 |   4.3 |
 
 ## Dengue — mean WIS per model (tests with actuals)
 
-| model         |     wis |   skill_vs_naive |   skill_vs_imdc_bb |   coverage_50 |
-|:--------------|--------:|-----------------:|-------------------:|--------------:|
-| imdc_bb       | 1138.76 |             0.48 |               0    |          0.48 |
-| ens_median_tf | 1373.41 |             0.38 |              -0.21 |          0.37 |
-| ens_qavg      | 1389.4  |             0.37 |              -0.22 |          0.37 |
-| ens_median    | 1389.87 |             0.37 |              -0.22 |          0.35 |
-| xgb_direct    | 1392.64 |             0.37 |              -0.22 |          0.34 |
-| loglin_trend  | 1410.84 |             0.36 |              -0.24 |          0.38 |
-| ens_qavg_tf   | 1414.04 |             0.36 |              -0.24 |          0.38 |
-| lgbm_direct   | 1426.46 |             0.35 |              -0.25 |          0.33 |
-| timesfm_base  | 1473.68 |             0.33 |              -0.29 |          0.36 |
-| ens_vote      | 1521.45 |             0.31 |              -0.34 |          0.34 |
-| timesfm       | 1681.67 |             0.24 |              -0.48 |          0.4  |
-| seas_naive    | 2209.05 |             0    |              -0.94 |          0.39 |
+| model          |     wis |   skill_vs_naive |   skill_vs_imdc_bb |   coverage_50 |
+|:---------------|--------:|-----------------:|-------------------:|--------------:|
+| imdc_bb        | 1138.76 |             0.48 |               0    |          0.48 |
+| ens_median_tf  | 1373.41 |             0.38 |              -0.21 |          0.37 |
+| ens_qavg       | 1389.4  |             0.37 |              -0.22 |          0.37 |
+| ens_median     | 1389.87 |             0.37 |              -0.22 |          0.35 |
+| xgb_direct     | 1392.64 |             0.37 |              -0.22 |          0.34 |
+| loglin_trend   | 1410.84 |             0.36 |              -0.24 |          0.38 |
+| ens_qavg_tf    | 1414.04 |             0.36 |              -0.24 |          0.38 |
+| lgbm_direct    | 1426.46 |             0.35 |              -0.25 |          0.33 |
+| timesfm_base   | 1473.68 |             0.33 |              -0.29 |          0.36 |
+| ens_vote       | 1521.45 |             0.31 |              -0.34 |          0.34 |
+| xgb_lagopt     | 1617.75 |             0.27 |              -0.42 |          0.36 |
+| timesfm        | 1681.67 |             0.24 |              -0.48 |          0.4  |
+| lgbm_lagopt    | 1696.66 |             0.23 |              -0.49 |          0.35 |
+| timesfm_lagopt | 1718.51 |             0.22 |              -0.51 |          0.38 |
+| seas_naive     | 2209.05 |             0    |              -0.94 |          0.39 |
 
 ### Best model per state (dengue)
 
 
-imdc_bb: 19, timesfm: 4, timesfm_base: 2, ens_qavg_tf: 1
+imdc_bb: 18, timesfm: 4, timesfm_base: 2, timesfm_lagopt: 1, ens_qavg_tf: 1
 
 ### Mean WIS per state and test
 
 | state   |      1 |       2 |       3 |       4 |
 |:--------|-------:|--------:|--------:|--------:|
-| AC      |   29.9 |    72.1 |    68.7 |    59.2 |
-| AL      |  172.5 |   126.4 |    52.8 |    38.4 |
-| AM      |   25.7 |    61.6 |    23.8 |    49.1 |
-| AP      |   12   |   190.5 |    57.5 |    43.4 |
-| BA      |  271.6 |  3368   |  1141.6 |   409.1 |
-| CE      |  264.7 |   102.3 |    62.4 |   138.7 |
-| DF      |  251.7 |  4237.4 |  1576.5 |   184.1 |
-| GO      |  870   |  3589.4 |  1299.1 |   582.6 |
-| MA      |   26.1 |   104.3 |    37.3 |   122   |
-| MG      | 4860.5 | 22719.1 | 11177.4 |  2196.3 |
-| MS      |  370.6 |   350.1 |   149.5 |   141.8 |
-| MT      |  130.5 |   179.7 |   222.1 |   246.3 |
-| PA      |   22.8 |   244.6 |    86.3 |    81.9 |
-| PB      |  202.7 |    91.7 |    55.8 |    42.9 |
-| PE      |  197.8 |   242   |   147.6 |   108.4 |
-| PI      |  172.3 |   106.1 |    38   |   101.8 |
-| PR      | 1365.1 |  5202   |  5303.7 |  1979   |
-| RJ      |  453.3 |  4696.2 |  1855   |   504.6 |
-| RN      |  167   |   151.7 |    56.6 |    48.2 |
-| RO      |   81.5 |    95.5 |    25   |    18.8 |
-| RR      |    2.4 |     8.7 |     3.4 |     3.3 |
-| RS      |  432.3 |  2642.2 |  1183.7 |  1200.6 |
-| SC      | 1125   |  2583.2 |  3573.6 |  1510.3 |
-| SE      |   18.3 |    24   |    18   |    11.5 |
-| SP      | 1863.9 | 25682.6 | 12475.4 | 13175.5 |
-| TO      |  167.5 |    45.4 |    25.7 |   262   |
+| AC      |   28.1 |    77.6 |    65.6 |    68.7 |
+| AL      |  180.5 |   125.9 |    52.2 |    37.3 |
+| AM      |   25.7 |    61.2 |    26.3 |    46.2 |
+| AP      |   11.7 |   190.5 |    54   |    43.9 |
+| BA      |  290.1 |  3350.9 |  1365.4 |   380.8 |
+| CE      |  302.4 |   104.1 |    56.9 |   148.2 |
+| DF      |  246.4 |  4251.3 |  1511.2 |   177.3 |
+| GO      |  989.1 |  3639.4 |  1302.9 |   594.5 |
+| MA      |   26.8 |   107.3 |    36.6 |   118.7 |
+| MG      | 4825   | 22626.7 | 12040.2 |  2076.6 |
+| MS      |  397.4 |   365.2 |   164.4 |   133.7 |
+| MT      |  127   |   169.2 |   218.6 |   256.8 |
+| PA      |   24.4 |   245.4 |    87.6 |    84.5 |
+| PB      |  215.6 |    92.8 |    58.1 |    41.1 |
+| PE      |  198.1 |   234   |   142.3 |   106.5 |
+| PI      |  188.3 |   106.1 |    38.7 |   108.4 |
+| PR      | 1351.1 |  5307.7 |  5262   |  1850.3 |
+| RJ      |  433.5 |  4691.2 |  2064.3 |   492.8 |
+| RN      |  170   |   150.4 |    61.5 |    47.8 |
+| RO      |   80.7 |   105.8 |    27.3 |    21.5 |
+| RR      |    2.4 |     8.7 |     3.5 |     3.4 |
+| RS      |  441.3 |  2625.4 |  1146.3 |  1309.1 |
+| SC      | 1060.1 |  2538.5 |  3870.5 |  1826.9 |
+| SE      |   19   |    24.6 |    17.1 |    12.6 |
+| SP      | 1888.1 | 25451.5 | 14057.5 | 14048.5 |
+| TO      |  182   |    44.2 |    28.4 |   259.6 |
 
 ## Selected model per state (skill-gated)
 
@@ -201,6 +207,36 @@ imdc_bb: 19, timesfm: 4, timesfm_base: 2, ens_qavg_tf: 1
 | BA      | chikungunya | xgb_direct  |       86.24 |        120.67 |       28.5 |           3 |            246 |
 | PB      | dengue      | xgb_direct  |      245.23 |        342.35 |       28.4 |           3 |            246 |
 | GO      | dengue      | xgb_direct  |     1635.57 |       2276.82 |       28.2 |           3 |            246 |
+
+## Covariate lag selection
+
+270 combinations: climate->cases lags estimated per
+state/disease/test (Spearman cross-correlation of seasonally
+adjusted series, 0-16 weeks), then stepwise inclusion under
+rolling-origin CV. Median lag of *selected* covariates: cf_precip_tot=9wk, cf_temp_med=10wk, cf_umid_med=8wk, oc_enso=5wk, oc_iod=14wk, oc_pdo=4wk
+
+| state   | disease     | test   | selected                                |
+|:--------|:------------|:-------|:----------------------------------------|
+| AC      | chikungunya | 1      | cf_umid_med, cf_precip_tot, cf_temp_med |
+| AC      | chikungunya | 2      | cf_temp_med, oc_pdo                     |
+| AC      | chikungunya | 3      | cf_temp_med, oc_enso                    |
+| AC      | chikungunya | 4      | -                                       |
+| AC      | chikungunya | final  | -                                       |
+| AL      | chikungunya | 1      | cf_temp_med, cf_umid_med, cf_precip_tot |
+| AL      | chikungunya | 2      | -                                       |
+| AL      | chikungunya | 3      | oc_enso                                 |
+| AL      | chikungunya | 4      | cf_temp_med                             |
+| AL      | chikungunya | final  | cf_umid_med, oc_pdo, cf_temp_med        |
+| AM      | chikungunya | 1      | oc_enso                                 |
+| AM      | chikungunya | 2      | cf_precip_tot, cf_temp_med, cf_umid_med |
+| AM      | chikungunya | 3      | oc_iod, cf_umid_med                     |
+| AM      | chikungunya | 4      | -                                       |
+| AM      | chikungunya | final  | oc_enso                                 |
+| AP      | chikungunya | 1      | -                                       |
+| AP      | chikungunya | 2      | -                                       |
+| AP      | chikungunya | 3      | -                                       |
+| AP      | chikungunya | 4      | oc_pdo, oc_enso                         |
+| AP      | chikungunya | final  | oc_pdo                                  |
 
 ## Forecasts vs observed
 

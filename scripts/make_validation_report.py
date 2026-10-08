@@ -111,9 +111,12 @@ def main() -> None:
             sub = selections[selections.disease == disease]
             counts = sub.selected.value_counts()
             lines += [f"**{disease}**: " + ", ".join(f"{m}: {c}" for m, c in counts.items()), ""]
-        lines += [selections[["state", "disease", "selected", "mean_wis", "fallback"]]
-                  .round(1)
-                  .to_markdown(index=False), ""]
+        lines += [
+            selections[["state", "disease", "selected", "mean_wis", "fallback"]]
+            .round(1)
+            .to_markdown(index=False),
+            "",
+        ]
 
     # tuning summary (from the hyperparameter cache)
     hp_dir = backtest_dir / "hyperparams"
@@ -149,8 +152,49 @@ def main() -> None:
                 f"Mean gain over defaults: {g.gain_pct.mean():.1f}%; "
                 f"tuning improved WIS for {(g.gain_pct > 0).sum()}/{len(g)} configs.",
                 "",
-                g.sort_values("gain_pct", ascending=False)
-                .head(20)
+                g.sort_values("gain_pct", ascending=False).head(20).to_markdown(index=False),
+                "",
+            ]
+
+    # covariate lag selection summary (scripts/regenerate_lagopt_models.py)
+    lag_path = backtest_dir / "lag_selection_summary.json"
+    if lag_path.exists():
+        lag = json.loads(lag_path.read_text())
+        lag_rows = []
+        for key, info in lag.items():
+            uf, disease, test_key = key.split("/")
+            lag_rows.append(
+                {
+                    "state": uf,
+                    "disease": disease,
+                    "test": test_key,
+                    "lags": info.get("lags") or {},
+                    "selected": ", ".join(info.get("selected") or []) or "-",
+                }
+            )
+        if lag_rows:
+            ldf = pd.DataFrame(lag_rows)
+            lag_cols = {}
+            for cov in sorted({c for info in lag.values() for c in (info.get("lags") or {})}):
+                vals = [
+                    (info.get("lags") or {}).get(cov)
+                    for info in lag.values()
+                    if cov in (info.get("selected") or [])
+                ]
+                vals = [v for v in vals if v is not None]
+                if vals:
+                    lag_cols[cov] = f"{int(pd.Series(vals).median())}"
+            lines += [
+                "## Covariate lag selection",
+                "",
+                f"{len(ldf)} combinations: climate->cases lags estimated per",
+                "state/disease/test (Spearman cross-correlation of seasonally",
+                "adjusted series, 0-16 weeks), then stepwise inclusion under",
+                "rolling-origin CV. Median lag of *selected* covariates: "
+                + (", ".join(f"{c}={v}wk" for c, v in lag_cols.items()) or "none"),
+                "",
+                ldf.sort_values(["disease", "state", "test"])
+                .head(20)[["state", "disease", "test", "selected"]]
                 .to_markdown(index=False),
                 "",
             ]

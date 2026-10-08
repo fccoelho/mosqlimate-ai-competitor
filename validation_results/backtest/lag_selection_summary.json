@@ -1,0 +1,5676 @@
+{
+  "RR/dengue/final": {
+    "lags": {
+      "cf_temp_med": 15,
+      "cf_umid_med": 15,
+      "cf_precip_tot": 15,
+      "oc_enso": 13,
+      "oc_iod": 1,
+      "oc_pdo": 10
+    },
+    "corr": {
+      "cf_temp_med": 0.206,
+      "cf_umid_med": -0.146,
+      "cf_precip_tot": -0.108,
+      "oc_enso": 0.11,
+      "oc_iod": 0.317,
+      "oc_pdo": -0.063
+    },
+    "selected": [
+      "cf_temp_med",
+      "cf_umid_med",
+      "oc_enso",
+      "cf_precip_tot"
+    ]
+  },
+  "RR/chikungunya/1": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 16,
+      "cf_precip_tot": 16,
+      "oc_enso": 0,
+      "oc_iod": 16,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": -0.135,
+      "cf_umid_med": 0.158,
+      "cf_precip_tot": 0.093,
+      "oc_enso": 0.091,
+      "oc_iod": -0.229,
+      "oc_pdo": 0.14
+    },
+    "selected": [
+      "oc_enso"
+    ]
+  },
+  "RR/chikungunya/2": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 16,
+      "cf_precip_tot": 16,
+      "oc_enso": 16,
+      "oc_iod": 16,
+      "oc_pdo": 1
+    },
+    "corr": {
+      "cf_temp_med": -0.16,
+      "cf_umid_med": 0.17,
+      "cf_precip_tot": 0.081,
+      "oc_enso": -0.094,
+      "oc_iod": -0.24,
+      "oc_pdo": 0.128
+    },
+    "selected": [
+      "oc_pdo"
+    ]
+  },
+  "RR/chikungunya/3": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 16,
+      "cf_precip_tot": 16,
+      "oc_enso": 16,
+      "oc_iod": 16,
+      "oc_pdo": 1
+    },
+    "corr": {
+      "cf_temp_med": -0.191,
+      "cf_umid_med": 0.177,
+      "cf_precip_tot": 0.095,
+      "oc_enso": -0.102,
+      "oc_iod": -0.283,
+      "oc_pdo": 0.119
+    },
+    "selected": [
+      "oc_iod"
+    ]
+  },
+  "RR/chikungunya/4": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 15,
+      "cf_precip_tot": 16,
+      "oc_enso": 0,
+      "oc_iod": 16,
+      "oc_pdo": 1
+    },
+    "corr": {
+      "cf_temp_med": -0.111,
+      "cf_umid_med": 0.126,
+      "cf_precip_tot": 0.066,
+      "oc_enso": 0.064,
+      "oc_iod": -0.198,
+      "oc_pdo": 0.129
+    },
+    "selected": [
+      "oc_iod"
+    ]
+  },
+  "RR/chikungunya/final": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 16,
+      "cf_precip_tot": 7,
+      "oc_enso": 0,
+      "oc_iod": 16,
+      "oc_pdo": 5
+    },
+    "corr": {
+      "cf_temp_med": -0.082,
+      "cf_umid_med": 0.107,
+      "cf_precip_tot": -0.076,
+      "oc_enso": 0.06,
+      "oc_iod": -0.2,
+      "oc_pdo": 0.133
+    },
+    "selected": []
+  },
+  "MG/chikungunya/1": {
+    "lags": {
+      "cf_temp_med": 9,
+      "cf_umid_med": 9,
+      "cf_precip_tot": 0,
+      "oc_enso": 16,
+      "oc_iod": 14,
+      "oc_pdo": 15
+    },
+    "corr": {
+      "cf_temp_med": -0.121,
+      "cf_umid_med": 0.118,
+      "cf_precip_tot": -0.165,
+      "oc_enso": -0.169,
+      "oc_iod": -0.297,
+      "oc_pdo": -0.062
+    },
+    "selected": [
+      "cf_precip_tot",
+      "cf_temp_med"
+    ]
+  },
+  "MS/chikungunya/final": {
+    "lags": {
+      "cf_temp_med": 4,
+      "cf_umid_med": 2,
+      "cf_precip_tot": 7,
+      "oc_enso": 0,
+      "oc_iod": 12,
+      "oc_pdo": 8
+    },
+    "corr": {
+      "cf_temp_med": -0.129,
+      "cf_umid_med": 0.271,
+      "cf_precip_tot": 0.205,
+      "oc_enso": 0.145,
+      "oc_iod": -0.048,
+      "oc_pdo": 0.056
+    },
+    "selected": [
+      "cf_precip_tot",
+      "oc_iod"
+    ]
+  },
+  "MS/chikungunya/4": {
+    "lags": {
+      "cf_temp_med": 4,
+      "cf_umid_med": 5,
+      "cf_precip_tot": 7,
+      "oc_enso": 0,
+      "oc_iod": 0,
+      "oc_pdo": 2
+    },
+    "corr": {
+      "cf_temp_med": -0.141,
+      "cf_umid_med": 0.296,
+      "cf_precip_tot": 0.217,
+      "oc_enso": 0.244,
+      "oc_iod": 0.101,
+      "oc_pdo": 0.11
+    },
+    "selected": [
+      "oc_enso",
+      "cf_temp_med",
+      "oc_pdo"
+    ]
+  },
+  "MG/chikungunya/2": {
+    "lags": {
+      "cf_temp_med": 9,
+      "cf_umid_med": 0,
+      "cf_precip_tot": 0,
+      "oc_enso": 16,
+      "oc_iod": 16,
+      "oc_pdo": 2
+    },
+    "corr": {
+      "cf_temp_med": -0.121,
+      "cf_umid_med": -0.136,
+      "cf_precip_tot": -0.196,
+      "oc_enso": -0.098,
+      "oc_iod": -0.195,
+      "oc_pdo": 0.084
+    },
+    "selected": [
+      "cf_precip_tot",
+      "oc_iod",
+      "cf_umid_med",
+      "oc_pdo"
+    ]
+  },
+  "MG/chikungunya/4": {
+    "lags": {
+      "cf_temp_med": 0,
+      "cf_umid_med": 14,
+      "cf_precip_tot": 0,
+      "oc_enso": 2,
+      "oc_iod": 16,
+      "oc_pdo": 2
+    },
+    "corr": {
+      "cf_temp_med": 0.063,
+      "cf_umid_med": 0.117,
+      "cf_precip_tot": -0.168,
+      "oc_enso": 0.107,
+      "oc_iod": -0.132,
+      "oc_pdo": 0.127
+    },
+    "selected": [
+      "oc_iod"
+    ]
+  },
+  "MG/chikungunya/3": {
+    "lags": {
+      "cf_temp_med": 9,
+      "cf_umid_med": 14,
+      "cf_precip_tot": 0,
+      "oc_enso": 16,
+      "oc_iod": 16,
+      "oc_pdo": 2
+    },
+    "corr": {
+      "cf_temp_med": -0.157,
+      "cf_umid_med": 0.131,
+      "cf_precip_tot": -0.192,
+      "oc_enso": -0.11,
+      "oc_iod": -0.274,
+      "oc_pdo": 0.094
+    },
+    "selected": [
+      "cf_precip_tot",
+      "cf_temp_med",
+      "cf_umid_med"
+    ]
+  },
+  "PA/chikungunya/1": {
+    "lags": {
+      "cf_temp_med": 0,
+      "cf_umid_med": 0,
+      "cf_precip_tot": 1,
+      "oc_enso": 0,
+      "oc_iod": 14,
+      "oc_pdo": 14
+    },
+    "corr": {
+      "cf_temp_med": 0.156,
+      "cf_umid_med": -0.113,
+      "cf_precip_tot": 0.075,
+      "oc_enso": 0.102,
+      "oc_iod": -0.237,
+      "oc_pdo": 0.104
+    },
+    "selected": []
+  },
+  "PA/chikungunya/2": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 16,
+      "cf_precip_tot": 1,
+      "oc_enso": 2,
+      "oc_iod": 16,
+      "oc_pdo": 14
+    },
+    "corr": {
+      "cf_temp_med": 0.202,
+      "cf_umid_med": -0.165,
+      "cf_precip_tot": 0.057,
+      "oc_enso": 0.164,
+      "oc_iod": -0.112,
+      "oc_pdo": 0.119
+    },
+    "selected": []
+  },
+  "MG/chikungunya/final": {
+    "lags": {
+      "cf_temp_med": 9,
+      "cf_umid_med": 15,
+      "cf_precip_tot": 14,
+      "oc_enso": 2,
+      "oc_iod": 16,
+      "oc_pdo": 2
+    },
+    "corr": {
+      "cf_temp_med": -0.138,
+      "cf_umid_med": 0.204,
+      "cf_precip_tot": 0.147,
+      "oc_enso": 0.124,
+      "oc_iod": -0.073,
+      "oc_pdo": 0.132
+    },
+    "selected": [
+      "oc_enso"
+    ]
+  },
+  "PA/chikungunya/4": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 16,
+      "cf_precip_tot": 16,
+      "oc_enso": 2,
+      "oc_iod": 0,
+      "oc_pdo": 14
+    },
+    "corr": {
+      "cf_temp_med": 0.211,
+      "cf_umid_med": -0.168,
+      "cf_precip_tot": -0.093,
+      "oc_enso": 0.187,
+      "oc_iod": 0.039,
+      "oc_pdo": 0.115
+    },
+    "selected": [
+      "oc_iod"
+    ]
+  },
+  "PA/chikungunya/3": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 16,
+      "cf_precip_tot": 16,
+      "oc_enso": 2,
+      "oc_iod": 16,
+      "oc_pdo": 14
+    },
+    "corr": {
+      "cf_temp_med": 0.191,
+      "cf_umid_med": -0.158,
+      "cf_precip_tot": -0.058,
+      "oc_enso": 0.172,
+      "oc_iod": -0.06,
+      "oc_pdo": 0.106
+    },
+    "selected": [
+      "oc_enso",
+      "cf_umid_med",
+      "oc_iod"
+    ]
+  },
+  "PA/chikungunya/final": {
+    "lags": {
+      "cf_temp_med": 0,
+      "cf_umid_med": 16,
+      "cf_precip_tot": 16,
+      "oc_enso": 2,
+      "oc_iod": 0,
+      "oc_pdo": 14
+    },
+    "corr": {
+      "cf_temp_med": 0.189,
+      "cf_umid_med": -0.131,
+      "cf_precip_tot": -0.057,
+      "oc_enso": 0.175,
+      "oc_iod": 0.06,
+      "oc_pdo": 0.085
+    },
+    "selected": [
+      "oc_enso"
+    ]
+  },
+  "PB/chikungunya/1": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 16,
+      "cf_precip_tot": 0,
+      "oc_enso": 0,
+      "oc_iod": 0,
+      "oc_pdo": 15
+    },
+    "corr": {
+      "cf_temp_med": 0.162,
+      "cf_umid_med": -0.196,
+      "cf_precip_tot": -0.197,
+      "oc_enso": -0.152,
+      "oc_iod": -0.363,
+      "oc_pdo": 0.26
+    },
+    "selected": [
+      "cf_temp_med"
+    ]
+  },
+  "PB/chikungunya/2": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 16,
+      "cf_precip_tot": 3,
+      "oc_enso": 0,
+      "oc_iod": 0,
+      "oc_pdo": 15
+    },
+    "corr": {
+      "cf_temp_med": 0.177,
+      "cf_umid_med": -0.177,
+      "cf_precip_tot": -0.148,
+      "oc_enso": -0.149,
+      "oc_iod": -0.333,
+      "oc_pdo": 0.201
+    },
+    "selected": [
+      "oc_enso"
+    ]
+  },
+  "PB/chikungunya/4": {
+    "lags": {
+      "cf_temp_med": 5,
+      "cf_umid_med": 16,
+      "cf_precip_tot": 6,
+      "oc_enso": 0,
+      "oc_iod": 0,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": -0.107,
+      "cf_umid_med": -0.134,
+      "cf_precip_tot": -0.1,
+      "oc_enso": -0.332,
+      "oc_iod": -0.385,
+      "oc_pdo": -0.081
+    },
+    "selected": []
+  },
+  "PB/chikungunya/3": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 16,
+      "cf_precip_tot": 3,
+      "oc_enso": 0,
+      "oc_iod": 0,
+      "oc_pdo": 15
+    },
+    "corr": {
+      "cf_temp_med": 0.207,
+      "cf_umid_med": -0.152,
+      "cf_precip_tot": -0.103,
+      "oc_enso": -0.224,
+      "oc_iod": -0.299,
+      "oc_pdo": 0.148
+    },
+    "selected": [
+      "oc_enso",
+      "oc_pdo"
+    ]
+  },
+  "PB/chikungunya/final": {
+    "lags": {
+      "cf_temp_med": 4,
+      "cf_umid_med": 10,
+      "cf_precip_tot": 1,
+      "oc_enso": 0,
+      "oc_iod": 0,
+      "oc_pdo": 16
+    },
+    "corr": {
+      "cf_temp_med": -0.186,
+      "cf_umid_med": 0.081,
+      "cf_precip_tot": -0.031,
+      "oc_enso": -0.241,
+      "oc_iod": -0.287,
+      "oc_pdo": -0.042
+    },
+    "selected": [
+      "cf_umid_med"
+    ]
+  },
+  "PR/chikungunya/2": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 7,
+      "cf_precip_tot": 10,
+      "oc_enso": 10,
+      "oc_iod": 14,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": 0.099,
+      "cf_umid_med": 0.205,
+      "cf_precip_tot": 0.215,
+      "oc_enso": 0.407,
+      "oc_iod": 0.28,
+      "oc_pdo": 0.348
+    },
+    "selected": [
+      "oc_pdo"
+    ]
+  },
+  "PR/chikungunya/1": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 12,
+      "cf_precip_tot": 12,
+      "oc_enso": 15,
+      "oc_iod": 14,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": 0.081,
+      "cf_umid_med": 0.173,
+      "cf_precip_tot": 0.17,
+      "oc_enso": 0.462,
+      "oc_iod": 0.31,
+      "oc_pdo": 0.372
+    },
+    "selected": [
+      "oc_iod",
+      "cf_umid_med"
+    ]
+  },
+  "PR/chikungunya/4": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 12,
+      "cf_precip_tot": 10,
+      "oc_enso": 10,
+      "oc_iod": 14,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": 0.097,
+      "cf_umid_med": 0.249,
+      "cf_precip_tot": 0.198,
+      "oc_enso": 0.381,
+      "oc_iod": 0.22,
+      "oc_pdo": 0.348
+    },
+    "selected": [
+      "oc_pdo"
+    ]
+  },
+  "PR/chikungunya/3": {
+    "lags": {
+      "cf_temp_med": 15,
+      "cf_umid_med": 8,
+      "cf_precip_tot": 10,
+      "oc_enso": 5,
+      "oc_iod": 14,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": 0.053,
+      "cf_umid_med": 0.253,
+      "cf_precip_tot": 0.233,
+      "oc_enso": 0.358,
+      "oc_iod": 0.16,
+      "oc_pdo": 0.323
+    },
+    "selected": [
+      "oc_enso",
+      "oc_iod"
+    ]
+  },
+  "PE/chikungunya/1": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 16,
+      "cf_precip_tot": 0,
+      "oc_enso": 16,
+      "oc_iod": 0,
+      "oc_pdo": 13
+    },
+    "corr": {
+      "cf_temp_med": 0.343,
+      "cf_umid_med": -0.274,
+      "cf_precip_tot": -0.196,
+      "oc_enso": 0.34,
+      "oc_iod": -0.21,
+      "oc_pdo": 0.38
+    },
+    "selected": []
+  },
+  "PR/chikungunya/final": {
+    "lags": {
+      "cf_temp_med": 15,
+      "cf_umid_med": 12,
+      "cf_precip_tot": 12,
+      "oc_enso": 11,
+      "oc_iod": 16,
+      "oc_pdo": 16
+    },
+    "corr": {
+      "cf_temp_med": 0.148,
+      "cf_umid_med": 0.19,
+      "cf_precip_tot": 0.175,
+      "oc_enso": 0.327,
+      "oc_iod": 0.117,
+      "oc_pdo": 0.293
+    },
+    "selected": [
+      "cf_umid_med",
+      "cf_precip_tot"
+    ]
+  },
+  "PE/chikungunya/2": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 0,
+      "cf_precip_tot": 4,
+      "oc_enso": 16,
+      "oc_iod": 0,
+      "oc_pdo": 13
+    },
+    "corr": {
+      "cf_temp_med": 0.335,
+      "cf_umid_med": -0.267,
+      "cf_precip_tot": -0.187,
+      "oc_enso": 0.311,
+      "oc_iod": -0.151,
+      "oc_pdo": 0.345
+    },
+    "selected": []
+  },
+  "PE/chikungunya/3": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 6,
+      "cf_precip_tot": 6,
+      "oc_enso": 16,
+      "oc_iod": 0,
+      "oc_pdo": 16
+    },
+    "corr": {
+      "cf_temp_med": 0.358,
+      "cf_umid_med": -0.234,
+      "cf_precip_tot": -0.136,
+      "oc_enso": 0.279,
+      "oc_iod": -0.176,
+      "oc_pdo": 0.272
+    },
+    "selected": []
+  },
+  "PE/chikungunya/4": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 16,
+      "cf_precip_tot": 6,
+      "oc_enso": 16,
+      "oc_iod": 0,
+      "oc_pdo": 16
+    },
+    "corr": {
+      "cf_temp_med": 0.206,
+      "cf_umid_med": -0.201,
+      "cf_precip_tot": -0.083,
+      "oc_enso": 0.111,
+      "oc_iod": -0.278,
+      "oc_pdo": 0.165
+    },
+    "selected": []
+  },
+  "PE/chikungunya/final": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 16,
+      "cf_precip_tot": 12,
+      "oc_enso": 16,
+      "oc_iod": 0,
+      "oc_pdo": 1
+    },
+    "corr": {
+      "cf_temp_med": 0.165,
+      "cf_umid_med": -0.075,
+      "cf_precip_tot": 0.069,
+      "oc_enso": 0.109,
+      "oc_iod": -0.202,
+      "oc_pdo": 0.124
+    },
+    "selected": [
+      "cf_temp_med",
+      "oc_pdo"
+    ]
+  },
+  "PI/chikungunya/2": {
+    "lags": {
+      "cf_temp_med": 3,
+      "cf_umid_med": 3,
+      "cf_precip_tot": 13,
+      "oc_enso": 0,
+      "oc_iod": 16,
+      "oc_pdo": 2
+    },
+    "corr": {
+      "cf_temp_med": 0.147,
+      "cf_umid_med": -0.183,
+      "cf_precip_tot": 0.069,
+      "oc_enso": -0.082,
+      "oc_iod": -0.272,
+      "oc_pdo": 0.124
+    },
+    "selected": [
+      "oc_iod",
+      "cf_umid_med"
+    ]
+  },
+  "PI/chikungunya/1": {
+    "lags": {
+      "cf_temp_med": 8,
+      "cf_umid_med": 16,
+      "cf_precip_tot": 8,
+      "oc_enso": 0,
+      "oc_iod": 16,
+      "oc_pdo": 2
+    },
+    "corr": {
+      "cf_temp_med": 0.245,
+      "cf_umid_med": -0.22,
+      "cf_precip_tot": -0.049,
+      "oc_enso": -0.044,
+      "oc_iod": -0.232,
+      "oc_pdo": 0.169
+    },
+    "selected": [
+      "cf_temp_med",
+      "cf_precip_tot",
+      "oc_enso"
+    ]
+  },
+  "PI/chikungunya/3": {
+    "lags": {
+      "cf_temp_med": 3,
+      "cf_umid_med": 3,
+      "cf_precip_tot": 13,
+      "oc_enso": 13,
+      "oc_iod": 16,
+      "oc_pdo": 3
+    },
+    "corr": {
+      "cf_temp_med": 0.101,
+      "cf_umid_med": -0.151,
+      "cf_precip_tot": 0.084,
+      "oc_enso": -0.101,
+      "oc_iod": -0.324,
+      "oc_pdo": 0.123
+    },
+    "selected": []
+  },
+  "PI/chikungunya/4": {
+    "lags": {
+      "cf_temp_med": 11,
+      "cf_umid_med": 4,
+      "cf_precip_tot": 11,
+      "oc_enso": 16,
+      "oc_iod": 16,
+      "oc_pdo": 16
+    },
+    "corr": {
+      "cf_temp_med": -0.062,
+      "cf_umid_med": -0.095,
+      "cf_precip_tot": 0.081,
+      "oc_enso": -0.166,
+      "oc_iod": -0.374,
+      "oc_pdo": -0.044
+    },
+    "selected": []
+  },
+  "PI/chikungunya/final": {
+    "lags": {
+      "cf_temp_med": 11,
+      "cf_umid_med": 3,
+      "cf_precip_tot": 11,
+      "oc_enso": 16,
+      "oc_iod": 16,
+      "oc_pdo": 16
+    },
+    "corr": {
+      "cf_temp_med": -0.087,
+      "cf_umid_med": -0.048,
+      "cf_precip_tot": 0.093,
+      "oc_enso": -0.146,
+      "oc_iod": -0.297,
+      "oc_pdo": -0.079
+    },
+    "selected": []
+  },
+  "RJ/chikungunya/1": {
+    "lags": {
+      "cf_temp_med": 7,
+      "cf_umid_med": 14,
+      "cf_precip_tot": 3,
+      "oc_enso": 11,
+      "oc_iod": 7,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": 0.143,
+      "cf_umid_med": 0.125,
+      "cf_precip_tot": 0.074,
+      "oc_enso": 0.311,
+      "oc_iod": 0.142,
+      "oc_pdo": 0.122
+    },
+    "selected": [
+      "oc_enso",
+      "cf_precip_tot"
+    ]
+  },
+  "RJ/chikungunya/2": {
+    "lags": {
+      "cf_temp_med": 4,
+      "cf_umid_med": 16,
+      "cf_precip_tot": 16,
+      "oc_enso": 11,
+      "oc_iod": 14,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": 0.129,
+      "cf_umid_med": 0.104,
+      "cf_precip_tot": 0.08,
+      "oc_enso": 0.353,
+      "oc_iod": 0.203,
+      "oc_pdo": 0.153
+    },
+    "selected": [
+      "oc_enso"
+    ]
+  },
+  "RJ/chikungunya/3": {
+    "lags": {
+      "cf_temp_med": 7,
+      "cf_umid_med": 4,
+      "cf_precip_tot": 4,
+      "oc_enso": 16,
+      "oc_iod": 14,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": 0.112,
+      "cf_umid_med": 0.072,
+      "cf_precip_tot": 0.083,
+      "oc_enso": 0.319,
+      "oc_iod": 0.218,
+      "oc_pdo": 0.122
+    },
+    "selected": [
+      "oc_enso"
+    ]
+  },
+  "RJ/chikungunya/4": {
+    "lags": {
+      "cf_temp_med": 7,
+      "cf_umid_med": 2,
+      "cf_precip_tot": 2,
+      "oc_enso": 16,
+      "oc_iod": 13,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": 0.09,
+      "cf_umid_med": 0.076,
+      "cf_precip_tot": 0.084,
+      "oc_enso": 0.282,
+      "oc_iod": 0.168,
+      "oc_pdo": 0.096
+    },
+    "selected": [
+      "cf_precip_tot"
+    ]
+  },
+  "RN/chikungunya/1": {
+    "lags": {
+      "cf_temp_med": 14,
+      "cf_umid_med": 16,
+      "cf_precip_tot": 16,
+      "oc_enso": 16,
+      "oc_iod": 16,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": -0.11,
+      "cf_umid_med": 0.205,
+      "cf_precip_tot": 0.159,
+      "oc_enso": 0.414,
+      "oc_iod": 0.172,
+      "oc_pdo": 0.419
+    },
+    "selected": [
+      "cf_umid_med"
+    ]
+  },
+  "RN/chikungunya/3": {
+    "lags": {
+      "cf_temp_med": 14,
+      "cf_umid_med": 16,
+      "cf_precip_tot": 16,
+      "oc_enso": 16,
+      "oc_iod": 16,
+      "oc_pdo": 2
+    },
+    "corr": {
+      "cf_temp_med": -0.096,
+      "cf_umid_med": 0.195,
+      "cf_precip_tot": 0.152,
+      "oc_enso": 0.312,
+      "oc_iod": 0.22,
+      "oc_pdo": 0.293
+    },
+    "selected": []
+  },
+  "RJ/chikungunya/final": {
+    "lags": {
+      "cf_temp_med": 0,
+      "cf_umid_med": 16,
+      "cf_precip_tot": 4,
+      "oc_enso": 16,
+      "oc_iod": 16,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": 0.083,
+      "cf_umid_med": 0.068,
+      "cf_precip_tot": 0.073,
+      "oc_enso": 0.282,
+      "oc_iod": 0.19,
+      "oc_pdo": 0.114
+    },
+    "selected": [
+      "oc_enso",
+      "oc_pdo"
+    ]
+  },
+  "RN/chikungunya/2": {
+    "lags": {
+      "cf_temp_med": 14,
+      "cf_umid_med": 16,
+      "cf_precip_tot": 16,
+      "oc_enso": 16,
+      "oc_iod": 16,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": -0.151,
+      "cf_umid_med": 0.222,
+      "cf_precip_tot": 0.192,
+      "oc_enso": 0.362,
+      "oc_iod": 0.163,
+      "oc_pdo": 0.375
+    },
+    "selected": [
+      "oc_enso",
+      "oc_iod"
+    ]
+  },
+  "RS/chikungunya/1": {
+    "lags": {
+      "cf_temp_med": 7,
+      "cf_umid_med": 7,
+      "cf_precip_tot": 10,
+      "oc_enso": 11,
+      "oc_iod": 16,
+      "oc_pdo": 1
+    },
+    "corr": {
+      "cf_temp_med": -0.092,
+      "cf_umid_med": 0.2,
+      "cf_precip_tot": 0.144,
+      "oc_enso": 0.216,
+      "oc_iod": 0.088,
+      "oc_pdo": 0.199
+    },
+    "selected": []
+  },
+  "RN/chikungunya/4": {
+    "lags": {
+      "cf_temp_med": 14,
+      "cf_umid_med": 16,
+      "cf_precip_tot": 16,
+      "oc_enso": 16,
+      "oc_iod": 0,
+      "oc_pdo": 2
+    },
+    "corr": {
+      "cf_temp_med": -0.185,
+      "cf_umid_med": 0.162,
+      "cf_precip_tot": 0.142,
+      "oc_enso": 0.127,
+      "oc_iod": -0.126,
+      "oc_pdo": 0.14
+    },
+    "selected": [
+      "cf_umid_med"
+    ]
+  },
+  "RN/chikungunya/final": {
+    "lags": {
+      "cf_temp_med": 2,
+      "cf_umid_med": 16,
+      "cf_precip_tot": 16,
+      "oc_enso": 16,
+      "oc_iod": 0,
+      "oc_pdo": 2
+    },
+    "corr": {
+      "cf_temp_med": -0.133,
+      "cf_umid_med": 0.157,
+      "cf_precip_tot": 0.123,
+      "oc_enso": 0.078,
+      "oc_iod": -0.072,
+      "oc_pdo": 0.112
+    },
+    "selected": [
+      "cf_temp_med",
+      "oc_enso"
+    ]
+  },
+  "RS/chikungunya/2": {
+    "lags": {
+      "cf_temp_med": 2,
+      "cf_umid_med": 3,
+      "cf_precip_tot": 10,
+      "oc_enso": 1,
+      "oc_iod": 16,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": -0.078,
+      "cf_umid_med": 0.196,
+      "cf_precip_tot": 0.153,
+      "oc_enso": 0.167,
+      "oc_iod": 0.051,
+      "oc_pdo": 0.156
+    },
+    "selected": [
+      "oc_pdo"
+    ]
+  },
+  "RS/chikungunya/3": {
+    "lags": {
+      "cf_temp_med": 14,
+      "cf_umid_med": 1,
+      "cf_precip_tot": 10,
+      "oc_enso": 1,
+      "oc_iod": 4,
+      "oc_pdo": 1
+    },
+    "corr": {
+      "cf_temp_med": 0.063,
+      "cf_umid_med": 0.192,
+      "cf_precip_tot": 0.149,
+      "oc_enso": 0.183,
+      "oc_iod": -0.032,
+      "oc_pdo": 0.142
+    },
+    "selected": [
+      "oc_enso",
+      "cf_temp_med"
+    ]
+  },
+  "RS/chikungunya/final": {
+    "lags": {
+      "cf_temp_med": 0,
+      "cf_umid_med": 3,
+      "cf_precip_tot": 10,
+      "oc_enso": 12,
+      "oc_iod": 16,
+      "oc_pdo": 12
+    },
+    "corr": {
+      "cf_temp_med": 0.08,
+      "cf_umid_med": 0.173,
+      "cf_precip_tot": 0.179,
+      "oc_enso": 0.21,
+      "oc_iod": 0.063,
+      "oc_pdo": 0.163
+    },
+    "selected": []
+  },
+  "RO/chikungunya/1": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 15,
+      "cf_precip_tot": 9,
+      "oc_enso": 14,
+      "oc_iod": 0,
+      "oc_pdo": 16
+    },
+    "corr": {
+      "cf_temp_med": 0.261,
+      "cf_umid_med": -0.141,
+      "cf_precip_tot": -0.152,
+      "oc_enso": 0.195,
+      "oc_iod": -0.136,
+      "oc_pdo": 0.279
+    },
+    "selected": []
+  },
+  "RS/chikungunya/4": {
+    "lags": {
+      "cf_temp_med": 14,
+      "cf_umid_med": 1,
+      "cf_precip_tot": 10,
+      "oc_enso": 1,
+      "oc_iod": 16,
+      "oc_pdo": 1
+    },
+    "corr": {
+      "cf_temp_med": 0.063,
+      "cf_umid_med": 0.232,
+      "cf_precip_tot": 0.182,
+      "oc_enso": 0.226,
+      "oc_iod": 0.102,
+      "oc_pdo": 0.193
+    },
+    "selected": [
+      "cf_umid_med",
+      "cf_precip_tot"
+    ]
+  },
+  "RO/chikungunya/2": {
+    "lags": {
+      "cf_temp_med": 11,
+      "cf_umid_med": 16,
+      "cf_precip_tot": 15,
+      "oc_enso": 16,
+      "oc_iod": 0,
+      "oc_pdo": 16
+    },
+    "corr": {
+      "cf_temp_med": 0.24,
+      "cf_umid_med": -0.112,
+      "cf_precip_tot": -0.139,
+      "oc_enso": 0.183,
+      "oc_iod": -0.126,
+      "oc_pdo": 0.258
+    },
+    "selected": []
+  },
+  "RO/chikungunya/3": {
+    "lags": {
+      "cf_temp_med": 11,
+      "cf_umid_med": 16,
+      "cf_precip_tot": 15,
+      "oc_enso": 16,
+      "oc_iod": 3,
+      "oc_pdo": 15
+    },
+    "corr": {
+      "cf_temp_med": 0.221,
+      "cf_umid_med": -0.131,
+      "cf_precip_tot": -0.131,
+      "oc_enso": 0.138,
+      "oc_iod": -0.16,
+      "oc_pdo": 0.232
+    },
+    "selected": []
+  },
+  "RO/chikungunya/4": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 16,
+      "cf_precip_tot": 15,
+      "oc_enso": 15,
+      "oc_iod": 0,
+      "oc_pdo": 4
+    },
+    "corr": {
+      "cf_temp_med": 0.202,
+      "cf_umid_med": -0.152,
+      "cf_precip_tot": -0.135,
+      "oc_enso": 0.152,
+      "oc_iod": -0.126,
+      "oc_pdo": 0.227
+    },
+    "selected": []
+  },
+  "RO/chikungunya/final": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 3,
+      "cf_precip_tot": 16,
+      "oc_enso": 16,
+      "oc_iod": 3,
+      "oc_pdo": 16
+    },
+    "corr": {
+      "cf_temp_med": 0.156,
+      "cf_umid_med": 0.134,
+      "cf_precip_tot": -0.085,
+      "oc_enso": 0.105,
+      "oc_iod": -0.137,
+      "oc_pdo": 0.171
+    },
+    "selected": [
+      "cf_temp_med"
+    ]
+  },
+  "SC/chikungunya/1": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 0,
+      "cf_precip_tot": 16,
+      "oc_enso": 7,
+      "oc_iod": 15,
+      "oc_pdo": 1
+    },
+    "corr": {
+      "cf_temp_med": 0.128,
+      "cf_umid_med": 0.21,
+      "cf_precip_tot": 0.185,
+      "oc_enso": 0.441,
+      "oc_iod": 0.297,
+      "oc_pdo": 0.338
+    },
+    "selected": [
+      "oc_pdo"
+    ]
+  },
+  "SC/chikungunya/2": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 0,
+      "cf_precip_tot": 1,
+      "oc_enso": 7,
+      "oc_iod": 15,
+      "oc_pdo": 1
+    },
+    "corr": {
+      "cf_temp_med": 0.089,
+      "cf_umid_med": 0.27,
+      "cf_precip_tot": 0.237,
+      "oc_enso": 0.259,
+      "oc_iod": 0.161,
+      "oc_pdo": 0.227
+    },
+    "selected": [
+      "cf_precip_tot"
+    ]
+  },
+  "SC/chikungunya/3": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 0,
+      "cf_precip_tot": 15,
+      "oc_enso": 7,
+      "oc_iod": 15,
+      "oc_pdo": 1
+    },
+    "corr": {
+      "cf_temp_med": 0.115,
+      "cf_umid_med": 0.208,
+      "cf_precip_tot": 0.22,
+      "oc_enso": 0.19,
+      "oc_iod": 0.113,
+      "oc_pdo": 0.19
+    },
+    "selected": [
+      "cf_precip_tot"
+    ]
+  },
+  "SC/chikungunya/4": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 0,
+      "cf_precip_tot": 15,
+      "oc_enso": 7,
+      "oc_iod": 15,
+      "oc_pdo": 1
+    },
+    "corr": {
+      "cf_temp_med": 0.076,
+      "cf_umid_med": 0.199,
+      "cf_precip_tot": 0.22,
+      "oc_enso": 0.168,
+      "oc_iod": 0.106,
+      "oc_pdo": 0.165
+    },
+    "selected": []
+  },
+  "SP/chikungunya/1": {
+    "lags": {
+      "cf_temp_med": 0,
+      "cf_umid_med": 4,
+      "cf_precip_tot": 4,
+      "oc_enso": 0,
+      "oc_iod": 10,
+      "oc_pdo": 16
+    },
+    "corr": {
+      "cf_temp_med": -0.114,
+      "cf_umid_med": 0.305,
+      "cf_precip_tot": 0.192,
+      "oc_enso": 0.242,
+      "oc_iod": -0.133,
+      "oc_pdo": 0.282
+    },
+    "selected": []
+  },
+  "SC/chikungunya/final": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 16,
+      "cf_precip_tot": 15,
+      "oc_enso": 16,
+      "oc_iod": 15,
+      "oc_pdo": 1
+    },
+    "corr": {
+      "cf_temp_med": 0.059,
+      "cf_umid_med": 0.177,
+      "cf_precip_tot": 0.223,
+      "oc_enso": 0.168,
+      "oc_iod": 0.065,
+      "oc_pdo": 0.129
+    },
+    "selected": []
+  },
+  "SP/chikungunya/2": {
+    "lags": {
+      "cf_temp_med": 0,
+      "cf_umid_med": 4,
+      "cf_precip_tot": 5,
+      "oc_enso": 0,
+      "oc_iod": 11,
+      "oc_pdo": 16
+    },
+    "corr": {
+      "cf_temp_med": -0.1,
+      "cf_umid_med": 0.261,
+      "cf_precip_tot": 0.172,
+      "oc_enso": 0.26,
+      "oc_iod": -0.083,
+      "oc_pdo": 0.285
+    },
+    "selected": [
+      "oc_iod"
+    ]
+  },
+  "SP/chikungunya/3": {
+    "lags": {
+      "cf_temp_med": 0,
+      "cf_umid_med": 4,
+      "cf_precip_tot": 13,
+      "oc_enso": 0,
+      "oc_iod": 10,
+      "oc_pdo": 16
+    },
+    "corr": {
+      "cf_temp_med": -0.117,
+      "cf_umid_med": 0.248,
+      "cf_precip_tot": 0.15,
+      "oc_enso": 0.224,
+      "oc_iod": -0.088,
+      "oc_pdo": 0.265
+    },
+    "selected": [
+      "oc_pdo",
+      "cf_temp_med"
+    ]
+  },
+  "SP/chikungunya/final": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 8,
+      "cf_precip_tot": 12,
+      "oc_enso": 16,
+      "oc_iod": 16,
+      "oc_pdo": 16
+    },
+    "corr": {
+      "cf_temp_med": 0.171,
+      "cf_umid_med": 0.146,
+      "cf_precip_tot": 0.083,
+      "oc_enso": 0.333,
+      "oc_iod": 0.088,
+      "oc_pdo": 0.386
+    },
+    "selected": []
+  },
+  "SP/chikungunya/4": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 8,
+      "cf_precip_tot": 12,
+      "oc_enso": 16,
+      "oc_iod": 15,
+      "oc_pdo": 16
+    },
+    "corr": {
+      "cf_temp_med": 0.172,
+      "cf_umid_med": 0.156,
+      "cf_precip_tot": 0.08,
+      "oc_enso": 0.321,
+      "oc_iod": 0.081,
+      "oc_pdo": 0.368
+    },
+    "selected": [
+      "oc_pdo",
+      "oc_enso"
+    ]
+  },
+  "SE/chikungunya/1": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 0,
+      "cf_precip_tot": 0,
+      "oc_enso": 16,
+      "oc_iod": 0,
+      "oc_pdo": 5
+    },
+    "corr": {
+      "cf_temp_med": 0.2,
+      "cf_umid_med": -0.119,
+      "cf_precip_tot": -0.123,
+      "oc_enso": 0.414,
+      "oc_iod": -0.149,
+      "oc_pdo": 0.527
+    },
+    "selected": [
+      "cf_temp_med",
+      "cf_umid_med"
+    ]
+  },
+  "SE/chikungunya/3": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 11,
+      "cf_precip_tot": 16,
+      "oc_enso": 16,
+      "oc_iod": 0,
+      "oc_pdo": 5
+    },
+    "corr": {
+      "cf_temp_med": 0.111,
+      "cf_umid_med": 0.057,
+      "cf_precip_tot": 0.133,
+      "oc_enso": 0.284,
+      "oc_iod": -0.209,
+      "oc_pdo": 0.395
+    },
+    "selected": [
+      "cf_umid_med"
+    ]
+  },
+  "SE/chikungunya/2": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 14,
+      "cf_precip_tot": 16,
+      "oc_enso": 16,
+      "oc_iod": 0,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": 0.116,
+      "cf_umid_med": 0.065,
+      "cf_precip_tot": 0.158,
+      "oc_enso": 0.336,
+      "oc_iod": -0.178,
+      "oc_pdo": 0.438
+    },
+    "selected": [
+      "oc_iod",
+      "cf_temp_med",
+      "cf_umid_med"
+    ]
+  },
+  "SE/chikungunya/4": {
+    "lags": {
+      "cf_temp_med": 5,
+      "cf_umid_med": 11,
+      "cf_precip_tot": 15,
+      "oc_enso": 16,
+      "oc_iod": 0,
+      "oc_pdo": 5
+    },
+    "corr": {
+      "cf_temp_med": -0.068,
+      "cf_umid_med": 0.068,
+      "cf_precip_tot": 0.134,
+      "oc_enso": 0.118,
+      "oc_iod": -0.273,
+      "oc_pdo": 0.25
+    },
+    "selected": []
+  },
+  "TO/chikungunya/1": {
+    "lags": {
+      "cf_temp_med": 2,
+      "cf_umid_med": 7,
+      "cf_precip_tot": 6,
+      "oc_enso": 9,
+      "oc_iod": 15,
+      "oc_pdo": 15
+    },
+    "corr": {
+      "cf_temp_med": 0.186,
+      "cf_umid_med": -0.153,
+      "cf_precip_tot": -0.09,
+      "oc_enso": 0.127,
+      "oc_iod": -0.299,
+      "oc_pdo": 0.202
+    },
+    "selected": [
+      "oc_enso"
+    ]
+  },
+  "SE/chikungunya/final": {
+    "lags": {
+      "cf_temp_med": 5,
+      "cf_umid_med": 10,
+      "cf_precip_tot": 15,
+      "oc_enso": 16,
+      "oc_iod": 0,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": -0.055,
+      "cf_umid_med": 0.124,
+      "cf_precip_tot": 0.192,
+      "oc_enso": 0.116,
+      "oc_iod": -0.177,
+      "oc_pdo": 0.225
+    },
+    "selected": [
+      "cf_precip_tot"
+    ]
+  },
+  "TO/chikungunya/2": {
+    "lags": {
+      "cf_temp_med": 2,
+      "cf_umid_med": 0,
+      "cf_precip_tot": 6,
+      "oc_enso": 16,
+      "oc_iod": 16,
+      "oc_pdo": 13
+    },
+    "corr": {
+      "cf_temp_med": 0.11,
+      "cf_umid_med": -0.101,
+      "cf_precip_tot": -0.053,
+      "oc_enso": -0.042,
+      "oc_iod": -0.339,
+      "oc_pdo": 0.077
+    },
+    "selected": [
+      "oc_iod",
+      "cf_temp_med",
+      "cf_umid_med",
+      "oc_enso"
+    ]
+  },
+  "TO/chikungunya/3": {
+    "lags": {
+      "cf_temp_med": 0,
+      "cf_umid_med": 0,
+      "cf_precip_tot": 2,
+      "oc_enso": 16,
+      "oc_iod": 16,
+      "oc_pdo": 14
+    },
+    "corr": {
+      "cf_temp_med": 0.071,
+      "cf_umid_med": -0.084,
+      "cf_precip_tot": -0.055,
+      "oc_enso": -0.075,
+      "oc_iod": -0.377,
+      "oc_pdo": 0.104
+    },
+    "selected": [
+      "cf_umid_med",
+      "cf_precip_tot"
+    ]
+  },
+  "TO/chikungunya/4": {
+    "lags": {
+      "cf_temp_med": 15,
+      "cf_umid_med": 13,
+      "cf_precip_tot": 8,
+      "oc_enso": 16,
+      "oc_iod": 16,
+      "oc_pdo": 14
+    },
+    "corr": {
+      "cf_temp_med": -0.075,
+      "cf_umid_med": 0.035,
+      "cf_precip_tot": 0.034,
+      "oc_enso": -0.121,
+      "oc_iod": -0.384,
+      "oc_pdo": 0.05
+    },
+    "selected": [
+      "oc_iod",
+      "cf_temp_med"
+    ]
+  },
+  "TO/chikungunya/final": {
+    "lags": {
+      "cf_temp_med": 15,
+      "cf_umid_med": 13,
+      "cf_precip_tot": 13,
+      "oc_enso": 16,
+      "oc_iod": 15,
+      "oc_pdo": 14
+    },
+    "corr": {
+      "cf_temp_med": -0.099,
+      "cf_umid_med": 0.061,
+      "cf_precip_tot": 0.063,
+      "oc_enso": -0.112,
+      "oc_iod": -0.359,
+      "oc_pdo": 0.026
+    },
+    "selected": [
+      "oc_iod",
+      "cf_precip_tot"
+    ]
+  },
+  "AL/dengue/4": {
+    "lags": {
+      "cf_temp_med": 13,
+      "cf_umid_med": 11,
+      "cf_precip_tot": 11,
+      "oc_enso": 13,
+      "oc_iod": 15,
+      "oc_pdo": 15
+    },
+    "corr": {
+      "cf_temp_med": 0.113,
+      "cf_umid_med": 0.196,
+      "cf_precip_tot": 0.192,
+      "oc_enso": 0.165,
+      "oc_iod": 0.327,
+      "oc_pdo": -0.102
+    },
+    "selected": []
+  },
+  "AC/dengue/1": {
+    "lags": {
+      "cf_temp_med": 15,
+      "cf_umid_med": 15,
+      "cf_precip_tot": 16,
+      "oc_enso": 11,
+      "oc_iod": 16,
+      "oc_pdo": 4
+    },
+    "corr": {
+      "cf_temp_med": 0.159,
+      "cf_umid_med": -0.157,
+      "cf_precip_tot": -0.1,
+      "oc_enso": 0.051,
+      "oc_iod": 0.14,
+      "oc_pdo": 0.057
+    },
+    "selected": [
+      "cf_temp_med",
+      "cf_umid_med",
+      "oc_iod",
+      "cf_precip_tot"
+    ]
+  },
+  "AP/dengue/2": {
+    "lags": {
+      "cf_temp_med": 13,
+      "cf_umid_med": 13,
+      "cf_precip_tot": 15,
+      "oc_enso": 4,
+      "oc_iod": 12,
+      "oc_pdo": 4
+    },
+    "corr": {
+      "cf_temp_med": 0.166,
+      "cf_umid_med": -0.238,
+      "cf_precip_tot": -0.249,
+      "oc_enso": 0.231,
+      "oc_iod": -0.121,
+      "oc_pdo": 0.306
+    },
+    "selected": []
+  },
+  "AM/dengue/1": {
+    "lags": {
+      "cf_temp_med": 0,
+      "cf_umid_med": 0,
+      "cf_precip_tot": 2,
+      "oc_enso": 0,
+      "oc_iod": 0,
+      "oc_pdo": 1
+    },
+    "corr": {
+      "cf_temp_med": -0.136,
+      "cf_umid_med": 0.156,
+      "cf_precip_tot": 0.18,
+      "oc_enso": -0.4,
+      "oc_iod": -0.249,
+      "oc_pdo": -0.146
+    },
+    "selected": []
+  },
+  "BA/dengue/1": {
+    "lags": {
+      "cf_temp_med": 13,
+      "cf_umid_med": 16,
+      "cf_precip_tot": 7,
+      "oc_enso": 16,
+      "oc_iod": 16,
+      "oc_pdo": 7
+    },
+    "corr": {
+      "cf_temp_med": 0.303,
+      "cf_umid_med": -0.066,
+      "cf_precip_tot": 0.115,
+      "oc_enso": 0.349,
+      "oc_iod": 0.492,
+      "oc_pdo": -0.017
+    },
+    "selected": []
+  },
+  "AM/dengue/3": {
+    "lags": {
+      "cf_temp_med": 0,
+      "cf_umid_med": 0,
+      "cf_precip_tot": 2,
+      "oc_enso": 2,
+      "oc_iod": 0,
+      "oc_pdo": 8
+    },
+    "corr": {
+      "cf_temp_med": -0.111,
+      "cf_umid_med": 0.095,
+      "cf_precip_tot": 0.15,
+      "oc_enso": -0.388,
+      "oc_iod": -0.261,
+      "oc_pdo": -0.222
+    },
+    "selected": []
+  },
+  "BA/dengue/3": {
+    "lags": {
+      "cf_temp_med": 0,
+      "cf_umid_med": 8,
+      "cf_precip_tot": 8,
+      "oc_enso": 16,
+      "oc_iod": 14,
+      "oc_pdo": 9
+    },
+    "corr": {
+      "cf_temp_med": 0.236,
+      "cf_umid_med": 0.1,
+      "cf_precip_tot": 0.137,
+      "oc_enso": 0.231,
+      "oc_iod": 0.394,
+      "oc_pdo": -0.06
+    },
+    "selected": [
+      "cf_temp_med"
+    ]
+  },
+  "BA/dengue/2": {
+    "lags": {
+      "cf_temp_med": 6,
+      "cf_umid_med": 8,
+      "cf_precip_tot": 8,
+      "oc_enso": 16,
+      "oc_iod": 16,
+      "oc_pdo": 7
+    },
+    "corr": {
+      "cf_temp_med": 0.246,
+      "cf_umid_med": 0.063,
+      "cf_precip_tot": 0.115,
+      "oc_enso": 0.269,
+      "oc_iod": 0.442,
+      "oc_pdo": -0.037
+    },
+    "selected": [
+      "cf_temp_med",
+      "cf_precip_tot",
+      "cf_umid_med",
+      "oc_pdo"
+    ]
+  },
+  "CE/dengue/2": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 15,
+      "cf_precip_tot": 4,
+      "oc_enso": 2,
+      "oc_iod": 0,
+      "oc_pdo": 5
+    },
+    "corr": {
+      "cf_temp_med": 0.166,
+      "cf_umid_med": -0.107,
+      "cf_precip_tot": 0.063,
+      "oc_enso": -0.15,
+      "oc_iod": -0.398,
+      "oc_pdo": 0.164
+    },
+    "selected": []
+  },
+  "BA/dengue/4": {
+    "lags": {
+      "cf_temp_med": 13,
+      "cf_umid_med": 8,
+      "cf_precip_tot": 8,
+      "oc_enso": 16,
+      "oc_iod": 15,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": 0.298,
+      "cf_umid_med": 0.097,
+      "cf_precip_tot": 0.153,
+      "oc_enso": 0.316,
+      "oc_iod": 0.493,
+      "oc_pdo": 0.054
+    },
+    "selected": [
+      "cf_temp_med",
+      "oc_pdo"
+    ]
+  },
+  "CE/dengue/4": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 15,
+      "cf_precip_tot": 0,
+      "oc_enso": 2,
+      "oc_iod": 0,
+      "oc_pdo": 5
+    },
+    "corr": {
+      "cf_temp_med": 0.113,
+      "cf_umid_med": -0.092,
+      "cf_precip_tot": 0.075,
+      "oc_enso": -0.148,
+      "oc_iod": -0.376,
+      "oc_pdo": 0.155
+    },
+    "selected": [
+      "oc_pdo",
+      "cf_temp_med"
+    ]
+  },
+  "CE/dengue/final": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 15,
+      "cf_precip_tot": 0,
+      "oc_enso": 3,
+      "oc_iod": 0,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": 0.106,
+      "cf_umid_med": -0.056,
+      "cf_precip_tot": 0.066,
+      "oc_enso": -0.049,
+      "oc_iod": -0.307,
+      "oc_pdo": 0.193
+    },
+    "selected": [
+      "oc_iod",
+      "cf_precip_tot",
+      "cf_umid_med"
+    ]
+  },
+  "DF/dengue/final": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 6,
+      "cf_precip_tot": 6,
+      "oc_enso": 11,
+      "oc_iod": 9,
+      "oc_pdo": 16
+    },
+    "corr": {
+      "cf_temp_med": 0.113,
+      "cf_umid_med": 0.212,
+      "cf_precip_tot": 0.154,
+      "oc_enso": 0.229,
+      "oc_iod": 0.423,
+      "oc_pdo": -0.209
+    },
+    "selected": [
+      "oc_iod"
+    ]
+  },
+  "GO/dengue/3": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 8,
+      "cf_precip_tot": 16,
+      "oc_enso": 6,
+      "oc_iod": 8,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": 0.205,
+      "cf_umid_med": 0.114,
+      "cf_precip_tot": -0.074,
+      "oc_enso": 0.35,
+      "oc_iod": 0.27,
+      "oc_pdo": 0.22
+    },
+    "selected": [
+      "oc_iod",
+      "cf_temp_med",
+      "cf_umid_med",
+      "cf_precip_tot"
+    ]
+  },
+  "GO/dengue/final": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 8,
+      "cf_precip_tot": 8,
+      "oc_enso": 11,
+      "oc_iod": 9,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": 0.246,
+      "cf_umid_med": 0.099,
+      "cf_precip_tot": 0.073,
+      "oc_enso": 0.363,
+      "oc_iod": 0.337,
+      "oc_pdo": 0.255
+    },
+    "selected": [
+      "cf_umid_med"
+    ]
+  },
+  "MA/dengue/1": {
+    "lags": {
+      "cf_temp_med": 13,
+      "cf_umid_med": 13,
+      "cf_precip_tot": 11,
+      "oc_enso": 16,
+      "oc_iod": 7,
+      "oc_pdo": 15
+    },
+    "corr": {
+      "cf_temp_med": 0.158,
+      "cf_umid_med": -0.059,
+      "cf_precip_tot": 0.122,
+      "oc_enso": 0.303,
+      "oc_iod": 0.176,
+      "oc_pdo": 0.316
+    },
+    "selected": [
+      "cf_precip_tot",
+      "cf_umid_med"
+    ]
+  },
+  "MA/dengue/3": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 7,
+      "cf_precip_tot": 16,
+      "oc_enso": 2,
+      "oc_iod": 16,
+      "oc_pdo": 12
+    },
+    "corr": {
+      "cf_temp_med": -0.026,
+      "cf_umid_med": 0.064,
+      "cf_precip_tot": 0.16,
+      "oc_enso": -0.064,
+      "oc_iod": -0.043,
+      "oc_pdo": 0.07
+    },
+    "selected": [
+      "cf_umid_med",
+      "oc_enso"
+    ]
+  },
+  "MA/dengue/4": {
+    "lags": {
+      "cf_temp_med": 13,
+      "cf_umid_med": 7,
+      "cf_precip_tot": 7,
+      "oc_enso": 16,
+      "oc_iod": 7,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": 0.099,
+      "cf_umid_med": 0.054,
+      "cf_precip_tot": 0.12,
+      "oc_enso": 0.087,
+      "oc_iod": 0.093,
+      "oc_pdo": 0.099
+    },
+    "selected": [
+      "cf_precip_tot"
+    ]
+  },
+  "MT/dengue/3": {
+    "lags": {
+      "cf_temp_med": 10,
+      "cf_umid_med": 2,
+      "cf_precip_tot": 4,
+      "oc_enso": 15,
+      "oc_iod": 14,
+      "oc_pdo": 9
+    },
+    "corr": {
+      "cf_temp_med": 0.061,
+      "cf_umid_med": 0.077,
+      "cf_precip_tot": 0.082,
+      "oc_enso": -0.085,
+      "oc_iod": 0.159,
+      "oc_pdo": -0.262
+    },
+    "selected": [
+      "oc_iod",
+      "cf_temp_med"
+    ]
+  },
+  "MA/dengue/final": {
+    "lags": {
+      "cf_temp_med": 13,
+      "cf_umid_med": 7,
+      "cf_precip_tot": 7,
+      "oc_enso": 1,
+      "oc_iod": 7,
+      "oc_pdo": 5
+    },
+    "corr": {
+      "cf_temp_med": 0.112,
+      "cf_umid_med": 0.061,
+      "cf_precip_tot": 0.119,
+      "oc_enso": -0.082,
+      "oc_iod": 0.052,
+      "oc_pdo": 0.059
+    },
+    "selected": [
+      "cf_precip_tot",
+      "cf_temp_med",
+      "oc_enso",
+      "oc_pdo",
+      "oc_iod"
+    ]
+  },
+  "MT/dengue/4": {
+    "lags": {
+      "cf_temp_med": 10,
+      "cf_umid_med": 4,
+      "cf_precip_tot": 4,
+      "oc_enso": 15,
+      "oc_iod": 15,
+      "oc_pdo": 15
+    },
+    "corr": {
+      "cf_temp_med": 0.09,
+      "cf_umid_med": 0.068,
+      "cf_precip_tot": 0.097,
+      "oc_enso": -0.029,
+      "oc_iod": 0.24,
+      "oc_pdo": -0.22
+    },
+    "selected": [
+      "cf_precip_tot",
+      "cf_temp_med",
+      "oc_enso"
+    ]
+  },
+  "MT/dengue/final": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 2,
+      "cf_precip_tot": 4,
+      "oc_enso": 15,
+      "oc_iod": 15,
+      "oc_pdo": 9
+    },
+    "corr": {
+      "cf_temp_med": 0.104,
+      "cf_umid_med": 0.061,
+      "cf_precip_tot": 0.092,
+      "oc_enso": -0.046,
+      "oc_iod": 0.206,
+      "oc_pdo": -0.217
+    },
+    "selected": [
+      "oc_enso"
+    ]
+  },
+  "MS/dengue/1": {
+    "lags": {
+      "cf_temp_med": 10,
+      "cf_umid_med": 4,
+      "cf_precip_tot": 4,
+      "oc_enso": 13,
+      "oc_iod": 16,
+      "oc_pdo": 16
+    },
+    "corr": {
+      "cf_temp_med": 0.238,
+      "cf_umid_med": 0.072,
+      "cf_precip_tot": 0.09,
+      "oc_enso": 0.423,
+      "oc_iod": 0.475,
+      "oc_pdo": -0.064
+    },
+    "selected": []
+  },
+  "MS/dengue/3": {
+    "lags": {
+      "cf_temp_med": 10,
+      "cf_umid_med": 4,
+      "cf_precip_tot": 5,
+      "oc_enso": 12,
+      "oc_iod": 16,
+      "oc_pdo": 16
+    },
+    "corr": {
+      "cf_temp_med": 0.142,
+      "cf_umid_med": 0.123,
+      "cf_precip_tot": 0.132,
+      "oc_enso": 0.253,
+      "oc_iod": 0.347,
+      "oc_pdo": -0.091
+    },
+    "selected": [
+      "oc_iod"
+    ]
+  },
+  "MS/dengue/final": {
+    "lags": {
+      "cf_temp_med": 10,
+      "cf_umid_med": 4,
+      "cf_precip_tot": 4,
+      "oc_enso": 12,
+      "oc_iod": 9,
+      "oc_pdo": 16
+    },
+    "corr": {
+      "cf_temp_med": 0.078,
+      "cf_umid_med": 0.125,
+      "cf_precip_tot": 0.122,
+      "oc_enso": 0.227,
+      "oc_iod": 0.299,
+      "oc_pdo": -0.104
+    },
+    "selected": [
+      "oc_iod",
+      "cf_temp_med"
+    ]
+  },
+  "MG/dengue/2": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 16,
+      "cf_precip_tot": 15,
+      "oc_enso": 12,
+      "oc_iod": 9,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": 0.302,
+      "cf_umid_med": -0.108,
+      "cf_precip_tot": -0.115,
+      "oc_enso": 0.542,
+      "oc_iod": 0.449,
+      "oc_pdo": 0.204
+    },
+    "selected": [
+      "cf_precip_tot",
+      "cf_umid_med"
+    ]
+  },
+  "MG/dengue/4": {
+    "lags": {
+      "cf_temp_med": 0,
+      "cf_umid_med": 15,
+      "cf_precip_tot": 15,
+      "oc_enso": 12,
+      "oc_iod": 8,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": 0.313,
+      "cf_umid_med": -0.052,
+      "cf_precip_tot": -0.099,
+      "oc_enso": 0.463,
+      "oc_iod": 0.452,
+      "oc_pdo": 0.147
+    },
+    "selected": [
+      "cf_temp_med",
+      "oc_pdo"
+    ]
+  },
+  "MG/dengue/3": {
+    "lags": {
+      "cf_temp_med": 0,
+      "cf_umid_med": 15,
+      "cf_precip_tot": 15,
+      "oc_enso": 12,
+      "oc_iod": 9,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": 0.259,
+      "cf_umid_med": -0.064,
+      "cf_precip_tot": -0.091,
+      "oc_enso": 0.413,
+      "oc_iod": 0.357,
+      "oc_pdo": 0.124
+    },
+    "selected": [
+      "oc_iod",
+      "cf_temp_med",
+      "oc_pdo",
+      "cf_precip_tot"
+    ]
+  },
+  "PA/dengue/1": {
+    "lags": {
+      "cf_temp_med": 13,
+      "cf_umid_med": 16,
+      "cf_precip_tot": 15,
+      "oc_enso": 16,
+      "oc_iod": 14,
+      "oc_pdo": 16
+    },
+    "corr": {
+      "cf_temp_med": 0.214,
+      "cf_umid_med": -0.13,
+      "cf_precip_tot": -0.15,
+      "oc_enso": 0.183,
+      "oc_iod": 0.225,
+      "oc_pdo": 0.126
+    },
+    "selected": []
+  },
+  "MG/dengue/final": {
+    "lags": {
+      "cf_temp_med": 0,
+      "cf_umid_med": 4,
+      "cf_precip_tot": 0,
+      "oc_enso": 12,
+      "oc_iod": 9,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": 0.279,
+      "cf_umid_med": 0.062,
+      "cf_precip_tot": -0.091,
+      "oc_enso": 0.435,
+      "oc_iod": 0.441,
+      "oc_pdo": 0.148
+    },
+    "selected": [
+      "cf_temp_med"
+    ]
+  },
+  "PA/dengue/2": {
+    "lags": {
+      "cf_temp_med": 13,
+      "cf_umid_med": 4,
+      "cf_precip_tot": 3,
+      "oc_enso": 0,
+      "oc_iod": 14,
+      "oc_pdo": 3
+    },
+    "corr": {
+      "cf_temp_med": 0.103,
+      "cf_umid_med": 0.063,
+      "cf_precip_tot": 0.103,
+      "oc_enso": -0.159,
+      "oc_iod": 0.102,
+      "oc_pdo": -0.118
+    },
+    "selected": [
+      "oc_enso",
+      "oc_iod",
+      "cf_umid_med"
+    ]
+  },
+  "PA/dengue/3": {
+    "lags": {
+      "cf_temp_med": 13,
+      "cf_umid_med": 8,
+      "cf_precip_tot": 4,
+      "oc_enso": 2,
+      "oc_iod": 0,
+      "oc_pdo": 8
+    },
+    "corr": {
+      "cf_temp_med": 0.065,
+      "cf_umid_med": 0.068,
+      "cf_precip_tot": 0.07,
+      "oc_enso": -0.138,
+      "oc_iod": -0.068,
+      "oc_pdo": -0.167
+    },
+    "selected": [
+      "cf_precip_tot",
+      "cf_umid_med",
+      "cf_temp_med"
+    ]
+  },
+  "PA/dengue/4": {
+    "lags": {
+      "cf_temp_med": 13,
+      "cf_umid_med": 0,
+      "cf_precip_tot": 15,
+      "oc_enso": 16,
+      "oc_iod": 14,
+      "oc_pdo": 8
+    },
+    "corr": {
+      "cf_temp_med": 0.224,
+      "cf_umid_med": -0.074,
+      "cf_precip_tot": -0.121,
+      "oc_enso": 0.06,
+      "oc_iod": 0.209,
+      "oc_pdo": -0.07
+    },
+    "selected": [
+      "cf_temp_med",
+      "cf_umid_med",
+      "oc_pdo"
+    ]
+  },
+  "PA/dengue/final": {
+    "lags": {
+      "cf_temp_med": 13,
+      "cf_umid_med": 16,
+      "cf_precip_tot": 15,
+      "oc_enso": 0,
+      "oc_iod": 14,
+      "oc_pdo": 8
+    },
+    "corr": {
+      "cf_temp_med": 0.233,
+      "cf_umid_med": -0.09,
+      "cf_precip_tot": -0.128,
+      "oc_enso": -0.138,
+      "oc_iod": 0.142,
+      "oc_pdo": -0.084
+    },
+    "selected": [
+      "oc_enso",
+      "oc_pdo"
+    ]
+  },
+  "PB/dengue/3": {
+    "lags": {
+      "cf_temp_med": 3,
+      "cf_umid_med": 2,
+      "cf_precip_tot": 0,
+      "oc_enso": 0,
+      "oc_iod": 16,
+      "oc_pdo": 16
+    },
+    "corr": {
+      "cf_temp_med": -0.048,
+      "cf_umid_med": 0.073,
+      "cf_precip_tot": 0.132,
+      "oc_enso": -0.095,
+      "oc_iod": 0.111,
+      "oc_pdo": -0.161
+    },
+    "selected": []
+  },
+  "PB/dengue/final": {
+    "lags": {
+      "cf_temp_med": 3,
+      "cf_umid_med": 0,
+      "cf_precip_tot": 0,
+      "oc_enso": 0,
+      "oc_iod": 16,
+      "oc_pdo": 16
+    },
+    "corr": {
+      "cf_temp_med": -0.056,
+      "cf_umid_med": 0.112,
+      "cf_precip_tot": 0.162,
+      "oc_enso": -0.021,
+      "oc_iod": 0.144,
+      "oc_pdo": -0.135
+    },
+    "selected": [
+      "cf_temp_med",
+      "oc_enso"
+    ]
+  },
+  "PR/dengue/1": {
+    "lags": {
+      "cf_temp_med": 13,
+      "cf_umid_med": 15,
+      "cf_precip_tot": 5,
+      "oc_enso": 16,
+      "oc_iod": 16,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": 0.288,
+      "cf_umid_med": -0.105,
+      "cf_precip_tot": 0.07,
+      "oc_enso": 0.327,
+      "oc_iod": 0.439,
+      "oc_pdo": 0.194
+    },
+    "selected": []
+  },
+  "PR/dengue/4": {
+    "lags": {
+      "cf_temp_med": 13,
+      "cf_umid_med": 8,
+      "cf_precip_tot": 9,
+      "oc_enso": 11,
+      "oc_iod": 16,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": 0.252,
+      "cf_umid_med": 0.087,
+      "cf_precip_tot": 0.145,
+      "oc_enso": 0.218,
+      "oc_iod": 0.39,
+      "oc_pdo": 0.099
+    },
+    "selected": [
+      "oc_pdo"
+    ]
+  },
+  "PE/dengue/2": {
+    "lags": {
+      "cf_temp_med": 0,
+      "cf_umid_med": 11,
+      "cf_precip_tot": 14,
+      "oc_enso": 16,
+      "oc_iod": 15,
+      "oc_pdo": 1
+    },
+    "corr": {
+      "cf_temp_med": 0.087,
+      "cf_umid_med": 0.149,
+      "cf_precip_tot": 0.151,
+      "oc_enso": 0.229,
+      "oc_iod": 0.335,
+      "oc_pdo": 0.163
+    },
+    "selected": [
+      "oc_iod",
+      "cf_temp_med"
+    ]
+  },
+  "PE/dengue/4": {
+    "lags": {
+      "cf_temp_med": 0,
+      "cf_umid_med": 11,
+      "cf_precip_tot": 11,
+      "oc_enso": 16,
+      "oc_iod": 16,
+      "oc_pdo": 1
+    },
+    "corr": {
+      "cf_temp_med": 0.146,
+      "cf_umid_med": 0.108,
+      "cf_precip_tot": 0.122,
+      "oc_enso": 0.315,
+      "oc_iod": 0.387,
+      "oc_pdo": 0.227
+    },
+    "selected": [
+      "cf_temp_med",
+      "cf_precip_tot"
+    ]
+  },
+  "PE/dengue/final": {
+    "lags": {
+      "cf_temp_med": 13,
+      "cf_umid_med": 8,
+      "cf_precip_tot": 10,
+      "oc_enso": 16,
+      "oc_iod": 16,
+      "oc_pdo": 1
+    },
+    "corr": {
+      "cf_temp_med": 0.148,
+      "cf_umid_med": 0.067,
+      "cf_precip_tot": 0.087,
+      "oc_enso": 0.277,
+      "oc_iod": 0.373,
+      "oc_pdo": 0.2
+    },
+    "selected": [
+      "cf_temp_med",
+      "cf_precip_tot"
+    ]
+  },
+  "PI/dengue/1": {
+    "lags": {
+      "cf_temp_med": 7,
+      "cf_umid_med": 4,
+      "cf_precip_tot": 8,
+      "oc_enso": 1,
+      "oc_iod": 7,
+      "oc_pdo": 7
+    },
+    "corr": {
+      "cf_temp_med": -0.156,
+      "cf_umid_med": 0.105,
+      "cf_precip_tot": 0.088,
+      "oc_enso": -0.082,
+      "oc_iod": 0.079,
+      "oc_pdo": -0.096
+    },
+    "selected": [
+      "cf_umid_med",
+      "oc_iod"
+    ]
+  },
+  "PI/dengue/2": {
+    "lags": {
+      "cf_temp_med": 7,
+      "cf_umid_med": 4,
+      "cf_precip_tot": 8,
+      "oc_enso": 9,
+      "oc_iod": 16,
+      "oc_pdo": 14
+    },
+    "corr": {
+      "cf_temp_med": -0.24,
+      "cf_umid_med": 0.173,
+      "cf_precip_tot": 0.167,
+      "oc_enso": -0.25,
+      "oc_iod": -0.092,
+      "oc_pdo": -0.271
+    },
+    "selected": [
+      "oc_enso",
+      "cf_umid_med",
+      "oc_iod"
+    ]
+  },
+  "PI/dengue/4": {
+    "lags": {
+      "cf_temp_med": 7,
+      "cf_umid_med": 8,
+      "cf_precip_tot": 8,
+      "oc_enso": 3,
+      "oc_iod": 8,
+      "oc_pdo": 15
+    },
+    "corr": {
+      "cf_temp_med": -0.147,
+      "cf_umid_med": 0.154,
+      "cf_precip_tot": 0.16,
+      "oc_enso": -0.202,
+      "oc_iod": 0.064,
+      "oc_pdo": -0.262
+    },
+    "selected": [
+      "oc_enso",
+      "cf_precip_tot"
+    ]
+  },
+  "RJ/dengue/2": {
+    "lags": {
+      "cf_temp_med": 9,
+      "cf_umid_med": 12,
+      "cf_precip_tot": 11,
+      "oc_enso": 0,
+      "oc_iod": 3,
+      "oc_pdo": 2
+    },
+    "corr": {
+      "cf_temp_med": 0.127,
+      "cf_umid_med": -0.109,
+      "cf_precip_tot": -0.063,
+      "oc_enso": 0.109,
+      "oc_iod": 0.112,
+      "oc_pdo": -0.088
+    },
+    "selected": [
+      "cf_temp_med"
+    ]
+  },
+  "RJ/dengue/3": {
+    "lags": {
+      "cf_temp_med": 0,
+      "cf_umid_med": 11,
+      "cf_precip_tot": 11,
+      "oc_enso": 0,
+      "oc_iod": 0,
+      "oc_pdo": 14
+    },
+    "corr": {
+      "cf_temp_med": 0.08,
+      "cf_umid_med": -0.093,
+      "cf_precip_tot": -0.077,
+      "oc_enso": 0.086,
+      "oc_iod": 0.102,
+      "oc_pdo": -0.157
+    },
+    "selected": [
+      "cf_umid_med",
+      "cf_temp_med"
+    ]
+  },
+  "RN/dengue/1": {
+    "lags": {
+      "cf_temp_med": 3,
+      "cf_umid_med": 16,
+      "cf_precip_tot": 16,
+      "oc_enso": 0,
+      "oc_iod": 16,
+      "oc_pdo": 16
+    },
+    "corr": {
+      "cf_temp_med": -0.26,
+      "cf_umid_med": 0.116,
+      "cf_precip_tot": 0.089,
+      "oc_enso": 0.092,
+      "oc_iod": 0.16,
+      "oc_pdo": -0.195
+    },
+    "selected": [
+      "oc_iod"
+    ]
+  },
+  "RN/dengue/4": {
+    "lags": {
+      "cf_temp_med": 3,
+      "cf_umid_med": 3,
+      "cf_precip_tot": 15,
+      "oc_enso": 11,
+      "oc_iod": 16,
+      "oc_pdo": 16
+    },
+    "corr": {
+      "cf_temp_med": -0.225,
+      "cf_umid_med": 0.153,
+      "cf_precip_tot": 0.134,
+      "oc_enso": -0.026,
+      "oc_iod": 0.182,
+      "oc_pdo": -0.203
+    },
+    "selected": [
+      "oc_iod",
+      "cf_precip_tot"
+    ]
+  },
+  "RN/dengue/final": {
+    "lags": {
+      "cf_temp_med": 3,
+      "cf_umid_med": 0,
+      "cf_precip_tot": 1,
+      "oc_enso": 16,
+      "oc_iod": 16,
+      "oc_pdo": 16
+    },
+    "corr": {
+      "cf_temp_med": -0.186,
+      "cf_umid_med": 0.16,
+      "cf_precip_tot": 0.109,
+      "oc_enso": -0.046,
+      "oc_iod": 0.19,
+      "oc_pdo": -0.213
+    },
+    "selected": [
+      "oc_pdo"
+    ]
+  },
+  "RS/dengue/3": {
+    "lags": {
+      "cf_temp_med": 7,
+      "cf_umid_med": 0,
+      "cf_precip_tot": 10,
+      "oc_enso": 8,
+      "oc_iod": 6,
+      "oc_pdo": 2
+    },
+    "corr": {
+      "cf_temp_med": -0.114,
+      "cf_umid_med": 0.071,
+      "cf_precip_tot": 0.035,
+      "oc_enso": -0.04,
+      "oc_iod": 0.09,
+      "oc_pdo": -0.089
+    },
+    "selected": [
+      "cf_temp_med",
+      "oc_iod"
+    ]
+  },
+  "RS/dengue/final": {
+    "lags": {
+      "cf_temp_med": 7,
+      "cf_umid_med": 0,
+      "cf_precip_tot": 12,
+      "oc_enso": 0,
+      "oc_iod": 6,
+      "oc_pdo": 2
+    },
+    "corr": {
+      "cf_temp_med": -0.071,
+      "cf_umid_med": 0.146,
+      "cf_precip_tot": 0.092,
+      "oc_enso": -0.038,
+      "oc_iod": 0.168,
+      "oc_pdo": -0.076
+    },
+    "selected": [
+      "cf_umid_med",
+      "cf_precip_tot"
+    ]
+  },
+  "RO/dengue/1": {
+    "lags": {
+      "cf_temp_med": 7,
+      "cf_umid_med": 0,
+      "cf_precip_tot": 15,
+      "oc_enso": 16,
+      "oc_iod": 16,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": 0.244,
+      "cf_umid_med": -0.087,
+      "cf_precip_tot": -0.132,
+      "oc_enso": 0.141,
+      "oc_iod": 0.201,
+      "oc_pdo": 0.094
+    },
+    "selected": [
+      "oc_enso",
+      "cf_precip_tot",
+      "cf_umid_med"
+    ]
+  },
+  "RO/dengue/final": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 8,
+      "cf_precip_tot": 8,
+      "oc_enso": 14,
+      "oc_iod": 4,
+      "oc_pdo": 15
+    },
+    "corr": {
+      "cf_temp_med": -0.038,
+      "cf_umid_med": 0.119,
+      "cf_precip_tot": 0.037,
+      "oc_enso": -0.176,
+      "oc_iod": -0.073,
+      "oc_pdo": -0.244
+    },
+    "selected": [
+      "oc_enso"
+    ]
+  },
+  "SC/dengue/1": {
+    "lags": {
+      "cf_temp_med": 7,
+      "cf_umid_med": 1,
+      "cf_precip_tot": 1,
+      "oc_enso": 16,
+      "oc_iod": 16,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": -0.067,
+      "cf_umid_med": 0.052,
+      "cf_precip_tot": 0.116,
+      "oc_enso": 0.326,
+      "oc_iod": 0.284,
+      "oc_pdo": 0.222
+    },
+    "selected": [
+      "cf_precip_tot"
+    ]
+  },
+  "SC/dengue/3": {
+    "lags": {
+      "cf_temp_med": 7,
+      "cf_umid_med": 1,
+      "cf_precip_tot": 1,
+      "oc_enso": 0,
+      "oc_iod": 8,
+      "oc_pdo": 14
+    },
+    "corr": {
+      "cf_temp_med": -0.097,
+      "cf_umid_med": 0.097,
+      "cf_precip_tot": 0.188,
+      "oc_enso": 0.033,
+      "oc_iod": 0.095,
+      "oc_pdo": -0.069
+    },
+    "selected": [
+      "cf_temp_med"
+    ]
+  },
+  "SC/dengue/final": {
+    "lags": {
+      "cf_temp_med": 7,
+      "cf_umid_med": 1,
+      "cf_precip_tot": 10,
+      "oc_enso": 5,
+      "oc_iod": 8,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": -0.032,
+      "cf_umid_med": 0.106,
+      "cf_precip_tot": 0.18,
+      "oc_enso": 0.123,
+      "oc_iod": 0.219,
+      "oc_pdo": 0.074
+    },
+    "selected": [
+      "cf_precip_tot"
+    ]
+  },
+  "SP/dengue/2": {
+    "lags": {
+      "cf_temp_med": 12,
+      "cf_umid_med": 4,
+      "cf_precip_tot": 4,
+      "oc_enso": 5,
+      "oc_iod": 9,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": 0.25,
+      "cf_umid_med": 0.06,
+      "cf_precip_tot": 0.097,
+      "oc_enso": 0.358,
+      "oc_iod": 0.358,
+      "oc_pdo": 0.151
+    },
+    "selected": [
+      "cf_temp_med",
+      "oc_pdo"
+    ]
+  },
+  "SE/dengue/2": {
+    "lags": {
+      "cf_temp_med": 3,
+      "cf_umid_med": 12,
+      "cf_precip_tot": 16,
+      "oc_enso": 12,
+      "oc_iod": 14,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": -0.153,
+      "cf_umid_med": 0.236,
+      "cf_precip_tot": 0.211,
+      "oc_enso": 0.062,
+      "oc_iod": 0.179,
+      "oc_pdo": 0.119
+    },
+    "selected": [
+      "cf_temp_med"
+    ]
+  },
+  "SE/dengue/final": {
+    "lags": {
+      "cf_temp_med": 10,
+      "cf_umid_med": 12,
+      "cf_precip_tot": 15,
+      "oc_enso": 0,
+      "oc_iod": 14,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": -0.117,
+      "cf_umid_med": 0.261,
+      "cf_precip_tot": 0.215,
+      "oc_enso": 0.109,
+      "oc_iod": 0.183,
+      "oc_pdo": 0.121
+    },
+    "selected": [
+      "cf_temp_med",
+      "oc_enso"
+    ]
+  },
+  "AC/chikungunya/1": {
+    "lags": {
+      "cf_temp_med": 12,
+      "cf_umid_med": 11,
+      "cf_precip_tot": 16,
+      "oc_enso": 7,
+      "oc_iod": 0,
+      "oc_pdo": 7
+    },
+    "corr": {
+      "cf_temp_med": 0.162,
+      "cf_umid_med": -0.187,
+      "cf_precip_tot": -0.178,
+      "oc_enso": 0.104,
+      "oc_iod": -0.213,
+      "oc_pdo": 0.147
+    },
+    "selected": [
+      "cf_umid_med",
+      "cf_precip_tot",
+      "cf_temp_med"
+    ]
+  },
+  "AC/chikungunya/final": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 16,
+      "cf_precip_tot": 16,
+      "oc_enso": 15,
+      "oc_iod": 16,
+      "oc_pdo": 9
+    },
+    "corr": {
+      "cf_temp_med": 0.271,
+      "cf_umid_med": -0.105,
+      "cf_precip_tot": -0.119,
+      "oc_enso": 0.203,
+      "oc_iod": 0.1,
+      "oc_pdo": 0.232
+    },
+    "selected": []
+  },
+  "AL/chikungunya/2": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 0,
+      "cf_precip_tot": 0,
+      "oc_enso": 16,
+      "oc_iod": 3,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": 0.175,
+      "cf_umid_med": -0.155,
+      "cf_precip_tot": -0.089,
+      "oc_enso": 0.365,
+      "oc_iod": -0.048,
+      "oc_pdo": 0.259
+    },
+    "selected": []
+  },
+  "AL/chikungunya/final": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 16,
+      "cf_precip_tot": 11,
+      "oc_enso": 14,
+      "oc_iod": 16,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": 0.062,
+      "cf_umid_med": -0.094,
+      "cf_precip_tot": 0.036,
+      "oc_enso": 0.133,
+      "oc_iod": -0.155,
+      "oc_pdo": 0.093
+    },
+    "selected": [
+      "cf_umid_med",
+      "oc_pdo",
+      "cf_temp_med"
+    ]
+  },
+  "AM/chikungunya/3": {
+    "lags": {
+      "cf_temp_med": 11,
+      "cf_umid_med": 16,
+      "cf_precip_tot": 16,
+      "oc_enso": 2,
+      "oc_iod": 16,
+      "oc_pdo": 6
+    },
+    "corr": {
+      "cf_temp_med": 0.157,
+      "cf_umid_med": -0.153,
+      "cf_precip_tot": -0.207,
+      "oc_enso": 0.219,
+      "oc_iod": -0.199,
+      "oc_pdo": 0.213
+    },
+    "selected": [
+      "oc_iod",
+      "cf_umid_med"
+    ]
+  },
+  "CE/chikungunya/3": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 15,
+      "cf_precip_tot": 0,
+      "oc_enso": 0,
+      "oc_iod": 0,
+      "oc_pdo": 14
+    },
+    "corr": {
+      "cf_temp_med": 0.115,
+      "cf_umid_med": -0.053,
+      "cf_precip_tot": 0.055,
+      "oc_enso": -0.107,
+      "oc_iod": -0.327,
+      "oc_pdo": 0.206
+    },
+    "selected": []
+  },
+  "BA/chikungunya/2": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 0,
+      "cf_precip_tot": 13,
+      "oc_enso": 0,
+      "oc_iod": 16,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": 0.383,
+      "cf_umid_med": -0.113,
+      "cf_precip_tot": 0.115,
+      "oc_enso": 0.472,
+      "oc_iod": 0.266,
+      "oc_pdo": 0.531
+    },
+    "selected": [
+      "oc_enso",
+      "cf_temp_med",
+      "oc_iod",
+      "cf_precip_tot"
+    ]
+  },
+  "DF/chikungunya/1": {
+    "lags": {
+      "cf_temp_med": 0,
+      "cf_umid_med": 0,
+      "cf_precip_tot": 3,
+      "oc_enso": 5,
+      "oc_iod": 13,
+      "oc_pdo": 4
+    },
+    "corr": {
+      "cf_temp_med": 0.21,
+      "cf_umid_med": -0.129,
+      "cf_precip_tot": -0.125,
+      "oc_enso": 0.37,
+      "oc_iod": 0.074,
+      "oc_pdo": 0.282
+    },
+    "selected": [
+      "oc_pdo",
+      "cf_umid_med"
+    ]
+  },
+  "GO/chikungunya/1": {
+    "lags": {
+      "cf_temp_med": 11,
+      "cf_umid_med": 3,
+      "cf_precip_tot": 3,
+      "oc_enso": 16,
+      "oc_iod": 15,
+      "oc_pdo": 2
+    },
+    "corr": {
+      "cf_temp_med": -0.058,
+      "cf_umid_med": -0.112,
+      "cf_precip_tot": -0.13,
+      "oc_enso": -0.101,
+      "oc_iod": -0.279,
+      "oc_pdo": 0.097
+    },
+    "selected": [
+      "cf_precip_tot"
+    ]
+  },
+  "MA/chikungunya/4": {
+    "lags": {
+      "cf_temp_med": 1,
+      "cf_umid_med": 16,
+      "cf_precip_tot": 16,
+      "oc_enso": 11,
+      "oc_iod": 15,
+      "oc_pdo": 5
+    },
+    "corr": {
+      "cf_temp_med": 0.124,
+      "cf_umid_med": 0.097,
+      "cf_precip_tot": 0.103,
+      "oc_enso": 0.057,
+      "oc_iod": -0.234,
+      "oc_pdo": 0.098
+    },
+    "selected": [
+      "cf_precip_tot"
+    ]
+  },
+  "GO/chikungunya/4": {
+    "lags": {
+      "cf_temp_med": 0,
+      "cf_umid_med": 0,
+      "cf_precip_tot": 2,
+      "oc_enso": 0,
+      "oc_iod": 15,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": 0.148,
+      "cf_umid_med": -0.138,
+      "cf_precip_tot": -0.107,
+      "oc_enso": 0.15,
+      "oc_iod": -0.034,
+      "oc_pdo": 0.186
+    },
+    "selected": [
+      "oc_pdo",
+      "cf_temp_med"
+    ]
+  },
+  "MT/chikungunya/3": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 16,
+      "cf_precip_tot": 15,
+      "oc_enso": 0,
+      "oc_iod": 1,
+      "oc_pdo": 12
+    },
+    "corr": {
+      "cf_temp_med": -0.085,
+      "cf_umid_med": 0.164,
+      "cf_precip_tot": 0.143,
+      "oc_enso": 0.211,
+      "oc_iod": 0.192,
+      "oc_pdo": -0.05
+    },
+    "selected": [
+      "oc_iod",
+      "cf_precip_tot",
+      "cf_temp_med"
+    ]
+  },
+  "AC/dengue/2": {
+    "lags": {
+      "cf_temp_med": 15,
+      "cf_umid_med": 15,
+      "cf_precip_tot": 15,
+      "oc_enso": 16,
+      "oc_iod": 16,
+      "oc_pdo": 11
+    },
+    "corr": {
+      "cf_temp_med": 0.158,
+      "cf_umid_med": -0.161,
+      "cf_precip_tot": -0.099,
+      "oc_enso": 0.069,
+      "oc_iod": 0.163,
+      "oc_pdo": 0.055
+    },
+    "selected": [
+      "cf_umid_med"
+    ]
+  },
+  "AC/dengue/3": {
+    "lags": {
+      "cf_temp_med": 15,
+      "cf_umid_med": 15,
+      "cf_precip_tot": 15,
+      "oc_enso": 0,
+      "oc_iod": 15,
+      "oc_pdo": 11
+    },
+    "corr": {
+      "cf_temp_med": 0.114,
+      "cf_umid_med": -0.146,
+      "cf_precip_tot": -0.097,
+      "oc_enso": 0.07,
+      "oc_iod": 0.148,
+      "oc_pdo": 0.041
+    },
+    "selected": [
+      "cf_umid_med"
+    ]
+  },
+  "AC/dengue/4": {
+    "lags": {
+      "cf_temp_med": 15,
+      "cf_umid_med": 15,
+      "cf_precip_tot": 16,
+      "oc_enso": 0,
+      "oc_iod": 14,
+      "oc_pdo": 11
+    },
+    "corr": {
+      "cf_temp_med": 0.122,
+      "cf_umid_med": -0.147,
+      "cf_precip_tot": -0.102,
+      "oc_enso": 0.107,
+      "oc_iod": 0.143,
+      "oc_pdo": 0.027
+    },
+    "selected": [
+      "cf_temp_med"
+    ]
+  },
+  "AC/dengue/final": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 15,
+      "cf_precip_tot": 16,
+      "oc_enso": 11,
+      "oc_iod": 14,
+      "oc_pdo": 16
+    },
+    "corr": {
+      "cf_temp_med": 0.157,
+      "cf_umid_med": -0.182,
+      "cf_precip_tot": -0.097,
+      "oc_enso": 0.068,
+      "oc_iod": 0.115,
+      "oc_pdo": 0.024
+    },
+    "selected": []
+  },
+  "AL/dengue/1": {
+    "lags": {
+      "cf_temp_med": 0,
+      "cf_umid_med": 10,
+      "cf_precip_tot": 0,
+      "oc_enso": 13,
+      "oc_iod": 13,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": 0.156,
+      "cf_umid_med": 0.052,
+      "cf_precip_tot": -0.052,
+      "oc_enso": 0.403,
+      "oc_iod": 0.433,
+      "oc_pdo": 0.178
+    },
+    "selected": [
+      "cf_precip_tot"
+    ]
+  },
+  "AL/dengue/2": {
+    "lags": {
+      "cf_temp_med": 0,
+      "cf_umid_med": 11,
+      "cf_precip_tot": 10,
+      "oc_enso": 12,
+      "oc_iod": 14,
+      "oc_pdo": 15
+    },
+    "corr": {
+      "cf_temp_med": 0.062,
+      "cf_umid_med": 0.161,
+      "cf_precip_tot": 0.162,
+      "oc_enso": 0.138,
+      "oc_iod": 0.266,
+      "oc_pdo": -0.139
+    },
+    "selected": [
+      "cf_umid_med"
+    ]
+  },
+  "AL/dengue/3": {
+    "lags": {
+      "cf_temp_med": 2,
+      "cf_umid_med": 11,
+      "cf_precip_tot": 11,
+      "oc_enso": 6,
+      "oc_iod": 15,
+      "oc_pdo": 15
+    },
+    "corr": {
+      "cf_temp_med": 0.036,
+      "cf_umid_med": 0.18,
+      "cf_precip_tot": 0.18,
+      "oc_enso": 0.105,
+      "oc_iod": 0.24,
+      "oc_pdo": -0.152
+    },
+    "selected": [
+      "oc_iod",
+      "cf_precip_tot"
+    ]
+  },
+  "AL/dengue/final": {
+    "lags": {
+      "cf_temp_med": 13,
+      "cf_umid_med": 11,
+      "cf_precip_tot": 10,
+      "oc_enso": 12,
+      "oc_iod": 15,
+      "oc_pdo": 16
+    },
+    "corr": {
+      "cf_temp_med": 0.121,
+      "cf_umid_med": 0.158,
+      "cf_precip_tot": 0.149,
+      "oc_enso": 0.131,
+      "oc_iod": 0.314,
+      "oc_pdo": -0.107
+    },
+    "selected": []
+  },
+  "AM/dengue/2": {
+    "lags": {
+      "cf_temp_med": 0,
+      "cf_umid_med": 0,
+      "cf_precip_tot": 0,
+      "oc_enso": 0,
+      "oc_iod": 0,
+      "oc_pdo": 8
+    },
+    "corr": {
+      "cf_temp_med": -0.149,
+      "cf_umid_med": 0.157,
+      "cf_precip_tot": 0.193,
+      "oc_enso": -0.418,
+      "oc_iod": -0.284,
+      "oc_pdo": -0.179
+    },
+    "selected": [
+      "oc_enso"
+    ]
+  },
+  "AM/dengue/4": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 15,
+      "cf_precip_tot": 0,
+      "oc_enso": 0,
+      "oc_iod": 0,
+      "oc_pdo": 8
+    },
+    "corr": {
+      "cf_temp_med": 0.169,
+      "cf_umid_med": -0.094,
+      "cf_precip_tot": 0.084,
+      "oc_enso": -0.303,
+      "oc_iod": -0.121,
+      "oc_pdo": -0.197
+    },
+    "selected": [
+      "cf_temp_med"
+    ]
+  },
+  "AM/dengue/final": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 15,
+      "cf_precip_tot": 2,
+      "oc_enso": 0,
+      "oc_iod": 0,
+      "oc_pdo": 8
+    },
+    "corr": {
+      "cf_temp_med": 0.186,
+      "cf_umid_med": -0.106,
+      "cf_precip_tot": 0.08,
+      "oc_enso": -0.311,
+      "oc_iod": -0.144,
+      "oc_pdo": -0.192
+    },
+    "selected": []
+  },
+  "AP/dengue/1": {
+    "lags": {
+      "cf_temp_med": 15,
+      "cf_umid_med": 13,
+      "cf_precip_tot": 15,
+      "oc_enso": 3,
+      "oc_iod": 0,
+      "oc_pdo": 4
+    },
+    "corr": {
+      "cf_temp_med": 0.179,
+      "cf_umid_med": -0.25,
+      "cf_precip_tot": -0.262,
+      "oc_enso": 0.307,
+      "oc_iod": -0.115,
+      "oc_pdo": 0.38
+    },
+    "selected": [
+      "oc_pdo"
+    ]
+  },
+  "AP/dengue/3": {
+    "lags": {
+      "cf_temp_med": 13,
+      "cf_umid_med": 13,
+      "cf_precip_tot": 15,
+      "oc_enso": 0,
+      "oc_iod": 15,
+      "oc_pdo": 4
+    },
+    "corr": {
+      "cf_temp_med": 0.175,
+      "cf_umid_med": -0.239,
+      "cf_precip_tot": -0.246,
+      "oc_enso": 0.216,
+      "oc_iod": -0.136,
+      "oc_pdo": 0.207
+    },
+    "selected": [
+      "oc_pdo",
+      "oc_iod"
+    ]
+  },
+  "AP/dengue/4": {
+    "lags": {
+      "cf_temp_med": 13,
+      "cf_umid_med": 13,
+      "cf_precip_tot": 15,
+      "oc_enso": 4,
+      "oc_iod": 8,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": 0.352,
+      "cf_umid_med": -0.268,
+      "cf_precip_tot": -0.288,
+      "oc_enso": 0.278,
+      "oc_iod": 0.114,
+      "oc_pdo": 0.246
+    },
+    "selected": []
+  },
+  "AP/dengue/final": {
+    "lags": {
+      "cf_temp_med": 13,
+      "cf_umid_med": 15,
+      "cf_precip_tot": 15,
+      "oc_enso": 4,
+      "oc_iod": 8,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": 0.337,
+      "cf_umid_med": -0.236,
+      "cf_precip_tot": -0.252,
+      "oc_enso": 0.171,
+      "oc_iod": 0.074,
+      "oc_pdo": 0.181
+    },
+    "selected": [
+      "oc_enso"
+    ]
+  },
+  "BA/dengue/final": {
+    "lags": {
+      "cf_temp_med": 13,
+      "cf_umid_med": 8,
+      "cf_precip_tot": 8,
+      "oc_enso": 16,
+      "oc_iod": 14,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": 0.288,
+      "cf_umid_med": 0.099,
+      "cf_precip_tot": 0.147,
+      "oc_enso": 0.292,
+      "oc_iod": 0.485,
+      "oc_pdo": 0.064
+    },
+    "selected": []
+  },
+  "CE/dengue/1": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 16,
+      "cf_precip_tot": 16,
+      "oc_enso": 16,
+      "oc_iod": 0,
+      "oc_pdo": 13
+    },
+    "corr": {
+      "cf_temp_med": 0.254,
+      "cf_umid_med": -0.151,
+      "cf_precip_tot": -0.04,
+      "oc_enso": 0.076,
+      "oc_iod": -0.328,
+      "oc_pdo": 0.298
+    },
+    "selected": [
+      "oc_iod"
+    ]
+  },
+  "CE/dengue/3": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 16,
+      "cf_precip_tot": 0,
+      "oc_enso": 2,
+      "oc_iod": 0,
+      "oc_pdo": 5
+    },
+    "corr": {
+      "cf_temp_med": 0.168,
+      "cf_umid_med": -0.1,
+      "cf_precip_tot": 0.064,
+      "oc_enso": -0.147,
+      "oc_iod": -0.394,
+      "oc_pdo": 0.172
+    },
+    "selected": [
+      "oc_iod",
+      "oc_enso"
+    ]
+  },
+  "DF/dengue/1": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 6,
+      "cf_precip_tot": 8,
+      "oc_enso": 13,
+      "oc_iod": 9,
+      "oc_pdo": 16
+    },
+    "corr": {
+      "cf_temp_med": 0.199,
+      "cf_umid_med": 0.188,
+      "cf_precip_tot": 0.109,
+      "oc_enso": 0.28,
+      "oc_iod": 0.473,
+      "oc_pdo": -0.162
+    },
+    "selected": [
+      "oc_pdo"
+    ]
+  },
+  "DF/dengue/2": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 6,
+      "cf_precip_tot": 8,
+      "oc_enso": 12,
+      "oc_iod": 9,
+      "oc_pdo": 15
+    },
+    "corr": {
+      "cf_temp_med": 0.162,
+      "cf_umid_med": 0.197,
+      "cf_precip_tot": 0.142,
+      "oc_enso": 0.116,
+      "oc_iod": 0.357,
+      "oc_pdo": -0.246
+    },
+    "selected": [
+      "oc_iod",
+      "cf_umid_med"
+    ]
+  },
+  "DF/dengue/3": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 6,
+      "cf_precip_tot": 8,
+      "oc_enso": 12,
+      "oc_iod": 9,
+      "oc_pdo": 15
+    },
+    "corr": {
+      "cf_temp_med": 0.174,
+      "cf_umid_med": 0.195,
+      "cf_precip_tot": 0.139,
+      "oc_enso": 0.105,
+      "oc_iod": 0.337,
+      "oc_pdo": -0.247
+    },
+    "selected": [
+      "oc_iod"
+    ]
+  },
+  "DF/dengue/4": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 6,
+      "cf_precip_tot": 8,
+      "oc_enso": 12,
+      "oc_iod": 9,
+      "oc_pdo": 16
+    },
+    "corr": {
+      "cf_temp_med": 0.202,
+      "cf_umid_med": 0.177,
+      "cf_precip_tot": 0.122,
+      "oc_enso": 0.184,
+      "oc_iod": 0.411,
+      "oc_pdo": -0.25
+    },
+    "selected": []
+  },
+  "ES/dengue/1": {
+    "lags": {
+      "cf_temp_med": 9,
+      "cf_umid_med": 5,
+      "cf_precip_tot": 5,
+      "oc_enso": 11,
+      "oc_iod": 7,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": 0.398,
+      "cf_umid_med": 0.093,
+      "cf_precip_tot": 0.122,
+      "oc_enso": 0.489,
+      "oc_iod": 0.41,
+      "oc_pdo": 0.187
+    },
+    "selected": [
+      "oc_enso",
+      "oc_iod",
+      "oc_pdo",
+      "cf_precip_tot"
+    ]
+  },
+  "ES/dengue/2": {
+    "lags": {
+      "cf_temp_med": 9,
+      "cf_umid_med": 15,
+      "cf_precip_tot": 4,
+      "oc_enso": 11,
+      "oc_iod": 7,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": 0.4,
+      "cf_umid_med": -0.09,
+      "cf_precip_tot": 0.081,
+      "oc_enso": 0.618,
+      "oc_iod": 0.45,
+      "oc_pdo": 0.384
+    },
+    "selected": []
+  },
+  "ES/dengue/3": {
+    "lags": {
+      "cf_temp_med": 0,
+      "cf_umid_med": 0,
+      "cf_precip_tot": 6,
+      "oc_enso": 0,
+      "oc_iod": 0,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": 0.302,
+      "cf_umid_med": -0.048,
+      "cf_precip_tot": 0.052,
+      "oc_enso": 0.507,
+      "oc_iod": 0.398,
+      "oc_pdo": 0.241
+    },
+    "selected": [
+      "cf_temp_med"
+    ]
+  },
+  "ES/dengue/4": {
+    "lags": {
+      "cf_temp_med": 0,
+      "cf_umid_med": 0,
+      "cf_precip_tot": 6,
+      "oc_enso": 3,
+      "oc_iod": 1,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": 0.335,
+      "cf_umid_med": -0.042,
+      "cf_precip_tot": 0.062,
+      "oc_enso": 0.46,
+      "oc_iod": 0.444,
+      "oc_pdo": 0.197
+    },
+    "selected": [
+      "cf_temp_med"
+    ]
+  },
+  "ES/dengue/final": {
+    "lags": {
+      "cf_temp_med": 0,
+      "cf_umid_med": 0,
+      "cf_precip_tot": 0,
+      "oc_enso": 11,
+      "oc_iod": 3,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": 0.324,
+      "cf_umid_med": -0.111,
+      "cf_precip_tot": -0.053,
+      "oc_enso": 0.433,
+      "oc_iod": 0.387,
+      "oc_pdo": 0.197
+    },
+    "selected": [
+      "cf_temp_med",
+      "cf_umid_med",
+      "cf_precip_tot"
+    ]
+  },
+  "GO/dengue/1": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 8,
+      "cf_precip_tot": 16,
+      "oc_enso": 2,
+      "oc_iod": 0,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": 0.232,
+      "cf_umid_med": 0.133,
+      "cf_precip_tot": -0.09,
+      "oc_enso": 0.526,
+      "oc_iod": 0.329,
+      "oc_pdo": 0.334
+    },
+    "selected": [
+      "cf_precip_tot"
+    ]
+  },
+  "GO/dengue/2": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 8,
+      "cf_precip_tot": 8,
+      "oc_enso": 5,
+      "oc_iod": 7,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": 0.187,
+      "cf_umid_med": 0.137,
+      "cf_precip_tot": 0.075,
+      "oc_enso": 0.321,
+      "oc_iod": 0.225,
+      "oc_pdo": 0.203
+    },
+    "selected": []
+  },
+  "GO/dengue/4": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 7,
+      "cf_precip_tot": 16,
+      "oc_enso": 16,
+      "oc_iod": 13,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": 0.258,
+      "cf_umid_med": 0.1,
+      "cf_precip_tot": -0.072,
+      "oc_enso": 0.383,
+      "oc_iod": 0.325,
+      "oc_pdo": 0.258
+    },
+    "selected": [
+      "cf_temp_med"
+    ]
+  },
+  "MA/dengue/2": {
+    "lags": {
+      "cf_temp_med": 13,
+      "cf_umid_med": 7,
+      "cf_precip_tot": 16,
+      "oc_enso": 16,
+      "oc_iod": 7,
+      "oc_pdo": 16
+    },
+    "corr": {
+      "cf_temp_med": 0.055,
+      "cf_umid_med": 0.044,
+      "cf_precip_tot": 0.153,
+      "oc_enso": 0.102,
+      "oc_iod": 0.07,
+      "oc_pdo": 0.138
+    },
+    "selected": []
+  },
+  "MG/dengue/1": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 16,
+      "cf_precip_tot": 16,
+      "oc_enso": 13,
+      "oc_iod": 9,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": 0.35,
+      "cf_umid_med": -0.116,
+      "cf_precip_tot": -0.122,
+      "oc_enso": 0.641,
+      "oc_iod": 0.484,
+      "oc_pdo": 0.24
+    },
+    "selected": [
+      "oc_iod"
+    ]
+  },
+  "MS/dengue/2": {
+    "lags": {
+      "cf_temp_med": 10,
+      "cf_umid_med": 4,
+      "cf_precip_tot": 5,
+      "oc_enso": 13,
+      "oc_iod": 16,
+      "oc_pdo": 16
+    },
+    "corr": {
+      "cf_temp_med": 0.201,
+      "cf_umid_med": 0.075,
+      "cf_precip_tot": 0.104,
+      "oc_enso": 0.321,
+      "oc_iod": 0.422,
+      "oc_pdo": -0.067
+    },
+    "selected": []
+  },
+  "MS/dengue/4": {
+    "lags": {
+      "cf_temp_med": 10,
+      "cf_umid_med": 4,
+      "cf_precip_tot": 5,
+      "oc_enso": 13,
+      "oc_iod": 10,
+      "oc_pdo": 16
+    },
+    "corr": {
+      "cf_temp_med": 0.097,
+      "cf_umid_med": 0.129,
+      "cf_precip_tot": 0.131,
+      "oc_enso": 0.242,
+      "oc_iod": 0.298,
+      "oc_pdo": -0.094
+    },
+    "selected": [
+      "cf_temp_med"
+    ]
+  },
+  "MT/dengue/1": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 15,
+      "cf_precip_tot": 15,
+      "oc_enso": 16,
+      "oc_iod": 14,
+      "oc_pdo": 9
+    },
+    "corr": {
+      "cf_temp_med": 0.167,
+      "cf_umid_med": -0.112,
+      "cf_precip_tot": -0.117,
+      "oc_enso": 0.067,
+      "oc_iod": 0.289,
+      "oc_pdo": -0.177
+    },
+    "selected": [
+      "oc_pdo",
+      "cf_precip_tot"
+    ]
+  },
+  "MT/dengue/2": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 15,
+      "cf_precip_tot": 15,
+      "oc_enso": 9,
+      "oc_iod": 14,
+      "oc_pdo": 9
+    },
+    "corr": {
+      "cf_temp_med": 0.101,
+      "cf_umid_med": -0.076,
+      "cf_precip_tot": -0.071,
+      "oc_enso": -0.059,
+      "oc_iod": 0.197,
+      "oc_pdo": -0.249
+    },
+    "selected": [
+      "oc_pdo"
+    ]
+  },
+  "PB/dengue/1": {
+    "lags": {
+      "cf_temp_med": 0,
+      "cf_umid_med": 3,
+      "cf_precip_tot": 0,
+      "oc_enso": 0,
+      "oc_iod": 16,
+      "oc_pdo": 16
+    },
+    "corr": {
+      "cf_temp_med": 0.041,
+      "cf_umid_med": 0.03,
+      "cf_precip_tot": 0.076,
+      "oc_enso": 0.046,
+      "oc_iod": 0.135,
+      "oc_pdo": -0.119
+    },
+    "selected": [
+      "cf_precip_tot"
+    ]
+  },
+  "PB/dengue/2": {
+    "lags": {
+      "cf_temp_med": 6,
+      "cf_umid_med": 2,
+      "cf_precip_tot": 0,
+      "oc_enso": 10,
+      "oc_iod": 15,
+      "oc_pdo": 16
+    },
+    "corr": {
+      "cf_temp_med": -0.059,
+      "cf_umid_med": 0.092,
+      "cf_precip_tot": 0.126,
+      "oc_enso": -0.115,
+      "oc_iod": 0.052,
+      "oc_pdo": -0.208
+    },
+    "selected": [
+      "cf_temp_med"
+    ]
+  },
+  "PB/dengue/4": {
+    "lags": {
+      "cf_temp_med": 3,
+      "cf_umid_med": 0,
+      "cf_precip_tot": 0,
+      "oc_enso": 0,
+      "oc_iod": 15,
+      "oc_pdo": 16
+    },
+    "corr": {
+      "cf_temp_med": -0.027,
+      "cf_umid_med": 0.076,
+      "cf_precip_tot": 0.136,
+      "oc_enso": -0.073,
+      "oc_iod": 0.098,
+      "oc_pdo": -0.17
+    },
+    "selected": [
+      "cf_precip_tot"
+    ]
+  },
+  "PE/dengue/1": {
+    "lags": {
+      "cf_temp_med": 13,
+      "cf_umid_med": 10,
+      "cf_precip_tot": 10,
+      "oc_enso": 16,
+      "oc_iod": 16,
+      "oc_pdo": 2
+    },
+    "corr": {
+      "cf_temp_med": 0.061,
+      "cf_umid_med": 0.162,
+      "cf_precip_tot": 0.164,
+      "oc_enso": 0.247,
+      "oc_iod": 0.339,
+      "oc_pdo": 0.185
+    },
+    "selected": [
+      "cf_umid_med"
+    ]
+  },
+  "PE/dengue/3": {
+    "lags": {
+      "cf_temp_med": 0,
+      "cf_umid_med": 11,
+      "cf_precip_tot": 11,
+      "oc_enso": 16,
+      "oc_iod": 15,
+      "oc_pdo": 1
+    },
+    "corr": {
+      "cf_temp_med": 0.126,
+      "cf_umid_med": 0.1,
+      "cf_precip_tot": 0.109,
+      "oc_enso": 0.282,
+      "oc_iod": 0.385,
+      "oc_pdo": 0.203
+    },
+    "selected": []
+  },
+  "PI/dengue/3": {
+    "lags": {
+      "cf_temp_med": 7,
+      "cf_umid_med": 8,
+      "cf_precip_tot": 8,
+      "oc_enso": 14,
+      "oc_iod": 16,
+      "oc_pdo": 14
+    },
+    "corr": {
+      "cf_temp_med": -0.28,
+      "cf_umid_med": 0.205,
+      "cf_precip_tot": 0.184,
+      "oc_enso": -0.302,
+      "oc_iod": -0.144,
+      "oc_pdo": -0.308
+    },
+    "selected": [
+      "cf_umid_med"
+    ]
+  },
+  "PI/dengue/final": {
+    "lags": {
+      "cf_temp_med": 3,
+      "cf_umid_med": 7,
+      "cf_precip_tot": 7,
+      "oc_enso": 3,
+      "oc_iod": 8,
+      "oc_pdo": 15
+    },
+    "corr": {
+      "cf_temp_med": -0.11,
+      "cf_umid_med": 0.132,
+      "cf_precip_tot": 0.139,
+      "oc_enso": -0.261,
+      "oc_iod": 0.017,
+      "oc_pdo": -0.259
+    },
+    "selected": [
+      "cf_precip_tot"
+    ]
+  },
+  "PR/dengue/2": {
+    "lags": {
+      "cf_temp_med": 13,
+      "cf_umid_med": 15,
+      "cf_precip_tot": 8,
+      "oc_enso": 16,
+      "oc_iod": 16,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": 0.248,
+      "cf_umid_med": -0.076,
+      "cf_precip_tot": 0.135,
+      "oc_enso": 0.196,
+      "oc_iod": 0.355,
+      "oc_pdo": 0.117
+    },
+    "selected": [
+      "oc_pdo"
+    ]
+  },
+  "PR/dengue/3": {
+    "lags": {
+      "cf_temp_med": 13,
+      "cf_umid_med": 5,
+      "cf_precip_tot": 8,
+      "oc_enso": 11,
+      "oc_iod": 16,
+      "oc_pdo": 16
+    },
+    "corr": {
+      "cf_temp_med": 0.192,
+      "cf_umid_med": 0.114,
+      "cf_precip_tot": 0.164,
+      "oc_enso": 0.135,
+      "oc_iod": 0.275,
+      "oc_pdo": -0.069
+    },
+    "selected": [
+      "oc_iod",
+      "cf_temp_med"
+    ]
+  },
+  "PR/dengue/final": {
+    "lags": {
+      "cf_temp_med": 13,
+      "cf_umid_med": 8,
+      "cf_precip_tot": 10,
+      "oc_enso": 11,
+      "oc_iod": 16,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": 0.228,
+      "cf_umid_med": 0.089,
+      "cf_precip_tot": 0.122,
+      "oc_enso": 0.237,
+      "oc_iod": 0.392,
+      "oc_pdo": 0.125
+    },
+    "selected": []
+  },
+  "RJ/dengue/1": {
+    "lags": {
+      "cf_temp_med": 9,
+      "cf_umid_med": 15,
+      "cf_precip_tot": 15,
+      "oc_enso": 0,
+      "oc_iod": 0,
+      "oc_pdo": 3
+    },
+    "corr": {
+      "cf_temp_med": 0.126,
+      "cf_umid_med": -0.093,
+      "cf_precip_tot": -0.04,
+      "oc_enso": 0.2,
+      "oc_iod": 0.188,
+      "oc_pdo": -0.077
+    },
+    "selected": [
+      "cf_precip_tot"
+    ]
+  },
+  "RJ/dengue/4": {
+    "lags": {
+      "cf_temp_med": 0,
+      "cf_umid_med": 12,
+      "cf_precip_tot": 12,
+      "oc_enso": 0,
+      "oc_iod": 0,
+      "oc_pdo": 14
+    },
+    "corr": {
+      "cf_temp_med": 0.171,
+      "cf_umid_med": -0.062,
+      "cf_precip_tot": -0.077,
+      "oc_enso": 0.143,
+      "oc_iod": 0.241,
+      "oc_pdo": -0.117
+    },
+    "selected": [
+      "cf_temp_med"
+    ]
+  },
+  "RJ/dengue/final": {
+    "lags": {
+      "cf_temp_med": 9,
+      "cf_umid_med": 11,
+      "cf_precip_tot": 12,
+      "oc_enso": 0,
+      "oc_iod": 2,
+      "oc_pdo": 14
+    },
+    "corr": {
+      "cf_temp_med": 0.167,
+      "cf_umid_med": -0.059,
+      "cf_precip_tot": -0.079,
+      "oc_enso": 0.086,
+      "oc_iod": 0.195,
+      "oc_pdo": -0.099
+    },
+    "selected": []
+  },
+  "RN/dengue/2": {
+    "lags": {
+      "cf_temp_med": 7,
+      "cf_umid_med": 16,
+      "cf_precip_tot": 16,
+      "oc_enso": 13,
+      "oc_iod": 16,
+      "oc_pdo": 16
+    },
+    "corr": {
+      "cf_temp_med": -0.337,
+      "cf_umid_med": 0.173,
+      "cf_precip_tot": 0.174,
+      "oc_enso": -0.13,
+      "oc_iod": 0.087,
+      "oc_pdo": -0.251
+    },
+    "selected": [
+      "cf_temp_med"
+    ]
+  },
+  "RN/dengue/3": {
+    "lags": {
+      "cf_temp_med": 3,
+      "cf_umid_med": 3,
+      "cf_precip_tot": 15,
+      "oc_enso": 11,
+      "oc_iod": 16,
+      "oc_pdo": 16
+    },
+    "corr": {
+      "cf_temp_med": -0.302,
+      "cf_umid_med": 0.158,
+      "cf_precip_tot": 0.132,
+      "oc_enso": -0.083,
+      "oc_iod": 0.138,
+      "oc_pdo": -0.206
+    },
+    "selected": []
+  },
+  "RO/dengue/2": {
+    "lags": {
+      "cf_temp_med": 7,
+      "cf_umid_med": 8,
+      "cf_precip_tot": 5,
+      "oc_enso": 0,
+      "oc_iod": 0,
+      "oc_pdo": 15
+    },
+    "corr": {
+      "cf_temp_med": 0.128,
+      "cf_umid_med": 0.061,
+      "cf_precip_tot": -0.049,
+      "oc_enso": -0.082,
+      "oc_iod": -0.099,
+      "oc_pdo": -0.151
+    },
+    "selected": [
+      "cf_temp_med",
+      "cf_umid_med"
+    ]
+  },
+  "RO/dengue/3": {
+    "lags": {
+      "cf_temp_med": 0,
+      "cf_umid_med": 8,
+      "cf_precip_tot": 0,
+      "oc_enso": 14,
+      "oc_iod": 0,
+      "oc_pdo": 15
+    },
+    "corr": {
+      "cf_temp_med": 0.04,
+      "cf_umid_med": 0.069,
+      "cf_precip_tot": -0.027,
+      "oc_enso": -0.19,
+      "oc_iod": -0.128,
+      "oc_pdo": -0.232
+    },
+    "selected": [
+      "cf_umid_med"
+    ]
+  },
+  "RO/dengue/4": {
+    "lags": {
+      "cf_temp_med": 0,
+      "cf_umid_med": 8,
+      "cf_precip_tot": 15,
+      "oc_enso": 15,
+      "oc_iod": 0,
+      "oc_pdo": 16
+    },
+    "corr": {
+      "cf_temp_med": 0.035,
+      "cf_umid_med": 0.108,
+      "cf_precip_tot": -0.021,
+      "oc_enso": -0.147,
+      "oc_iod": -0.088,
+      "oc_pdo": -0.233
+    },
+    "selected": [
+      "oc_enso"
+    ]
+  },
+  "RR/dengue/1": {
+    "lags": {
+      "cf_temp_med": 0,
+      "cf_umid_med": 0,
+      "cf_precip_tot": 0,
+      "oc_enso": 0,
+      "oc_iod": 1,
+      "oc_pdo": 14
+    },
+    "corr": {
+      "cf_temp_med": 0.115,
+      "cf_umid_med": -0.119,
+      "cf_precip_tot": -0.065,
+      "oc_enso": 0.2,
+      "oc_iod": 0.346,
+      "oc_pdo": -0.069
+    },
+    "selected": []
+  },
+  "RR/dengue/2": {
+    "lags": {
+      "cf_temp_med": 0,
+      "cf_umid_med": 0,
+      "cf_precip_tot": 0,
+      "oc_enso": 1,
+      "oc_iod": 1,
+      "oc_pdo": 10
+    },
+    "corr": {
+      "cf_temp_med": 0.12,
+      "cf_umid_med": -0.117,
+      "cf_precip_tot": -0.053,
+      "oc_enso": 0.167,
+      "oc_iod": 0.287,
+      "oc_pdo": -0.067
+    },
+    "selected": []
+  },
+  "RR/dengue/3": {
+    "lags": {
+      "cf_temp_med": 0,
+      "cf_umid_med": 0,
+      "cf_precip_tot": 0,
+      "oc_enso": 1,
+      "oc_iod": 1,
+      "oc_pdo": 10
+    },
+    "corr": {
+      "cf_temp_med": 0.13,
+      "cf_umid_med": -0.115,
+      "cf_precip_tot": -0.073,
+      "oc_enso": 0.158,
+      "oc_iod": 0.277,
+      "oc_pdo": -0.108
+    },
+    "selected": [
+      "cf_precip_tot"
+    ]
+  },
+  "RR/dengue/4": {
+    "lags": {
+      "cf_temp_med": 0,
+      "cf_umid_med": 0,
+      "cf_precip_tot": 0,
+      "oc_enso": 0,
+      "oc_iod": 1,
+      "oc_pdo": 16
+    },
+    "corr": {
+      "cf_temp_med": 0.258,
+      "cf_umid_med": -0.183,
+      "cf_precip_tot": -0.112,
+      "oc_enso": 0.21,
+      "oc_iod": 0.398,
+      "oc_pdo": -0.065
+    },
+    "selected": [
+      "cf_precip_tot"
+    ]
+  },
+  "RS/dengue/1": {
+    "lags": {
+      "cf_temp_med": 7,
+      "cf_umid_med": 16,
+      "cf_precip_tot": 16,
+      "oc_enso": 16,
+      "oc_iod": 16,
+      "oc_pdo": 11
+    },
+    "corr": {
+      "cf_temp_med": -0.077,
+      "cf_umid_med": 0.092,
+      "cf_precip_tot": 0.068,
+      "oc_enso": 0.305,
+      "oc_iod": 0.276,
+      "oc_pdo": 0.171
+    },
+    "selected": [
+      "cf_umid_med",
+      "cf_precip_tot"
+    ]
+  },
+  "RS/dengue/2": {
+    "lags": {
+      "cf_temp_med": 7,
+      "cf_umid_med": 6,
+      "cf_precip_tot": 10,
+      "oc_enso": 16,
+      "oc_iod": 13,
+      "oc_pdo": 5
+    },
+    "corr": {
+      "cf_temp_med": -0.117,
+      "cf_umid_med": 0.062,
+      "cf_precip_tot": 0.033,
+      "oc_enso": 0.095,
+      "oc_iod": 0.154,
+      "oc_pdo": 0.028
+    },
+    "selected": [
+      "oc_pdo"
+    ]
+  },
+  "RS/dengue/4": {
+    "lags": {
+      "cf_temp_med": 7,
+      "cf_umid_med": 0,
+      "cf_precip_tot": 10,
+      "oc_enso": 16,
+      "oc_iod": 7,
+      "oc_pdo": 16
+    },
+    "corr": {
+      "cf_temp_med": -0.082,
+      "cf_umid_med": 0.128,
+      "cf_precip_tot": 0.103,
+      "oc_enso": 0.065,
+      "oc_iod": 0.208,
+      "oc_pdo": -0.053
+    },
+    "selected": [
+      "cf_umid_med"
+    ]
+  },
+  "SC/dengue/2": {
+    "lags": {
+      "cf_temp_med": 7,
+      "cf_umid_med": 1,
+      "cf_precip_tot": 1,
+      "oc_enso": 16,
+      "oc_iod": 14,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": -0.105,
+      "cf_umid_med": 0.099,
+      "cf_precip_tot": 0.161,
+      "oc_enso": 0.109,
+      "oc_iod": 0.168,
+      "oc_pdo": 0.093
+    },
+    "selected": []
+  },
+  "SC/dengue/4": {
+    "lags": {
+      "cf_temp_med": 7,
+      "cf_umid_med": 1,
+      "cf_precip_tot": 10,
+      "oc_enso": 11,
+      "oc_iod": 8,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": -0.033,
+      "cf_umid_med": 0.124,
+      "cf_precip_tot": 0.196,
+      "oc_enso": 0.104,
+      "oc_iod": 0.216,
+      "oc_pdo": 0.054
+    },
+    "selected": []
+  },
+  "SE/dengue/1": {
+    "lags": {
+      "cf_temp_med": 3,
+      "cf_umid_med": 12,
+      "cf_precip_tot": 16,
+      "oc_enso": 16,
+      "oc_iod": 14,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": -0.117,
+      "cf_umid_med": 0.17,
+      "cf_precip_tot": 0.134,
+      "oc_enso": 0.212,
+      "oc_iod": 0.255,
+      "oc_pdo": 0.216
+    },
+    "selected": [
+      "cf_umid_med",
+      "cf_temp_med"
+    ]
+  },
+  "SE/dengue/3": {
+    "lags": {
+      "cf_temp_med": 10,
+      "cf_umid_med": 12,
+      "cf_precip_tot": 16,
+      "oc_enso": 0,
+      "oc_iod": 14,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": -0.187,
+      "cf_umid_med": 0.279,
+      "cf_precip_tot": 0.249,
+      "oc_enso": 0.042,
+      "oc_iod": 0.132,
+      "oc_pdo": 0.087
+    },
+    "selected": [
+      "oc_iod"
+    ]
+  },
+  "SE/dengue/4": {
+    "lags": {
+      "cf_temp_med": 11,
+      "cf_umid_med": 12,
+      "cf_precip_tot": 16,
+      "oc_enso": 0,
+      "oc_iod": 14,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": -0.128,
+      "cf_umid_med": 0.262,
+      "cf_precip_tot": 0.22,
+      "oc_enso": 0.076,
+      "oc_iod": 0.175,
+      "oc_pdo": 0.097
+    },
+    "selected": [
+      "cf_temp_med"
+    ]
+  },
+  "SP/dengue/1": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 4,
+      "cf_precip_tot": 4,
+      "oc_enso": 5,
+      "oc_iod": 0,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": 0.276,
+      "cf_umid_med": 0.064,
+      "cf_precip_tot": 0.101,
+      "oc_enso": 0.484,
+      "oc_iod": 0.443,
+      "oc_pdo": 0.224
+    },
+    "selected": []
+  },
+  "SP/dengue/3": {
+    "lags": {
+      "cf_temp_med": 12,
+      "cf_umid_med": 4,
+      "cf_precip_tot": 6,
+      "oc_enso": 0,
+      "oc_iod": 0,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": 0.234,
+      "cf_umid_med": 0.082,
+      "cf_precip_tot": 0.097,
+      "oc_enso": 0.341,
+      "oc_iod": 0.342,
+      "oc_pdo": 0.12
+    },
+    "selected": [
+      "cf_temp_med"
+    ]
+  },
+  "SP/dengue/4": {
+    "lags": {
+      "cf_temp_med": 12,
+      "cf_umid_med": 7,
+      "cf_precip_tot": 6,
+      "oc_enso": 6,
+      "oc_iod": 8,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": 0.307,
+      "cf_umid_med": 0.025,
+      "cf_precip_tot": 0.038,
+      "oc_enso": 0.37,
+      "oc_iod": 0.42,
+      "oc_pdo": 0.177
+    },
+    "selected": [
+      "cf_temp_med"
+    ]
+  },
+  "SP/dengue/final": {
+    "lags": {
+      "cf_temp_med": 12,
+      "cf_umid_med": 16,
+      "cf_precip_tot": 6,
+      "oc_enso": 11,
+      "oc_iod": 10,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": 0.323,
+      "cf_umid_med": -0.054,
+      "cf_precip_tot": 0.055,
+      "oc_enso": 0.322,
+      "oc_iod": 0.379,
+      "oc_pdo": 0.16
+    },
+    "selected": [
+      "cf_temp_med"
+    ]
+  },
+  "TO/dengue/1": {
+    "lags": {
+      "cf_temp_med": 15,
+      "cf_umid_med": 3,
+      "cf_precip_tot": 10,
+      "oc_enso": 1,
+      "oc_iod": 0,
+      "oc_pdo": 8
+    },
+    "corr": {
+      "cf_temp_med": -0.105,
+      "cf_umid_med": 0.095,
+      "cf_precip_tot": -0.066,
+      "oc_enso": 0.205,
+      "oc_iod": 0.258,
+      "oc_pdo": -0.175
+    },
+    "selected": [
+      "oc_iod",
+      "cf_umid_med",
+      "cf_precip_tot"
+    ]
+  },
+  "TO/dengue/2": {
+    "lags": {
+      "cf_temp_med": 15,
+      "cf_umid_med": 3,
+      "cf_precip_tot": 3,
+      "oc_enso": 16,
+      "oc_iod": 16,
+      "oc_pdo": 8
+    },
+    "corr": {
+      "cf_temp_med": -0.174,
+      "cf_umid_med": 0.136,
+      "cf_precip_tot": 0.069,
+      "oc_enso": -0.167,
+      "oc_iod": -0.131,
+      "oc_pdo": -0.349
+    },
+    "selected": []
+  },
+  "TO/dengue/3": {
+    "lags": {
+      "cf_temp_med": 15,
+      "cf_umid_med": 2,
+      "cf_precip_tot": 3,
+      "oc_enso": 16,
+      "oc_iod": 16,
+      "oc_pdo": 10
+    },
+    "corr": {
+      "cf_temp_med": -0.175,
+      "cf_umid_med": 0.13,
+      "cf_precip_tot": 0.08,
+      "oc_enso": -0.174,
+      "oc_iod": -0.112,
+      "oc_pdo": -0.328
+    },
+    "selected": [
+      "oc_iod"
+    ]
+  },
+  "TO/dengue/4": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 2,
+      "cf_precip_tot": 2,
+      "oc_enso": 16,
+      "oc_iod": 16,
+      "oc_pdo": 10
+    },
+    "corr": {
+      "cf_temp_med": -0.166,
+      "cf_umid_med": 0.147,
+      "cf_precip_tot": 0.098,
+      "oc_enso": -0.135,
+      "oc_iod": -0.102,
+      "oc_pdo": -0.308
+    },
+    "selected": [
+      "oc_pdo",
+      "oc_iod"
+    ]
+  },
+  "TO/dengue/final": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 2,
+      "cf_precip_tot": 2,
+      "oc_enso": 16,
+      "oc_iod": 16,
+      "oc_pdo": 10
+    },
+    "corr": {
+      "cf_temp_med": -0.164,
+      "cf_umid_med": 0.164,
+      "cf_precip_tot": 0.107,
+      "oc_enso": -0.151,
+      "oc_iod": -0.107,
+      "oc_pdo": -0.32
+    },
+    "selected": [
+      "cf_umid_med",
+      "oc_enso"
+    ]
+  },
+  "AC/chikungunya/2": {
+    "lags": {
+      "cf_temp_med": 6,
+      "cf_umid_med": 15,
+      "cf_precip_tot": 16,
+      "oc_enso": 11,
+      "oc_iod": 0,
+      "oc_pdo": 9
+    },
+    "corr": {
+      "cf_temp_med": 0.198,
+      "cf_umid_med": -0.179,
+      "cf_precip_tot": -0.179,
+      "oc_enso": 0.137,
+      "oc_iod": -0.134,
+      "oc_pdo": 0.147
+    },
+    "selected": [
+      "cf_temp_med",
+      "oc_pdo"
+    ]
+  },
+  "AC/chikungunya/3": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 16,
+      "cf_precip_tot": 16,
+      "oc_enso": 13,
+      "oc_iod": 0,
+      "oc_pdo": 9
+    },
+    "corr": {
+      "cf_temp_med": 0.182,
+      "cf_umid_med": -0.175,
+      "cf_precip_tot": -0.175,
+      "oc_enso": 0.131,
+      "oc_iod": -0.105,
+      "oc_pdo": 0.155
+    },
+    "selected": [
+      "cf_temp_med",
+      "oc_enso"
+    ]
+  },
+  "AC/chikungunya/4": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 15,
+      "cf_precip_tot": 16,
+      "oc_enso": 15,
+      "oc_iod": 16,
+      "oc_pdo": 9
+    },
+    "corr": {
+      "cf_temp_med": 0.283,
+      "cf_umid_med": -0.112,
+      "cf_precip_tot": -0.154,
+      "oc_enso": 0.217,
+      "oc_iod": 0.125,
+      "oc_pdo": 0.243
+    },
+    "selected": []
+  },
+  "AL/chikungunya/1": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 0,
+      "cf_precip_tot": 0,
+      "oc_enso": 14,
+      "oc_iod": 15,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": 0.295,
+      "cf_umid_med": -0.239,
+      "cf_precip_tot": -0.19,
+      "oc_enso": 0.501,
+      "oc_iod": 0.059,
+      "oc_pdo": 0.327
+    },
+    "selected": [
+      "cf_temp_med",
+      "cf_umid_med",
+      "cf_precip_tot"
+    ]
+  },
+  "AL/chikungunya/3": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 0,
+      "cf_precip_tot": 12,
+      "oc_enso": 14,
+      "oc_iod": 5,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": 0.117,
+      "cf_umid_med": -0.097,
+      "cf_precip_tot": 0.093,
+      "oc_enso": 0.293,
+      "oc_iod": -0.106,
+      "oc_pdo": 0.235
+    },
+    "selected": [
+      "oc_enso"
+    ]
+  },
+  "AL/chikungunya/4": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 0,
+      "cf_precip_tot": 12,
+      "oc_enso": 14,
+      "oc_iod": 5,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": 0.068,
+      "cf_umid_med": -0.064,
+      "cf_precip_tot": 0.077,
+      "oc_enso": 0.198,
+      "oc_iod": -0.157,
+      "oc_pdo": 0.16
+    },
+    "selected": [
+      "cf_temp_med"
+    ]
+  },
+  "AM/chikungunya/1": {
+    "lags": {
+      "cf_temp_med": 12,
+      "cf_umid_med": 16,
+      "cf_precip_tot": 16,
+      "oc_enso": 13,
+      "oc_iod": 2,
+      "oc_pdo": 7
+    },
+    "corr": {
+      "cf_temp_med": 0.246,
+      "cf_umid_med": -0.199,
+      "cf_precip_tot": -0.252,
+      "oc_enso": 0.274,
+      "oc_iod": -0.207,
+      "oc_pdo": 0.294
+    },
+    "selected": [
+      "oc_enso"
+    ]
+  },
+  "AM/chikungunya/2": {
+    "lags": {
+      "cf_temp_med": 12,
+      "cf_umid_med": 12,
+      "cf_precip_tot": 16,
+      "oc_enso": 11,
+      "oc_iod": 0,
+      "oc_pdo": 6
+    },
+    "corr": {
+      "cf_temp_med": 0.216,
+      "cf_umid_med": -0.179,
+      "cf_precip_tot": -0.22,
+      "oc_enso": 0.225,
+      "oc_iod": -0.188,
+      "oc_pdo": 0.234
+    },
+    "selected": [
+      "cf_precip_tot",
+      "cf_temp_med",
+      "cf_umid_med"
+    ]
+  },
+  "AM/chikungunya/4": {
+    "lags": {
+      "cf_temp_med": 11,
+      "cf_umid_med": 16,
+      "cf_precip_tot": 16,
+      "oc_enso": 2,
+      "oc_iod": 16,
+      "oc_pdo": 6
+    },
+    "corr": {
+      "cf_temp_med": 0.132,
+      "cf_umid_med": -0.139,
+      "cf_precip_tot": -0.192,
+      "oc_enso": 0.206,
+      "oc_iod": -0.18,
+      "oc_pdo": 0.188
+    },
+    "selected": []
+  },
+  "AM/chikungunya/final": {
+    "lags": {
+      "cf_temp_med": 12,
+      "cf_umid_med": 12,
+      "cf_precip_tot": 16,
+      "oc_enso": 7,
+      "oc_iod": 16,
+      "oc_pdo": 6
+    },
+    "corr": {
+      "cf_temp_med": 0.14,
+      "cf_umid_med": -0.162,
+      "cf_precip_tot": -0.2,
+      "oc_enso": 0.203,
+      "oc_iod": -0.163,
+      "oc_pdo": 0.186
+    },
+    "selected": [
+      "oc_enso"
+    ]
+  },
+  "AP/chikungunya/1": {
+    "lags": {
+      "cf_temp_med": 3,
+      "cf_umid_med": 3,
+      "cf_precip_tot": 3,
+      "oc_enso": 0,
+      "oc_iod": 16,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": 0.191,
+      "cf_umid_med": -0.167,
+      "cf_precip_tot": -0.212,
+      "oc_enso": 0.069,
+      "oc_iod": -0.349,
+      "oc_pdo": 0.229
+    },
+    "selected": []
+  },
+  "AP/chikungunya/2": {
+    "lags": {
+      "cf_temp_med": 3,
+      "cf_umid_med": 3,
+      "cf_precip_tot": 3,
+      "oc_enso": 13,
+      "oc_iod": 16,
+      "oc_pdo": 5
+    },
+    "corr": {
+      "cf_temp_med": 0.155,
+      "cf_umid_med": -0.148,
+      "cf_precip_tot": -0.2,
+      "oc_enso": -0.072,
+      "oc_iod": -0.315,
+      "oc_pdo": 0.196
+    },
+    "selected": []
+  },
+  "AP/chikungunya/3": {
+    "lags": {
+      "cf_temp_med": 3,
+      "cf_umid_med": 3,
+      "cf_precip_tot": 3,
+      "oc_enso": 0,
+      "oc_iod": 16,
+      "oc_pdo": 4
+    },
+    "corr": {
+      "cf_temp_med": 0.18,
+      "cf_umid_med": -0.172,
+      "cf_precip_tot": -0.218,
+      "oc_enso": 0.095,
+      "oc_iod": -0.264,
+      "oc_pdo": 0.187
+    },
+    "selected": []
+  },
+  "AP/chikungunya/4": {
+    "lags": {
+      "cf_temp_med": 3,
+      "cf_umid_med": 3,
+      "cf_precip_tot": 3,
+      "oc_enso": 10,
+      "oc_iod": 1,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": 0.335,
+      "cf_umid_med": -0.221,
+      "cf_precip_tot": -0.268,
+      "oc_enso": 0.26,
+      "oc_iod": 0.052,
+      "oc_pdo": 0.346
+    },
+    "selected": [
+      "oc_pdo",
+      "oc_enso"
+    ]
+  },
+  "AP/chikungunya/final": {
+    "lags": {
+      "cf_temp_med": 3,
+      "cf_umid_med": 13,
+      "cf_precip_tot": 13,
+      "oc_enso": 10,
+      "oc_iod": 1,
+      "oc_pdo": 4
+    },
+    "corr": {
+      "cf_temp_med": 0.286,
+      "cf_umid_med": -0.191,
+      "cf_precip_tot": -0.241,
+      "oc_enso": 0.254,
+      "oc_iod": 0.04,
+      "oc_pdo": 0.338
+    },
+    "selected": [
+      "oc_pdo"
+    ]
+  },
+  "BA/chikungunya/1": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 0,
+      "cf_precip_tot": 13,
+      "oc_enso": 12,
+      "oc_iod": 16,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": 0.39,
+      "cf_umid_med": -0.143,
+      "cf_precip_tot": 0.095,
+      "oc_enso": 0.497,
+      "oc_iod": 0.276,
+      "oc_pdo": 0.57
+    },
+    "selected": [
+      "cf_temp_med",
+      "cf_umid_med",
+      "cf_precip_tot"
+    ]
+  },
+  "BA/chikungunya/3": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 16,
+      "cf_precip_tot": 10,
+      "oc_enso": 16,
+      "oc_iod": 16,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": 0.381,
+      "cf_umid_med": -0.094,
+      "cf_precip_tot": 0.113,
+      "oc_enso": 0.458,
+      "oc_iod": 0.258,
+      "oc_pdo": 0.478
+    },
+    "selected": []
+  },
+  "BA/chikungunya/4": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 16,
+      "cf_precip_tot": 10,
+      "oc_enso": 16,
+      "oc_iod": 15,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": 0.304,
+      "cf_umid_med": -0.11,
+      "cf_precip_tot": 0.108,
+      "oc_enso": 0.323,
+      "oc_iod": 0.157,
+      "oc_pdo": 0.355
+    },
+    "selected": [
+      "oc_pdo"
+    ]
+  },
+  "BA/chikungunya/final": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 9,
+      "cf_precip_tot": 10,
+      "oc_enso": 0,
+      "oc_iod": 14,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": 0.237,
+      "cf_umid_med": 0.115,
+      "cf_precip_tot": 0.169,
+      "oc_enso": 0.307,
+      "oc_iod": 0.195,
+      "oc_pdo": 0.344
+    },
+    "selected": [
+      "oc_enso"
+    ]
+  },
+  "CE/chikungunya/1": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 15,
+      "cf_precip_tot": 15,
+      "oc_enso": 16,
+      "oc_iod": 0,
+      "oc_pdo": 14
+    },
+    "corr": {
+      "cf_temp_med": 0.167,
+      "cf_umid_med": -0.112,
+      "cf_precip_tot": -0.05,
+      "oc_enso": 0.178,
+      "oc_iod": -0.268,
+      "oc_pdo": 0.313
+    },
+    "selected": [
+      "oc_pdo",
+      "cf_umid_med"
+    ]
+  },
+  "CE/chikungunya/2": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 15,
+      "cf_precip_tot": 7,
+      "oc_enso": 16,
+      "oc_iod": 0,
+      "oc_pdo": 14
+    },
+    "corr": {
+      "cf_temp_med": 0.129,
+      "cf_umid_med": -0.071,
+      "cf_precip_tot": 0.048,
+      "oc_enso": 0.085,
+      "oc_iod": -0.284,
+      "oc_pdo": 0.23
+    },
+    "selected": [
+      "cf_umid_med",
+      "cf_precip_tot"
+    ]
+  },
+  "CE/chikungunya/4": {
+    "lags": {
+      "cf_temp_med": 3,
+      "cf_umid_med": 15,
+      "cf_precip_tot": 0,
+      "oc_enso": 0,
+      "oc_iod": 0,
+      "oc_pdo": 14
+    },
+    "corr": {
+      "cf_temp_med": -0.09,
+      "cf_umid_med": -0.036,
+      "cf_precip_tot": 0.067,
+      "oc_enso": -0.223,
+      "oc_iod": -0.403,
+      "oc_pdo": 0.071
+    },
+    "selected": [
+      "cf_temp_med",
+      "cf_umid_med"
+    ]
+  },
+  "CE/chikungunya/final": {
+    "lags": {
+      "cf_temp_med": 3,
+      "cf_umid_med": 12,
+      "cf_precip_tot": 0,
+      "oc_enso": 0,
+      "oc_iod": 0,
+      "oc_pdo": 7
+    },
+    "corr": {
+      "cf_temp_med": -0.099,
+      "cf_umid_med": 0.058,
+      "cf_precip_tot": 0.047,
+      "oc_enso": -0.177,
+      "oc_iod": -0.323,
+      "oc_pdo": 0.033
+    },
+    "selected": []
+  },
+  "DF/chikungunya/2": {
+    "lags": {
+      "cf_temp_med": 0,
+      "cf_umid_med": 0,
+      "cf_precip_tot": 3,
+      "oc_enso": 4,
+      "oc_iod": 16,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": 0.21,
+      "cf_umid_med": -0.172,
+      "cf_precip_tot": -0.147,
+      "oc_enso": 0.251,
+      "oc_iod": -0.059,
+      "oc_pdo": 0.209
+    },
+    "selected": [
+      "oc_enso",
+      "cf_temp_med",
+      "cf_umid_med",
+      "oc_iod"
+    ]
+  },
+  "DF/chikungunya/3": {
+    "lags": {
+      "cf_temp_med": 0,
+      "cf_umid_med": 0,
+      "cf_precip_tot": 0,
+      "oc_enso": 3,
+      "oc_iod": 16,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": 0.199,
+      "cf_umid_med": -0.186,
+      "cf_precip_tot": -0.156,
+      "oc_enso": 0.24,
+      "oc_iod": -0.124,
+      "oc_pdo": 0.205
+    },
+    "selected": []
+  },
+  "DF/chikungunya/4": {
+    "lags": {
+      "cf_temp_med": 0,
+      "cf_umid_med": 0,
+      "cf_precip_tot": 3,
+      "oc_enso": 3,
+      "oc_iod": 16,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": 0.178,
+      "cf_umid_med": -0.157,
+      "cf_precip_tot": -0.127,
+      "oc_enso": 0.211,
+      "oc_iod": -0.106,
+      "oc_pdo": 0.162
+    },
+    "selected": []
+  },
+  "DF/chikungunya/final": {
+    "lags": {
+      "cf_temp_med": 0,
+      "cf_umid_med": 0,
+      "cf_precip_tot": 12,
+      "oc_enso": 4,
+      "oc_iod": 16,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": 0.119,
+      "cf_umid_med": -0.096,
+      "cf_precip_tot": 0.061,
+      "oc_enso": 0.231,
+      "oc_iod": -0.057,
+      "oc_pdo": 0.18
+    },
+    "selected": [
+      "oc_pdo",
+      "cf_precip_tot"
+    ]
+  },
+  "ES/chikungunya/1": {
+    "lags": {
+      "cf_temp_med": 7,
+      "cf_umid_med": 16,
+      "cf_precip_tot": 8,
+      "oc_enso": 1,
+      "oc_iod": 0,
+      "oc_pdo": 16
+    },
+    "corr": {
+      "cf_temp_med": 0.271,
+      "cf_umid_med": -0.083,
+      "cf_precip_tot": 0.096,
+      "oc_enso": 0.249,
+      "oc_iod": 0.331,
+      "oc_pdo": -0.135
+    },
+    "selected": [
+      "oc_iod",
+      "oc_enso",
+      "oc_pdo"
+    ]
+  },
+  "ES/chikungunya/2": {
+    "lags": {
+      "cf_temp_med": 12,
+      "cf_umid_med": 16,
+      "cf_precip_tot": 3,
+      "oc_enso": 2,
+      "oc_iod": 0,
+      "oc_pdo": 2
+    },
+    "corr": {
+      "cf_temp_med": 0.238,
+      "cf_umid_med": -0.124,
+      "cf_precip_tot": 0.156,
+      "oc_enso": 0.317,
+      "oc_iod": 0.32,
+      "oc_pdo": 0.039
+    },
+    "selected": [
+      "oc_enso"
+    ]
+  },
+  "ES/chikungunya/3": {
+    "lags": {
+      "cf_temp_med": 6,
+      "cf_umid_med": 16,
+      "cf_precip_tot": 1,
+      "oc_enso": 8,
+      "oc_iod": 0,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": 0.254,
+      "cf_umid_med": -0.125,
+      "cf_precip_tot": 0.145,
+      "oc_enso": 0.293,
+      "oc_iod": 0.276,
+      "oc_pdo": 0.045
+    },
+    "selected": [
+      "oc_enso",
+      "oc_iod"
+    ]
+  },
+  "ES/chikungunya/4": {
+    "lags": {
+      "cf_temp_med": 6,
+      "cf_umid_med": 16,
+      "cf_precip_tot": 8,
+      "oc_enso": 8,
+      "oc_iod": 6,
+      "oc_pdo": 2
+    },
+    "corr": {
+      "cf_temp_med": 0.277,
+      "cf_umid_med": -0.128,
+      "cf_precip_tot": 0.142,
+      "oc_enso": 0.355,
+      "oc_iod": 0.348,
+      "oc_pdo": 0.118
+    },
+    "selected": []
+  },
+  "ES/chikungunya/final": {
+    "lags": {
+      "cf_temp_med": 6,
+      "cf_umid_med": 16,
+      "cf_precip_tot": 1,
+      "oc_enso": 8,
+      "oc_iod": 7,
+      "oc_pdo": 2
+    },
+    "corr": {
+      "cf_temp_med": 0.275,
+      "cf_umid_med": -0.122,
+      "cf_precip_tot": 0.12,
+      "oc_enso": 0.343,
+      "oc_iod": 0.324,
+      "oc_pdo": 0.123
+    },
+    "selected": []
+  },
+  "GO/chikungunya/2": {
+    "lags": {
+      "cf_temp_med": 12,
+      "cf_umid_med": 3,
+      "cf_precip_tot": 3,
+      "oc_enso": 16,
+      "oc_iod": 15,
+      "oc_pdo": 14
+    },
+    "corr": {
+      "cf_temp_med": -0.068,
+      "cf_umid_med": -0.127,
+      "cf_precip_tot": -0.132,
+      "oc_enso": -0.215,
+      "oc_iod": -0.323,
+      "oc_pdo": -0.127
+    },
+    "selected": [
+      "oc_iod"
+    ]
+  },
+  "GO/chikungunya/3": {
+    "lags": {
+      "cf_temp_med": 12,
+      "cf_umid_med": 2,
+      "cf_precip_tot": 2,
+      "oc_enso": 16,
+      "oc_iod": 15,
+      "oc_pdo": 16
+    },
+    "corr": {
+      "cf_temp_med": -0.076,
+      "cf_umid_med": -0.12,
+      "cf_precip_tot": -0.13,
+      "oc_enso": -0.196,
+      "oc_iod": -0.321,
+      "oc_pdo": -0.097
+    },
+    "selected": [
+      "cf_precip_tot",
+      "cf_umid_med"
+    ]
+  },
+  "GO/chikungunya/final": {
+    "lags": {
+      "cf_temp_med": 0,
+      "cf_umid_med": 0,
+      "cf_precip_tot": 2,
+      "oc_enso": 0,
+      "oc_iod": 15,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": 0.135,
+      "cf_umid_med": -0.127,
+      "cf_precip_tot": -0.071,
+      "oc_enso": 0.142,
+      "oc_iod": -0.049,
+      "oc_pdo": 0.172
+    },
+    "selected": [
+      "cf_umid_med"
+    ]
+  },
+  "MA/chikungunya/1": {
+    "lags": {
+      "cf_temp_med": 1,
+      "cf_umid_med": 1,
+      "cf_precip_tot": 11,
+      "oc_enso": 16,
+      "oc_iod": 0,
+      "oc_pdo": 5
+    },
+    "corr": {
+      "cf_temp_med": 0.319,
+      "cf_umid_med": -0.158,
+      "cf_precip_tot": 0.091,
+      "oc_enso": 0.263,
+      "oc_iod": -0.134,
+      "oc_pdo": 0.228
+    },
+    "selected": [
+      "cf_temp_med"
+    ]
+  },
+  "MA/chikungunya/2": {
+    "lags": {
+      "cf_temp_med": 1,
+      "cf_umid_med": 1,
+      "cf_precip_tot": 11,
+      "oc_enso": 16,
+      "oc_iod": 0,
+      "oc_pdo": 5
+    },
+    "corr": {
+      "cf_temp_med": 0.233,
+      "cf_umid_med": -0.127,
+      "cf_precip_tot": 0.101,
+      "oc_enso": 0.17,
+      "oc_iod": -0.178,
+      "oc_pdo": 0.187
+    },
+    "selected": [
+      "cf_temp_med",
+      "cf_umid_med"
+    ]
+  },
+  "MA/chikungunya/3": {
+    "lags": {
+      "cf_temp_med": 1,
+      "cf_umid_med": 1,
+      "cf_precip_tot": 16,
+      "oc_enso": 11,
+      "oc_iod": 15,
+      "oc_pdo": 5
+    },
+    "corr": {
+      "cf_temp_med": 0.207,
+      "cf_umid_med": -0.127,
+      "cf_precip_tot": 0.097,
+      "oc_enso": 0.14,
+      "oc_iod": -0.184,
+      "oc_pdo": 0.18
+    },
+    "selected": [
+      "cf_temp_med"
+    ]
+  },
+  "MA/chikungunya/final": {
+    "lags": {
+      "cf_temp_med": 1,
+      "cf_umid_med": 16,
+      "cf_precip_tot": 16,
+      "oc_enso": 11,
+      "oc_iod": 15,
+      "oc_pdo": 5
+    },
+    "corr": {
+      "cf_temp_med": 0.138,
+      "cf_umid_med": 0.109,
+      "cf_precip_tot": 0.119,
+      "oc_enso": 0.051,
+      "oc_iod": -0.209,
+      "oc_pdo": 0.076
+    },
+    "selected": [
+      "oc_iod",
+      "cf_temp_med"
+    ]
+  },
+  "MS/chikungunya/1": {
+    "lags": {
+      "cf_temp_med": 14,
+      "cf_umid_med": 2,
+      "cf_precip_tot": 2,
+      "oc_enso": 0,
+      "oc_iod": 7,
+      "oc_pdo": 16
+    },
+    "corr": {
+      "cf_temp_med": 0.067,
+      "cf_umid_med": 0.236,
+      "cf_precip_tot": 0.214,
+      "oc_enso": 0.28,
+      "oc_iod": 0.196,
+      "oc_pdo": -0.117
+    },
+    "selected": [
+      "oc_pdo"
+    ]
+  },
+  "MS/chikungunya/2": {
+    "lags": {
+      "cf_temp_med": 4,
+      "cf_umid_med": 2,
+      "cf_precip_tot": 2,
+      "oc_enso": 0,
+      "oc_iod": 13,
+      "oc_pdo": 16
+    },
+    "corr": {
+      "cf_temp_med": -0.118,
+      "cf_umid_med": 0.239,
+      "cf_precip_tot": 0.208,
+      "oc_enso": 0.211,
+      "oc_iod": 0.144,
+      "oc_pdo": -0.11
+    },
+    "selected": [
+      "oc_iod"
+    ]
+  },
+  "MS/chikungunya/3": {
+    "lags": {
+      "cf_temp_med": 4,
+      "cf_umid_med": 5,
+      "cf_precip_tot": 7,
+      "oc_enso": 0,
+      "oc_iod": 0,
+      "oc_pdo": 16
+    },
+    "corr": {
+      "cf_temp_med": -0.233,
+      "cf_umid_med": 0.323,
+      "cf_precip_tot": 0.244,
+      "oc_enso": 0.205,
+      "oc_iod": 0.063,
+      "oc_pdo": -0.066
+    },
+    "selected": []
+  },
+  "MT/chikungunya/1": {
+    "lags": {
+      "cf_temp_med": 15,
+      "cf_umid_med": 16,
+      "cf_precip_tot": 16,
+      "oc_enso": 0,
+      "oc_iod": 16,
+      "oc_pdo": 14
+    },
+    "corr": {
+      "cf_temp_med": -0.149,
+      "cf_umid_med": 0.238,
+      "cf_precip_tot": 0.215,
+      "oc_enso": 0.153,
+      "oc_iod": -0.082,
+      "oc_pdo": -0.082
+    },
+    "selected": [
+      "cf_umid_med",
+      "oc_pdo"
+    ]
+  },
+  "MT/chikungunya/2": {
+    "lags": {
+      "cf_temp_med": 16,
+      "cf_umid_med": 16,
+      "cf_precip_tot": 15,
+      "oc_enso": 0,
+      "oc_iod": 1,
+      "oc_pdo": 12
+    },
+    "corr": {
+      "cf_temp_med": -0.103,
+      "cf_umid_med": 0.167,
+      "cf_precip_tot": 0.161,
+      "oc_enso": 0.198,
+      "oc_iod": 0.138,
+      "oc_pdo": -0.047
+    },
+    "selected": []
+  },
+  "MT/chikungunya/4": {
+    "lags": {
+      "cf_temp_med": 0,
+      "cf_umid_med": 16,
+      "cf_precip_tot": 7,
+      "oc_enso": 7,
+      "oc_iod": 10,
+      "oc_pdo": 0
+    },
+    "corr": {
+      "cf_temp_med": 0.186,
+      "cf_umid_med": 0.093,
+      "cf_precip_tot": 0.131,
+      "oc_enso": 0.328,
+      "oc_iod": 0.273,
+      "oc_pdo": 0.21
+    },
+    "selected": [
+      "cf_precip_tot",
+      "cf_umid_med"
+    ]
+  },
+  "MT/chikungunya/final": {
+    "lags": {
+      "cf_temp_med": 15,
+      "cf_umid_med": 4,
+      "cf_precip_tot": 7,
+      "oc_enso": 15,
+      "oc_iod": 16,
+      "oc_pdo": 15
+    },
+    "corr": {
+      "cf_temp_med": 0.179,
+      "cf_umid_med": 0.083,
+      "cf_precip_tot": 0.108,
+      "oc_enso": 0.268,
+      "oc_iod": 0.169,
+      "oc_pdo": 0.234
+    },
+    "selected": []
+  }
+}

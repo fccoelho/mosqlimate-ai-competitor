@@ -273,11 +273,7 @@ def run_single_backtest(
             return
         f_obs = f_win.loc[overlap]
         iv = quantiles_to_intervals(f_obs.reset_index(names="date"))
-        metrics = (
-            evaluate_forecast(y_true.loc[overlap].values, iv)
-            if len(overlap)
-            else {}
-        )
+        metrics = evaluate_forecast(y_true.loc[overlap].values, iv) if len(overlap) else {}
         horizons = np.array(
             [(d - pd.Timestamp(test_config.train_end)).days // 7 for d in f_obs.index]
         )
@@ -301,7 +297,9 @@ def run_single_backtest(
     good = {
         name: b["forecast"]
         for name, b in models.items()
-        if name not in ("seas_naive",) and isinstance(b.get("forecast"), pd.DataFrame) and len(b["forecast"])
+        if name not in ("seas_naive",)
+        and isinstance(b.get("forecast"), pd.DataFrame)
+        and len(b["forecast"])
     }
     if len(good) >= 2:
         import time as _time
@@ -433,9 +431,23 @@ def _test_job(args: tuple) -> dict:
         include_timesfm,
         booster_n_jobs,
         cache_dir,
+        optimize_covariate_lags,
     ) = args
 
     lookup = _worker_lookup(uf, test_config.train_end)
+
+    lag_info: dict = {}
+    if optimize_covariate_lags and lookup is not None:
+        from mosqlimate_ai.data.lag_selection import optimize_exog_lookup
+
+        lookup, lag_info = optimize_exog_lookup(lookup, train_df)
+        if lag_info.get("selected"):
+            logger.info(
+                "covariate lags %s: %s (selected: %s)",
+                uf,
+                lag_info.get("lags"),
+                lag_info.get("selected"),
+            )
 
     cache_key = (uf, disease)
     if cache_key not in _WORKER_PARAMS_CACHE:
@@ -446,9 +458,7 @@ def _test_job(args: tuple) -> dict:
             cached = load_cached_params(Path(cache_dir), uf, disease, family)
             if cached:
                 tuned = dict(cached)
-                hl = tuned.pop(
-                    "recency_halflife_weeks", DEFAULT_PARAMS["recency_halflife_weeks"]
-                )
+                hl = tuned.pop("recency_halflife_weeks", DEFAULT_PARAMS["recency_halflife_weeks"])
                 tuned.setdefault("n_estimators", DEFAULT_PARAMS["n_estimators"])
                 tuned["recency_halflife_weeks"] = hl
                 per_model[family] = tuned
@@ -490,6 +500,7 @@ def _prepare_test_job_args(
     cache_dir: Path = Path("validation_results/backtest"),
     loader=None,
     include_timesfm: bool = True,
+    optimize_covariate_lags: bool = True,
 ) -> list[tuple]:
     """Prepare all worker job payloads in the main process.
 
@@ -564,6 +575,7 @@ def _prepare_test_job_args(
                         include_timesfm,
                         booster_n_jobs,
                         str(Path(cache_dir)),
+                        optimize_covariate_lags,
                     )
                 )
 
@@ -624,6 +636,7 @@ def run_full_pipeline(
     include_tft: bool = False,
     include_timesfm: bool = True,
     calibrate: bool = True,
+    optimize_covariate_lags: bool = True,
     max_workers: int = 5,
     out_dir: Path = Path("validation_results/backtest"),
     test_numbers: list[int] | None = None,
@@ -644,7 +657,11 @@ def run_full_pipeline(
         include_timesfm: Add the zero-shot TimesFM foundation model to
             the registry (default on; checkpoint downloaded on first
             use, skipped with a warning when unavailable).
-"""
+        optimize_covariate_lags: Estimate per-covariate climate->cases
+            lags and stepwise-select useful covariates on the training
+            window of each job (default on; see
+            ``mosqlimate_ai.data.lag_selection``).
+    """
     if states is None:
         states = get_validation_config().states
 
@@ -664,9 +681,11 @@ def run_full_pipeline(
             states, diseases, tune_trials, max_workers, out_dir, loader=loader
         )
         logger.info("prepared %d tuning jobs (%d trials each)", len(tune_jobs), tune_trials)
+
         def _tune_failure(job, exc):
-            logger.error("tuning job failed: %s/%s -> %s: %s",
-                         job[0], job[1], type(exc).__name__, exc)
+            logger.error(
+                "tuning job failed: %s/%s -> %s: %s", job[0], job[1], type(exc).__name__, exc
+            )
 
         _run_jobs(
             _tune_job,
@@ -677,8 +696,17 @@ def run_full_pipeline(
         )
 
     jobs = _prepare_test_job_args(
-        states, diseases, include_final, include_tft, calibrate, test_numbers, max_workers,
-        out_dir, loader=loader, include_timesfm=include_timesfm,
+        states,
+        diseases,
+        include_final,
+        include_tft,
+        calibrate,
+        test_numbers,
+        max_workers,
+        out_dir,
+        loader=loader,
+        include_timesfm=include_timesfm,
+        optimize_covariate_lags=optimize_covariate_lags,
     )
     logger.info("prepared %d test jobs", len(jobs))
 
@@ -747,9 +775,7 @@ def _run_jobs(fn, jobs, max_workers, on_success, on_failure) -> None:
 def _collect_result(job, result, by_state, summaries, out_dir, expected_counts) -> None:
     uf, test_config, disease = job[0], job[1], job[2]
     key = (uf, disease)
-    entry = by_state.setdefault(
-        key, {"state": uf, "disease": disease, "tests": {}, "final": None}
-    )
+    entry = by_state.setdefault(key, {"state": uf, "disease": disease, "tests": {}, "final": None})
     if test_config.test_number == 5:
         entry["final"] = result
     else:
@@ -793,9 +819,7 @@ def run_state_pipeline(
 
     state_result = {"state": uf, "disease": disease, "tests": {}}
     for test_config in config.validation_tests:
-        registry = (
-            model_registry_fn() if model_registry_fn else None
-        )
+        registry = model_registry_fn() if model_registry_fn else None
         state_result["tests"][str(test_config.test_number)] = run_single_backtest(
             uf, test_config, disease=disease, loader=loader, model_registry=registry
         )
@@ -877,7 +901,8 @@ def save_backtest_results(result: dict, out_dir: Path, forecasts: bool = True) -
                 fc = model_res.get("forecast")
                 if fc is not None and len(fc):
                     fc.to_csv(
-                        fc_dir / f"{result['state']}_{result['disease']}_{test_key}_{model_name}.csv.gz",
+                        fc_dir
+                        / f"{result['state']}_{result['disease']}_{test_key}_{model_name}.csv.gz",
                         index=False,
                     )
     return path
