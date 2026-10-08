@@ -131,6 +131,24 @@ def sort_quantiles(quantile_df: pd.DataFrame) -> pd.DataFrame:
     return out
 
 
+def widen_quantiles(quantile_df: pd.DataFrame, k: float) -> pd.DataFrame:
+    """Scale the quantile spread around the median by ``k``.
+
+    ``q'_tau = median + k * (q_tau - median)`` — a multiplicative
+    interval-widening (``k > 1``) or tightening (``k < 1``) used for
+    post-hoc recalibration of over/under-confident forecasts. Values
+    are clipped at zero; monotonicity is preserved because the spread
+    is scaled uniformly per row. Non-quantile columns pass through.
+    """
+    cols = [c for c in QUANTILE_COLS.values() if c in quantile_df.columns]
+    out = quantile_df.copy()
+    if cols and "q500" in cols and k != 1.0:
+        med = quantile_df["q500"]
+        for col in cols:
+            out[col] = (med + k * (quantile_df[col] - med)).clip(lower=0.0)
+    return out
+
+
 def pinball_loss(
     y_true: np.ndarray,
     z: np.ndarray,

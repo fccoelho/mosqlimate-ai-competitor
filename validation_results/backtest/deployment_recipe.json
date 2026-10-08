@@ -1,0 +1,15 @@
+{
+  "chikungunya": {
+    "model": "timesfm_base",
+    "recal_k": 1.0,
+    "evidence": "univariate TimesFM is the best model overall (mean WIS 82.6, +8% skill vs imdc_bb); covariate variants do not beat it; interval widening rejected on held-out tests (-2.8%)"
+  },
+  "dengue": {
+    "model": "ens_qavg",
+    "recal_k": 1.0,
+    "evidence": "ens_qavg is the best local model (mean WIS 1389.4); ens_blend 1396.0 adds nothing; global interval widening rejected (k*=2.5 overfits tests 1-2, held-out tests 3-4 degrade 57-66%)"
+  },
+  "fallback": "ens_qavg",
+  "note": "Per-state skill-gated selection (select_from_backtest_dir) still applies underneath: the recipe sets the per-disease DEFAULT model; use --model to override. recal_k>1 variants exist only where held-out tests confirmed the gain (see recal_factors.json); deployed models here use k=1.0.",
+  "source": "scripts/build_blend_ensemble.py + scripts/recalibrate_intervals.py screens (k tuned on tests 1-2, evaluated on tests 3-4)"
+}

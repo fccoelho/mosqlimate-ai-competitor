@@ -291,6 +291,8 @@ Key properties:
 | `scripts/rebuild_ensembles_with_timesfm.py` | Rebuild `ens_qavg_tf`/`ens_median_tf` from saved member CSVs | `rebuild_ensembles_with_timesfm.py` |
 | `scripts/regenerate_timesfm_forecasts.py` | Re-run TimesFM-only backtests (covariate-aware) and overwrite its forecast CSVs | `regenerate_timesfm_forecasts.py [--states SP,RJ] [--workers 3]` |
 | `scripts/regenerate_lagopt_models.py` | Re-run covariate models with lag-optimized + stepwise-selected covariates (`*_lagopt`) | `regenerate_lagopt_models.py [--models xgb_lagopt,lgbm_lagopt] [--workers 2] [--timesfm-device cpu]` (resumable; splits phases to cap GPU/RAM) |
+| `scripts/build_blend_ensemble.py` | Build `ens_blend` (univariate TimesFM + per-disease GBM ensemble) | `build_blend_ensemble.py [--states SP,RJ]` |
+| `scripts/recalibrate_intervals.py` | Interval-widening screen (`*_recal`); k tuned on tests 1-2, gated by held-out tests 3-4 | `recalibrate_intervals.py [--models timesfm_base,ens_median]` |
 | `scripts/make_submission.py` | Build + validate the IMDC submission package | `make_submission.py [MODEL_ID]` |
 | `scripts/refresh_data.py` | Refresh stale data, skip verified files | `refresh_data.py [--force]` |
 
