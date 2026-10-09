@@ -95,7 +95,7 @@ DEFAULT_VALIDATION_CONFIG = ValidationPipelineConfig(
         ),
     ],
     final_forecast_train_end="2026-06-21",  # EW 25 2026
-    final_forecast_target_start="2026-10-04",  # EW 41 2026
+    final_forecast_target_start="2026-10-11",  # EW 41 2026
     final_forecast_target_end="2027-10-03",  # EW 40 2027
     states=[
         "AC",
