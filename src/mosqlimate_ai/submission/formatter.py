@@ -8,7 +8,7 @@ import json
 import logging
 from datetime import date
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Optional, Union
 
 import pandas as pd
 
@@ -45,14 +45,14 @@ class SubmissionFormatter:
         self.description = description
         self.commit = commit
 
-        self.submissions: List[Dict[str, Any]] = []
+        self.submissions: list[dict[str, Any]] = []
 
     def format_state_forecast(
         self,
         forecast_df: pd.DataFrame,
         uf: Optional[str],
         adm_0: str = "BRA",
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Format forecast for a single state.
 
         Args:
@@ -87,7 +87,7 @@ class SubmissionFormatter:
 
         dates = forecast_df["date"].tolist()
         if isinstance(dates[0], str):
-            dates = [d for d in dates]
+            dates = list(dates)
         else:
             dates = [d.strftime("%Y-%m-%d") for d in dates]
 
@@ -123,7 +123,7 @@ class SubmissionFormatter:
         self,
         forecast_df: pd.DataFrame,
         adm_0: str = "BRA",
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Format national-level forecast.
 
         Args:
@@ -140,10 +140,10 @@ class SubmissionFormatter:
 
     def format_all_states(
         self,
-        forecasts_by_state: Dict[str, pd.DataFrame],
+        forecasts_by_state: dict[str, pd.DataFrame],
         include_national: bool = False,
         national_forecast: Optional[pd.DataFrame] = None,
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """Format forecasts for all states.
 
         Args:
@@ -173,7 +173,7 @@ class SubmissionFormatter:
         self,
         output_dir: Union[str, Path],
         format: str = "json",
-    ) -> List[Path]:
+    ) -> list[Path]:
         """Save all submissions to files.
 
         Args:
@@ -207,7 +207,7 @@ class SubmissionFormatter:
 
         return saved_paths
 
-    def _save_csv(self, submission: Dict[str, Any], filepath: Path) -> None:
+    def _save_csv(self, submission: dict[str, Any], filepath: Path) -> None:
         """Save submission as CSV.
 
         Args:
@@ -237,7 +237,7 @@ class SubmissionFormatter:
 
         df.to_csv(filepath, index=False)
 
-    def get_submission(self, index: int = -1) -> Dict[str, Any]:
+    def get_submission(self, index: int = -1) -> dict[str, Any]:
         """Get a submission by index.
 
         Args:
@@ -282,7 +282,7 @@ class SubmissionFormatter:
 
         return pd.DataFrame(rows)
 
-    def validate_submissions(self) -> List[Dict[str, Any]]:
+    def validate_submissions(self) -> list[dict[str, Any]]:
         """Validate all submissions.
 
         Returns:
@@ -303,9 +303,8 @@ class SubmissionFormatter:
                 issues.append({"submission": i, "issue": "Dates and predictions length mismatch"})
 
             for q in ["lower_50", "lower_80", "lower_90", "lower_95"]:
-                if q in prediction:
-                    if any(v < 0 for v in prediction[q]):
-                        issues.append({"submission": i, "issue": f"Negative values in {q}"})
+                if q in prediction and any(v < 0 for v in prediction[q]):
+                    issues.append({"submission": i, "issue": f"Negative values in {q}"})
 
             for lower, upper in [
                 ("lower_50", "upper_50"),
@@ -335,16 +334,16 @@ class SubmissionFormatter:
 
 
 def create_forecast_dataframe(
-    dates: List[str],
-    median: List[float],
-    lower_50: Optional[List[float]] = None,
-    upper_50: Optional[List[float]] = None,
-    lower_80: Optional[List[float]] = None,
-    upper_80: Optional[List[float]] = None,
-    lower_90: Optional[List[float]] = None,
-    upper_90: Optional[List[float]] = None,
-    lower_95: Optional[List[float]] = None,
-    upper_95: Optional[List[float]] = None,
+    dates: list[str],
+    median: list[float],
+    lower_50: Optional[list[float]] = None,
+    upper_50: Optional[list[float]] = None,
+    lower_80: Optional[list[float]] = None,
+    upper_80: Optional[list[float]] = None,
+    lower_90: Optional[list[float]] = None,
+    upper_90: Optional[list[float]] = None,
+    lower_95: Optional[list[float]] = None,
+    upper_95: Optional[list[float]] = None,
 ) -> pd.DataFrame:
     """Create a properly formatted forecast DataFrame.
 
@@ -383,7 +382,7 @@ def create_forecast_dataframe(
 def generate_forecast_dates(
     start_date: str,
     n_weeks: int = 52,
-) -> List[str]:
+) -> list[str]:
     """Generate weekly forecast dates starting from a given date.
 
     Args:

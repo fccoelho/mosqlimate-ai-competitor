@@ -1,4 +1,11 @@
-"""Agent orchestrator for Karl DBot multi-agent system."""
+"""Agent orchestrator for Karl DBot multi-agent system.
+
+.. deprecated::
+    The LLM multi-agent layer is retired from the forecasting pipeline.
+    Use the deterministic validation harness instead:
+    :mod:`mosqlimate_ai.validation.backtest` (CLI ``validate`` command).
+    This module is kept only for reference and audit-log utilities.
+"""
 
 import logging
 from dataclasses import dataclass, field

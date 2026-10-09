@@ -34,7 +34,6 @@ dependencies = [
     "lightgbm>=4.0.0",
     "prophet>=1.1.0",
     "statsmodels>=0.14.0",
-    "tensorflow>=2.13.0",
     "torch>=2.0.0",
     "pytorch-forecasting>=1.0.0",
     "requests>=2.31.0",
@@ -52,6 +51,7 @@ dependencies = [
     "karldbot",
     "pandas-stubs~=2.3.3",
     "scikit-optimize>=0.10.2",
+    "timesfm>=3.0.2",
 ]
 
 [project.optional-dependencies]

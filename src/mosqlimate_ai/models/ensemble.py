@@ -7,7 +7,7 @@ and conformal prediction for calibrated prediction intervals.
 import json
 import logging
 from pathlib import Path
-from typing import Any, Dict, Optional, Tuple, Union
+from typing import Any, Optional, Union
 
 import numpy as np
 import pandas as pd
@@ -46,9 +46,9 @@ class EnsembleForecaster:
         self.weight_metric = weight_metric
         self.calibrate_intervals = calibrate_intervals
 
-        self.models: Dict[str, pd.DataFrame] = {}
-        self.weights: Dict[str, float] = {}
-        self.calibration_params: Dict[str, Any] = {}
+        self.models: dict[str, pd.DataFrame] = {}
+        self.weights: dict[str, float] = {}
+        self.calibration_params: dict[str, Any] = {}
         self.is_fitted = False
 
     def add_model(
@@ -129,7 +129,7 @@ class EnsembleForecaster:
     def predict(
         self,
         return_individual: bool = False,
-    ) -> Union[pd.DataFrame, Tuple[pd.DataFrame, Dict[str, pd.DataFrame]]]:
+    ) -> Union[pd.DataFrame, tuple[pd.DataFrame, dict[str, pd.DataFrame]]]:
         """Generate ensemble predictions.
 
         Args:
@@ -310,7 +310,7 @@ class EnsembleForecaster:
 
         return predictions
 
-    def get_weights(self) -> Dict[str, float]:
+    def get_weights(self) -> dict[str, float]:
         """Get current model weights.
 
         Returns:
@@ -318,7 +318,7 @@ class EnsembleForecaster:
         """
         return self.weights.copy()
 
-    def set_weights(self, weights: Dict[str, float]) -> "EnsembleForecaster":
+    def set_weights(self, weights: dict[str, float]) -> "EnsembleForecaster":
         """Set model weights manually.
 
         Args:
@@ -391,11 +391,11 @@ class EnsembleForecaster:
 
 
 def create_ensemble(
-    models: Dict[str, pd.DataFrame],
+    models: dict[str, pd.DataFrame],
     y_true: Optional[np.ndarray] = None,
     method: str = "weighted_average",
     weight_metric: str = "crps",
-) -> Tuple[pd.DataFrame, Dict[str, float]]:
+) -> tuple[pd.DataFrame, dict[str, float]]:
     """Convenience function to create ensemble predictions.
 
     Args:

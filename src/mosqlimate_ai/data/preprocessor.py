@@ -1,7 +1,16 @@
-"""Data preprocessing for dengue time-series forecasting."""
+"""Data preprocessing for dengue time-series forecasting.
+
+.. deprecated::
+    The forecasting pipeline no longer routes through this module:
+    the unified models (:mod:`mosqlimate_ai.models.base`) build their
+    features internally from the training window, which is leak-free.
+    Kept for the legacy agent path only. Notably, the historical
+    ``DataPreprocessor`` clipped outliers at 3xIQR over the *full*
+    series, which destroyed genuine epidemic peaks — do not reuse.
+"""
 
 import logging
-from typing import List, Optional, Tuple
+from typing import Optional
 
 import numpy as np
 import pandas as pd
@@ -135,7 +144,7 @@ class DataPreprocessor:
 
         return df
 
-    def _iqr_bounds(self, series: pd.Series) -> Tuple[float, float]:
+    def _iqr_bounds(self, series: pd.Series) -> tuple[float, float]:
         """Calculate IQR-based bounds for outlier detection."""
         Q1 = series.quantile(0.25)
         Q3 = series.quantile(0.75)
@@ -144,7 +153,7 @@ class DataPreprocessor:
         upper = Q3 + self.outlier_threshold * IQR
         return lower, upper
 
-    def _zscore_bounds(self, series: pd.Series) -> Tuple[float, float]:
+    def _zscore_bounds(self, series: pd.Series) -> tuple[float, float]:
         """Calculate z-score based bounds for outlier detection."""
         mean = series.mean()
         std = series.std()
@@ -265,9 +274,8 @@ class DataPreprocessor:
         for col in group.columns:
             if col == "date":
                 continue
-            if col in ["uf", "geocode", "epiweek"]:
-                if group[col].notna().any():
-                    full_df[col] = group[col].dropna().iloc[0]
+            if col in ["uf", "geocode", "epiweek"] and group[col].notna().any():
+                full_df[col] = group[col].dropna().iloc[0]
 
         full_df = full_df.merge(
             group.drop(columns=["uf", "geocode"], errors="ignore"), on="date", how="left"
@@ -280,7 +288,7 @@ class DataPreprocessor:
         df: pd.DataFrame,
         target_col: str = "target_3",
         train_col: str = "train_3",
-    ) -> Tuple[pd.DataFrame, pd.DataFrame]:
+    ) -> tuple[pd.DataFrame, pd.DataFrame]:
         """Split data into train and test sets using competition flags.
 
         Args:
@@ -329,7 +337,7 @@ class DataPreprocessor:
     def normalize(
         self,
         df: pd.DataFrame,
-        columns: Optional[List[str]] = None,
+        columns: Optional[list[str]] = None,
         method: str = "standard",
     ) -> pd.DataFrame:
         """Normalize numeric columns.
@@ -407,9 +415,11 @@ class DataPreprocessor:
                     "train_1",
                     "train_2",
                     "train_3",
+                    "train_4",
                     "target_1",
                     "target_2",
                     "target_3",
+                    "target_4",
                 ]
             ]
             df = self.normalize(df, columns=feature_cols)

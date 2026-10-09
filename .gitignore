@@ -208,5 +208,18 @@ __marimo__/
 
 
 # Models
-*.json
+#*.json
 *.pt
+# Pipeline artifacts (regenerable)
+/models/
+logs/
+checkpoints/
+lightning_logs/
+exploratory_plots/
+figures/
+#forecasts/
+graphify-out/
+#validation_results/
+submissions/
+data/*.csv.gz.tmp
+data/completeness_verified.json

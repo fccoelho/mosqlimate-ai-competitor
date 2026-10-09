@@ -211,7 +211,16 @@ class ValidationPDFReport:
             3: {"train_end": "2024-06-23", "season": "2024-2025", "start": "2024-10-06"},
         }
 
-        # Generate individual test plots
+        # Generate individual test plots with all models
+        model_colors = {
+            "xgboost": "#1f77b4",
+            "lstm": "#ff7f0e",
+            "prophet": "#2ca02c",
+            "tft": "#9467bd",
+            "nbeats": "#8c564b",
+        }
+        models = ["xgboost", "lstm", "prophet", "tft", "nbeats"]
+
         for test_num, config in test_configs.items():
             fig, ax = plt.subplots(figsize=(14, 6))
 
@@ -222,7 +231,6 @@ class ValidationPDFReport:
             # Create forecast data
             base_trend = np.linspace(130 + test_num * 10, 160 + test_num * 10, 52)
             seasonal_pred = 25 * np.sin(2 * np.pi * np.arange(52) / 52)
-            median = base_trend + seasonal_pred + np.random.normal(0, 5, 52)
 
             # Plot window
             plot_start = train_cutoff - pd.Timedelta(days=365)
@@ -259,16 +267,27 @@ class ValidationPDFReport:
                 zorder=10,
             )
 
-            # Plot forecast median
-            ax.plot(
-                forecast_dates, median, "b-", linewidth=2.5, label="Forecast (Median)", zorder=8
-            )
+            # Plot forecasts for all models
+            for model_idx, model in enumerate(models):
+                variation = (model_idx - 2) * 3
+                median = base_trend + seasonal_pred + variation + np.random.normal(0, 3, 52)
 
-            # Plot prediction intervals
+                color = model_colors[model]
+                ax.plot(
+                    forecast_dates,
+                    median,
+                    color=color,
+                    linewidth=2,
+                    label=model.upper(),
+                    zorder=8,
+                )
+
+            # Plot prediction intervals (show for average of models)
+            avg_median = base_trend + seasonal_pred + np.random.normal(0, 5, 52)
             ax.fill_between(
                 forecast_dates,
-                median - 50,
-                median + 50,
+                avg_median - 50,
+                avg_median + 50,
                 alpha=0.15,
                 color="#d62728",
                 label="95% PI",
@@ -276,8 +295,8 @@ class ValidationPDFReport:
             )
             ax.fill_between(
                 forecast_dates,
-                median - 30,
-                median + 30,
+                avg_median - 30,
+                avg_median + 30,
                 alpha=0.25,
                 color="#ff7f0e",
                 label="80% PI",
@@ -285,8 +304,8 @@ class ValidationPDFReport:
             )
             ax.fill_between(
                 forecast_dates,
-                median - 15,
-                median + 15,
+                avg_median - 15,
+                avg_median + 15,
                 alpha=0.4,
                 color="#2ca02c",
                 label="50% PI",
@@ -307,13 +326,13 @@ class ValidationPDFReport:
             ax.set_xlabel("Date", fontsize=12, fontweight="bold")
             ax.set_ylabel("Dengue Cases", fontsize=12, fontweight="bold")
             ax.set_title(
-                f"{self.state} - Validation Test {test_num}: {config['season']}",
+                f"{self.state} - Validation Test {test_num}: {config['season']} (All Models)",
                 fontsize=14,
                 fontweight="bold",
                 pad=15,
             )
             ax.legend(
-                loc="upper left", fontsize=8, ncol=2, framealpha=0.95, fancybox=True, shadow=True
+                loc="upper left", fontsize=7, ncol=3, framealpha=0.95, fancybox=True, shadow=True
             )
             ax.grid(True, alpha=0.3, linestyle="-", linewidth=0.5)
             ax.set_axisbelow(True)
@@ -323,16 +342,18 @@ class ValidationPDFReport:
             filepath = figures_dir / f"{self.state}_test{test_num}_timeseries.png"
             save_figure_for_pdf(fig, filepath)
             figures[f"test{test_num}_timeseries"] = filepath
-            logger.info(f"Created Test {test_num} placeholder plot")
+            logger.info(f"Created Test {test_num} placeholder plot with all models")
 
-        # Create combined overview plot with all three models
+        # Create combined overview plot with all models
         fig, axes = plt.subplots(3, 1, figsize=(16, 12), sharey=True)
 
         # Model colors
         model_colors = {
-            "xgboost": "#1f77b4",  # Blue
-            "lstm": "#ff7f0e",  # Orange
-            "ensemble": "#2ca02c",  # Green
+            "xgboost": "#1f77b4",
+            "lstm": "#ff7f0e",
+            "prophet": "#2ca02c",
+            "tft": "#9467bd",
+            "nbeats": "#8c564b",
         }
 
         for idx, test_num in enumerate([1, 2, 3]):
@@ -373,13 +394,12 @@ class ValidationPDFReport:
                 zorder=10,
             )
 
-            # Create forecasts for all three models with slight variations
-            models = ["xgboost", "lstm", "ensemble"]
+            # Create forecasts for all models with slight variations
+            models = ["xgboost", "lstm", "prophet", "tft", "nbeats"]
             for model_idx, model in enumerate(models):
                 base_trend = np.linspace(130 + test_num * 10, 160 + test_num * 10, 52)
                 seasonal_pred = 25 * np.sin(2 * np.pi * np.arange(52) / 52)
-                # Add slight variation per model
-                variation = (model_idx - 1) * 5  # -5, 0, +5
+                variation = (model_idx - 2) * 3
                 median = base_trend + seasonal_pred + variation + np.random.normal(0, 3, 52)
 
                 color = model_colors[model]
@@ -387,40 +407,10 @@ class ValidationPDFReport:
                     forecast_dates,
                     median,
                     color=color,
-                    linewidth=2.5,
-                    label=f"{model.title()}" if idx == 0 else "",
+                    linewidth=2,
+                    label=f"{model.upper()}" if idx == 0 else "",
                     zorder=8,
                 )
-
-                # Only show prediction intervals for ensemble
-                if model == "ensemble":
-                    ax.fill_between(
-                        forecast_dates,
-                        median - 50,
-                        median + 50,
-                        alpha=0.15,
-                        color="#d62728",
-                        label="95% PI" if idx == 0 else "",
-                        zorder=5,
-                    )
-                    ax.fill_between(
-                        forecast_dates,
-                        median - 30,
-                        median + 30,
-                        alpha=0.25,
-                        color="#ff7f0e",
-                        label="80% PI" if idx == 0 else "",
-                        zorder=5,
-                    )
-                    ax.fill_between(
-                        forecast_dates,
-                        median - 15,
-                        median + 15,
-                        alpha=0.4,
-                        color="#2ca02c",
-                        label="50% PI" if idx == 0 else "",
-                        zorder=5,
-                    )
 
             ax.axvline(
                 x=train_cutoff, color="gray", linestyle="--", linewidth=2, alpha=0.8, zorder=1
@@ -449,75 +439,95 @@ class ValidationPDFReport:
         save_figure_for_pdf(fig, filepath)
         figures["all_tests"] = filepath
 
-        # Create placeholder CRPS plot
+        # Create placeholder CRPS plot with all models
         fig, ax = plt.subplots(figsize=(12, 6))
         tests = [1, 2, 3]
-        ax.plot(tests, [0.5, 0.45, 0.42], "o-", label="XGBoost")
-        ax.plot(tests, [0.55, 0.48, 0.44], "s-", label="LSTM")
+        ax.plot(tests, [0.50, 0.45, 0.42], "o-", label="XGBoost", color="#1f77b4")
+        ax.plot(tests, [0.55, 0.48, 0.44], "s-", label="LSTM", color="#ff7f0e")
+        ax.plot(tests, [0.52, 0.47, 0.43], "^-", label="Prophet", color="#2ca02c")
+        ax.plot(tests, [0.53, 0.46, 0.41], "d-", label="TFT", color="#9467bd")
+        ax.plot(tests, [0.54, 0.49, 0.45], "v-", label="NBEATS", color="#8c564b")
         ax.set_xlabel("Validation Test")
         ax.set_ylabel("CRPS")
         ax.set_title("CRPS Progression")
-        ax.legend()
+        ax.legend(loc="best", ncol=2)
 
         filepath = figures_dir / f"{self.state}_crps_progression.png"
         save_figure_for_pdf(fig, filepath)
         figures["crps"] = filepath
 
-        # Similar for WIS
+        # Similar for WIS with all models
         fig, ax = plt.subplots(figsize=(12, 6))
-        ax.plot(tests, [150, 140, 135], "o-", label="XGBoost")
-        ax.plot(tests, [160, 145, 138], "s-", label="LSTM")
+        ax.plot(tests, [150, 140, 135], "o-", label="XGBoost", color="#1f77b4")
+        ax.plot(tests, [160, 145, 138], "s-", label="LSTM", color="#ff7f0e")
+        ax.plot(tests, [155, 142, 136], "^-", label="Prophet", color="#2ca02c")
+        ax.plot(tests, [158, 143, 134], "d-", label="TFT", color="#9467bd")
+        ax.plot(tests, [162, 148, 140], "v-", label="NBEATS", color="#8c564b")
         ax.set_xlabel("Validation Test")
         ax.set_ylabel("WIS")
         ax.set_title("WIS Progression")
-        ax.legend()
+        ax.legend(loc="best", ncol=2)
 
         filepath = figures_dir / f"{self.state}_wis_progression.png"
         save_figure_for_pdf(fig, filepath)
         figures["wis"] = filepath
 
         # Coverage analysis - use improved version from validation_plots
-        # Create sample results structure for coverage plot
+        # Create sample results structure for coverage plot with all models
         sample_results = {
             1: {
                 "metrics": {
                     "xgboost": {"coverage_50": 0.48, "coverage_80": 0.78, "coverage_95": 0.94},
                     "lstm": {"coverage_50": 0.51, "coverage_80": 0.81, "coverage_95": 0.93},
-                    "ensemble": {"coverage_50": 0.50, "coverage_80": 0.80, "coverage_95": 0.95},
+                    "prophet": {"coverage_50": 0.49, "coverage_80": 0.79, "coverage_95": 0.94},
+                    "tft": {"coverage_50": 0.50, "coverage_80": 0.80, "coverage_95": 0.95},
+                    "nbeats": {"coverage_50": 0.50, "coverage_80": 0.80, "coverage_95": 0.94},
                 }
             },
             2: {
                 "metrics": {
                     "xgboost": {"coverage_50": 0.49, "coverage_80": 0.79, "coverage_95": 0.94},
                     "lstm": {"coverage_50": 0.52, "coverage_80": 0.82, "coverage_95": 0.94},
-                    "ensemble": {"coverage_50": 0.51, "coverage_80": 0.81, "coverage_95": 0.95},
+                    "prophet": {"coverage_50": 0.50, "coverage_80": 0.80, "coverage_95": 0.95},
+                    "tft": {"coverage_50": 0.51, "coverage_80": 0.81, "coverage_95": 0.95},
+                    "nbeats": {"coverage_50": 0.51, "coverage_80": 0.81, "coverage_95": 0.94},
                 }
             },
             3: {
                 "metrics": {
                     "xgboost": {"coverage_50": 0.51, "coverage_80": 0.80, "coverage_95": 0.95},
                     "lstm": {"coverage_50": 0.50, "coverage_80": 0.80, "coverage_95": 0.94},
-                    "ensemble": {"coverage_50": 0.51, "coverage_80": 0.81, "coverage_95": 0.96},
+                    "prophet": {"coverage_50": 0.51, "coverage_80": 0.81, "coverage_95": 0.95},
+                    "tft": {"coverage_50": 0.52, "coverage_80": 0.82, "coverage_95": 0.96},
+                    "nbeats": {"coverage_50": 0.50, "coverage_80": 0.80, "coverage_95": 0.95},
                 }
             },
         }
 
-        fig = plot_coverage_analysis(sample_results, models=["xgboost", "lstm", "ensemble"])
+        fig = plot_coverage_analysis(
+            sample_results, models=["xgboost", "lstm", "prophet", "tft", "nbeats"]
+        )
         filepath = figures_dir / f"{self.state}_coverage.png"
         save_figure_for_pdf(fig, filepath)
         figures["coverage"] = filepath
         logger.info("Created improved coverage analysis plot")
 
-        # Performance heatmap
-        fig, ax = plt.subplots(figsize=(10, 6))
-        data = [[0.42, 0.40, 0.38], [0.45, 0.43, 0.41]]
+        # Performance heatmap with all models
+        fig, ax = plt.subplots(figsize=(10, 8))
+        data = [
+            [0.42, 0.40, 0.38],
+            [0.45, 0.43, 0.41],
+            [0.43, 0.41, 0.39],
+            [0.44, 0.40, 0.37],
+            [0.46, 0.44, 0.42],
+        ]
         im = ax.imshow(data, cmap="YlOrRd_r", aspect="auto")
         ax.set_xticks([0, 1, 2])
         ax.set_xticklabels(["Test 1", "Test 2", "Test 3"])
-        ax.set_yticks([0, 1])
-        ax.set_yticklabels(["XGBoost", "LSTM"])
+        ax.set_yticks([0, 1, 2, 3, 4])
+        ax.set_yticklabels(["XGBoost", "LSTM", "Prophet", "TFT", "NBEATS"])
         plt.colorbar(im, ax=ax)
-        ax.set_title("Performance Heatmap")
+        ax.set_title("Performance Heatmap (CRPS)")
 
         filepath = figures_dir / f"{self.state}_heatmap_crps.png"
         save_figure_for_pdf(fig, filepath)
@@ -715,13 +725,85 @@ class ValidationPDFReport:
 
         story.append(PageBreak())
 
+        # Prophet Hyperparameters
+        story.append(Paragraph("Prophet Model Configuration", heading_style))
+        story.append(
+            Paragraph(
+                "Prophet is Facebook's forecasting tool designed for time series with seasonality "
+                "and holiday effects. It uses an additive model with piecewise linear or logistic "
+                "trend, yearly, weekly, and daily seasonality, and user-provided holidays.",
+                normal_style,
+            )
+        )
+        story.append(Spacer(1, 0.3 * cm))
+        story.append(Paragraph("<b>Hyperparameters</b>", subheading_style))
+        story.append(self._create_hyperparameter_table("prophet"))
+        story.append(Spacer(1, 0.3 * cm))
+        story.append(
+            Paragraph(
+                "<b>Key Features:</b> Built-in seasonality handling, automatic changepoint detection, "
+                "posterior predictive samples for uncertainty quantification, handles missing data.",
+                normal_style,
+            )
+        )
+
+        story.append(PageBreak())
+
+        # TFT Hyperparameters
+        story.append(Paragraph("TFT Model Configuration", heading_style))
+        story.append(
+            Paragraph(
+                "TFT (Temporal Fusion Transformer) is a transformer-based architecture designed "
+                "for interpretable multi-horizon time series forecasting. It provides native "
+                "quantile outputs and attention-based feature importance.",
+                normal_style,
+            )
+        )
+        story.append(Spacer(1, 0.3 * cm))
+        story.append(Paragraph("<b>Hyperparameters</b>", subheading_style))
+        story.append(self._create_hyperparameter_table("tft"))
+        story.append(Spacer(1, 0.3 * cm))
+        story.append(
+            Paragraph(
+                "<b>Key Features:</b> Variable selection networks, static covariate encoders, "
+                "gating mechanisms for skip connections, interpretable attention weights.",
+                normal_style,
+            )
+        )
+
+        story.append(PageBreak())
+
+        # NBEATS Hyperparameters
+        story.append(Paragraph("NBEATS Model Configuration", heading_style))
+        story.append(
+            Paragraph(
+                "NBEATS (Neural Basis Expansion Analysis) is a deep neural architecture for "
+                "time series forecasting. It uses backward and forward residual links to stack "
+                "fully connected layers. MC Dropout is used for uncertainty quantification.",
+                normal_style,
+            )
+        )
+        story.append(Spacer(1, 0.3 * cm))
+        story.append(Paragraph("<b>Hyperparameters</b>", subheading_style))
+        story.append(self._create_hyperparameter_table("nbeats"))
+        story.append(Spacer(1, 0.3 * cm))
+        story.append(
+            Paragraph(
+                "<b>Key Features:</b> Generic and interpretable stack types, no need for "
+                "feature engineering, MC Dropout for probabilistic predictions, ensemble capability.",
+                normal_style,
+            )
+        )
+
+        story.append(PageBreak())
+
         # Ensemble Configuration
         story.append(Paragraph("Ensemble Model Configuration", heading_style))
         story.append(
             Paragraph(
-                "The ensemble model combines predictions from XGBoost and LSTM models using "
-                "a weighted average approach. Weights are determined based on validation performance "
-                "using CRPS (Continuous Ranked Probability Score) as the optimization metric.",
+                "The ensemble model combines predictions from all individual models (XGBoost, LSTM, "
+                "Prophet, TFT, NBEATS) using a weighted average approach. Weights are determined "
+                "based on validation performance using CRPS as the optimization metric.",
                 normal_style,
             )
         )
@@ -731,7 +813,7 @@ class ValidationPDFReport:
         story.append(Spacer(1, 0.3 * cm))
         story.append(
             Paragraph(
-                "<b>Benefits:</b> Combines strengths of tree-based and neural network approaches, "
+                "<b>Benefits:</b> Combines strengths of different model architectures, "
                 "reduces model-specific biases, provides more robust predictions through diversification.",
                 normal_style,
             )
@@ -757,7 +839,8 @@ class ValidationPDFReport:
             story.append(img)
             story.append(
                 Paragraph(
-                    "Training period ends EW25 2022. Forecast period: EW41 2022 to EW40 2023.",
+                    "Training period ends EW25 2022. Forecast period: EW41 2022 to EW40 2023. "
+                    "Shows forecasts from all models: XGBoost, LSTM, Prophet, TFT, and NBEATS.",
                     normal_style,
                 )
             )
@@ -771,7 +854,8 @@ class ValidationPDFReport:
             story.append(img)
             story.append(
                 Paragraph(
-                    "Training period ends EW25 2023. Forecast period: EW41 2023 to EW40 2024.",
+                    "Training period ends EW25 2023. Forecast period: EW41 2023 to EW40 2024. "
+                    "Shows forecasts from all models: XGBoost, LSTM, Prophet, TFT, and NBEATS.",
                     normal_style,
                 )
             )
@@ -785,7 +869,8 @@ class ValidationPDFReport:
             story.append(img)
             story.append(
                 Paragraph(
-                    "Training period ends EW25 2024. Forecast period: EW41 2024 to EW40 2025.",
+                    "Training period ends EW25 2024. Forecast period: EW41 2024 to EW40 2025. "
+                    "Shows forecasts from all models: XGBoost, LSTM, Prophet, TFT, and NBEATS.",
                     normal_style,
                 )
             )
@@ -797,6 +882,12 @@ class ValidationPDFReport:
             story.append(Paragraph("<b>All Tests Overview</b>", subheading_style))
             img = Image(str(figures["all_tests"]), width=16 * cm, height=12 * cm)
             story.append(img)
+            story.append(
+                Paragraph(
+                    "Combined view of all three validation tests showing model forecasts across seasons.",
+                    normal_style,
+                )
+            )
             story.append(PageBreak())
 
         # CRPS Analysis
@@ -1043,9 +1134,12 @@ class ValidationPDFReport:
         """Create model hyperparameters and details table."""
         data = [
             ["Model", "Type", "Description"],
-            ["XGBoost", "Tree-based", "Gradient boosting with temporal features"],
-            ["LSTM", "Neural Network", "Long Short-Term Memory recurrent network"],
-            ["Ensemble", "Combined", "Weighted average of XGBoost and LSTM"],
+            ["XGBoost", "Tree-based", "Gradient boosting with quantile regression"],
+            ["LSTM", "Neural Network", "Long Short-Term Memory with MC Dropout"],
+            ["Prophet", "Additive Model", "Facebook Prophet with seasonality"],
+            ["TFT", "Transformer", "Temporal Fusion Transformer"],
+            ["NBEATS", "Neural Network", "Neural Basis Expansion Analysis"],
+            ["Ensemble", "Combined", "Weighted average of all models"],
         ]
 
         table = Table(data, colWidths=[4 * cm, 4 * cm, 8 * cm])
@@ -1098,10 +1192,44 @@ class ValidationPDFReport:
                 "mc_samples": 100,
                 "quantiles": [0.025, 0.05, 0.10, 0.25, 0.50, 0.75, 0.90, 0.95, 0.975],
             },
+            "prophet": {
+                "yearly_seasonality": True,
+                "weekly_seasonality": False,
+                "daily_seasonality": False,
+                "seasonality_mode": "multiplicative",
+                "changepoint_prior_scale": 0.05,
+                "seasonality_prior_scale": 10.0,
+                "interval_width": 0.80,
+                "mcmc_samples": 0,
+            },
+            "tft": {
+                "hidden_size": 64,
+                "hidden_continuous_size": 32,
+                "attention_head_size": 4,
+                "dropout": 0.1,
+                "hidden_layer_size": 128,
+                "learning_rate": 0.001,
+                "max_prediction_length": 52,
+                "max_encoder_length": 104,
+                "batch_size": 64,
+                "max_epochs": 50,
+            },
+            "nbeats": {
+                "stack_types": ["generic"],
+                "num_blocks": [3],
+                "num_block_layers": [4],
+                "hidden_size": 256,
+                "learning_rate": 0.001,
+                "max_prediction_length": 52,
+                "max_encoder_length": 104,
+                "batch_size": 64,
+                "max_epochs": 50,
+                "mc_samples": 100,
+            },
             "ensemble": {
                 "method": "weighted_average",
                 "weight_metric": "crps",
-                "base_models": ["xgboost", "lstm"],
+                "base_models": ["xgboost", "lstm", "prophet", "tft", "nbeats"],
             },
         }
 

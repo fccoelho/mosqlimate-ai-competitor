@@ -8,7 +8,7 @@ import json
 import logging
 import pickle
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Optional, Union
 
 import numpy as np
 import pandas as pd
@@ -67,7 +67,7 @@ class TFTModel:
         learning_rate: float = 0.001,
         max_prediction_length: int = 52,
         max_encoder_length: int = 104,
-        quantiles: Optional[List[float]] = None,
+        quantiles: Optional[list[float]] = None,
         batch_size: int = 64,
         max_epochs: int = 50,
         early_stopping_patience: int = 5,
@@ -126,10 +126,10 @@ class TFTModel:
         df: pd.DataFrame,
         date_col: str = "date",
         target_col: str = "casos",
-        group_cols: Optional[List[str]] = None,
-        static_categoricals: Optional[List[str]] = None,
-        time_varying_known_reals: Optional[List[str]] = None,
-        time_varying_unknown_reals: Optional[List[str]] = None,
+        group_cols: Optional[list[str]] = None,
+        static_categoricals: Optional[list[str]] = None,
+        time_varying_known_reals: Optional[list[str]] = None,
+        time_varying_unknown_reals: Optional[list[str]] = None,
     ) -> Any:
         """Prepare TimeSeriesDataSet for TFT.
 
@@ -209,7 +209,7 @@ class TFTModel:
         df: pd.DataFrame,
         date_col: str = "date",
         target_col: str = "casos",
-        group_cols: Optional[List[str]] = None,
+        group_cols: Optional[list[str]] = None,
         verbose: bool = False,
     ) -> "TFTModel":
         """Fit TFT model.
@@ -224,12 +224,12 @@ class TFTModel:
         Returns:
             Fitted model
         """
+        import tempfile
+
         from pytorch_forecasting import TimeSeriesDataSet
         from pytorch_forecasting.models import TemporalFusionTransformer
         from pytorch_lightning.callbacks import EarlyStopping
         from pytorch_lightning.loggers import TensorBoardLogger
-        import tempfile
-        import os
 
         logger.info("Preparing TFT training data...")
 
@@ -375,10 +375,7 @@ class TFTModel:
                 return_x=False,
             )
 
-        if isinstance(raw_predictions, tuple):
-            predictions = raw_predictions[0]
-        else:
-            predictions = raw_predictions
+        predictions = raw_predictions[0] if isinstance(raw_predictions, tuple) else raw_predictions
 
         predictions = predictions.cpu().numpy()
 
@@ -407,7 +404,7 @@ class TFTModel:
     def predict_with_intervals(
         self,
         df: pd.DataFrame,
-        levels: Optional[List[float]] = None,
+        levels: Optional[list[float]] = None,
         date_col: str = "date",
     ) -> pd.DataFrame:
         """Predict with prediction intervals.
@@ -440,7 +437,7 @@ class TFTModel:
         self,
         df: pd.DataFrame,
         date_col: str = "date",
-    ) -> Dict[str, np.ndarray]:
+    ) -> dict[str, np.ndarray]:
         """Get attention weights for interpretability.
 
         Args:
@@ -584,7 +581,7 @@ class TFTForecaster:
         self,
         target_col: str = "casos",
         date_col: str = "date",
-        group_cols: Optional[List[str]] = None,
+        group_cols: Optional[list[str]] = None,
         **model_kwargs,
     ):
         self.target_col = target_col
@@ -620,7 +617,7 @@ class TFTForecaster:
     def predict(
         self,
         df: pd.DataFrame,
-        levels: Optional[List[float]] = None,
+        levels: Optional[list[float]] = None,
     ) -> pd.DataFrame:
         """Generate forecasts with prediction intervals.
 

@@ -1,15 +1,26 @@
 """Evaluation metrics for probabilistic forecasting.
 
-Implements CRPS, Weighted Interval Score, Log Score, and other
-metrics required for the Mosqlimate Sprint 2025 competition.
+Implements CRPS, Weighted Interval Score (Bracher et al. 2021), Log
+Score, and other metrics used for the Mosqlimate IMDC competition
+(the official scoring metric is the Weighted Interval Score, computed
+weekly, over the 50/80/90/95% prediction intervals).
 """
 
 import logging
-from typing import Dict, List, Optional
+from typing import Optional
 
 import numpy as np
 import pandas as pd
 from scipy import stats
+
+from mosqlimate_ai.evaluation.quantiles import (
+    CONFIDENCE_LEVELS,
+    crps_from_quantiles,
+    interval_score,
+    pinball_loss,
+    quantile_col_name,
+    wis_total_from_intervals,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -75,9 +86,10 @@ def crps_single(
     quantiles: np.ndarray,
     values: np.ndarray,
 ) -> float:
-    """Compute CRPS for a single observation.
+    """Compute CRPS for a single observation from quantile predictions.
 
-    Uses the quantile-based CRPS approximation.
+    Uses the standard quantile approximation
+    ``CRPS = (2 / n_tau) * sum_tau pinball(y, z_tau, tau)``.
 
     Args:
         y_true: True value
@@ -85,78 +97,86 @@ def crps_single(
         values: Array of quantile predictions
 
     Returns:
-        CRPS score
+        CRPS score (non-negative)
     """
-    quantiles = np.asarray(quantiles)
-    values = np.asarray(values)
+    quantiles = np.asarray(quantiles, dtype=float)
+    values = np.asarray(values, dtype=float)
 
-    crps = 0.0
-    for i, (q, v) in enumerate(zip(quantiles, values)):
-        if i == 0:
-            continue
+    if quantiles.size == 0:
+        return float("nan")
 
-        q_prev = quantiles[i - 1]
-        v_prev = values[i - 1]
+    y_arr = np.full_like(values, y_true, dtype=float)
+    losses = pinball_loss(y_arr, values, quantiles)
+    return float(2.0 * np.mean(losses))
 
-        crps += (v - v_prev) * (
-            (y_true - v_prev) * (y_true >= v_prev) * (q_prev**2)
-            + (y_true - v) * (y_true < v) * ((1 - q) ** 2)
-            + (y_true - v_prev) * (y_true < v_prev) * ((q_prev - 1) ** 2)
-            + (y_true - v) * (y_true >= v) * (q**2)
-        )
 
-    crps += np.sum(
-        [
-            2 * (y_true - v) * (y_true >= v) * q + 2 * (v - y_true) * (y_true < v) * (1 - q)
-            for q, v in zip(quantiles, values)
-        ]
-    )
+def _as_quantile_frame(
+    predictions: pd.DataFrame,
+    quantile_cols: Optional[dict[float, str]] = None,
+) -> pd.DataFrame:
+    """Normalize legacy interval columns or a custom mapping to quantile columns."""
+    if quantile_cols is not None:
+        available = {
+            quantile_col_name(q): predictions[col]
+            for q, col in quantile_cols.items()
+            if col in predictions.columns
+        }
+        return pd.DataFrame(available, index=predictions.index)
 
-    return float(crps / len(quantiles))
+    if any(col in predictions.columns for col in ("q025", "q050", "q500")):
+        return predictions
+
+    return intervals_to_quantiles_compat(predictions)
+
+
+def intervals_to_quantiles_compat(predictions: pd.DataFrame) -> pd.DataFrame:
+    """Build a quantile frame from submission-style interval columns."""
+    mapping = {
+        "lower_95": 0.025,
+        "lower_90": 0.05,
+        "lower_80": 0.10,
+        "lower_50": 0.25,
+        "median": 0.50,
+        "upper_50": 0.75,
+        "upper_80": 0.90,
+        "upper_90": 0.95,
+        "upper_95": 0.975,
+    }
+    available = {
+        quantile_col_name(tau): predictions[col]
+        for col, tau in mapping.items()
+        if col in predictions.columns
+    }
+    return pd.DataFrame(available, index=predictions.index)
 
 
 def crps(
     y_true: np.ndarray,
     predictions: pd.DataFrame,
-    quantile_cols: Optional[Dict[float, str]] = None,
+    quantile_cols: Optional[dict[float, str]] = None,
 ) -> float:
     """Compute Continuous Ranked Probability Score.
 
-    CRPS measures the integrated squared difference between the
-    empirical CDF and the predicted CDF.
+    Accepts either canonical quantile columns (``q025``..``q975``),
+    submission-style interval columns (``median``, ``lower_50``..), or an
+    explicit ``quantile_cols`` mapping. Uses the quantile approximation
+    ``CRPS ~ 2 x mean pinball loss``.
 
     Args:
         y_true: True values
         predictions: DataFrame with quantile predictions
-        quantile_cols: Mapping of quantile levels to column names
+        quantile_cols: Optional mapping of quantile levels to column names
 
     Returns:
-        Mean CRPS
+        Mean CRPS (nan when no usable quantile columns exist)
     """
     y_true = np.asarray(y_true).ravel()
 
-    if quantile_cols is None:
-        quantile_cols = {
-            0.025: "lower_95",
-            0.25: "lower_50",
-            0.5: "median",
-            0.75: "upper_50",
-            0.975: "upper_95",
-        }
-
-    available_cols = {q: col for q, col in quantile_cols.items() if col in predictions.columns}
-
-    if not available_cols:
+    qframe = _as_quantile_frame(predictions, quantile_cols)
+    if qframe.shape[1] == 0:
         return float("nan")
 
-    quantiles = sorted(available_cols.keys())
-    values = np.column_stack([predictions[available_cols[q]].values for q in quantiles])
-
-    crps_values = []
-    for y, v in zip(y_true, values):
-        crps_values.append(crps_single(y, quantiles, v))
-
-    return float(np.mean(crps_values))
+    return crps_from_quantiles(y_true, qframe)
 
 
 def weighted_interval_score(
@@ -166,84 +186,73 @@ def weighted_interval_score(
     median: np.ndarray,
     alpha: float = 0.05,
 ) -> float:
-    """Compute Weighted Interval Score for a prediction interval.
+    """Interval score IS_alpha for a single prediction interval.
 
-    WIS combines interval sharpness with penalty for misses.
+    ``IS_alpha = (u - l) + (2/alpha)(l - y) 1(y < l) + (2/alpha)(y - u) 1(y > u)``
+    following Bracher et al. (2021).
 
     Args:
         y_true: True values
         lower: Lower bound predictions
         upper: Upper bound predictions
-        median: Median predictions
+        median: Median predictions (unused; kept for API compatibility)
         alpha: 1 - confidence level (e.g., 0.05 for 95% interval)
 
     Returns:
-        WIS value
+        Mean interval score value
     """
+    del median
     y_true = np.asarray(y_true).ravel()
     lower = np.asarray(lower).ravel()
     upper = np.asarray(upper).ravel()
-    median = np.asarray(median).ravel()
 
-    interval_width = upper - lower
-
-    below_lower = np.maximum(0, lower - y_true)
-    above_upper = np.maximum(0, y_true - upper)
-
-    penalty = (2 / alpha) * (below_lower + above_upper)
-
-    wis = (alpha / 2) * interval_width + penalty
-
-    wis += np.abs(y_true - median)
-
-    return float(np.mean(wis))
+    return float(np.mean(interval_score(y_true, lower, upper, alpha)))
 
 
 def weighted_interval_score_total(
     y_true: np.ndarray,
     predictions: pd.DataFrame,
-    levels: Optional[List[float]] = None,
-    weights: Optional[List[float]] = None,
+    levels: Optional[list[float]] = None,
+    weights: Optional[list[float]] = None,
 ) -> float:
-    """Compute total Weighted Interval Score across multiple levels.
+    """Compute total Weighted Interval Score (Bracher et al. 2021).
+
+    ``WIS = 1/(K + 1/2) ( w_0 |y - m| + sum_k w_k IS_{alpha_k} )`` with the
+    standard weights ``w_0 = 1/2``, ``w_k = alpha_k / 2``. ``weights`` is
+    accepted for API compatibility; when provided it must be a list of
+    ``alpha_k / 2`` values matching ``levels`` (custom weighting).
 
     Args:
         y_true: True values
-        predictions: DataFrame with quantile predictions
-        levels: Confidence levels (e.g., [0.50, 0.80, 0.95])
-        weights: Weights for each level
+        predictions: DataFrame with median and lower_X/upper_X columns
+        levels: Confidence levels (default 0.50/0.80/0.90/0.95)
+        weights: Optional custom per-level weights (alpha_k/2 each)
 
     Returns:
-        Total WIS
+        Total WIS (nan when no interval level is available)
     """
-    y_true = np.asarray(y_true).ravel()
-    levels = levels or [0.50, 0.80, 0.95]
-    weights = weights or [1 / 3, 1 / 3, 1 / 3]
+    if weights is not None:
+        # Custom weighting path: WIS = sum_k w_k IS_{alpha_k} / sum_k w_k
+        y_arr = np.asarray(y_true).ravel()
+        total = 0.0
+        total_w = 0.0
+        for level, weight in zip(levels, weights):
+            name = int(level * 100)
+            lower_col, upper_col = f"lower_{name}", f"upper_{name}"
+            if lower_col not in predictions.columns or upper_col not in predictions.columns:
+                continue
+            total = total + weight * interval_score(
+                y_arr,
+                predictions[lower_col].values,
+                predictions[upper_col].values,
+                1 - level,
+            )
+            total_w += weight
+        if total_w == 0:
+            return float("nan")
+        return float(np.mean(total / total_w))
 
-    total_wis = 0.0
-    total_weight = 0.0
-    for level, weight in zip(levels, weights):
-        alpha = 1 - level
-        col_name = int(level * 100)
-
-        lower_col = f"lower_{col_name}"
-        upper_col = f"upper_{col_name}"
-
-        if lower_col not in predictions.columns or upper_col not in predictions.columns:
-            continue
-
-        lower = np.asarray(predictions[lower_col].values)
-        upper = np.asarray(predictions[upper_col].values)
-        median = np.asarray(predictions["median"].values)
-
-        wis = weighted_interval_score(y_true, lower, upper, median, alpha)
-        total_wis += weight * wis
-        total_weight += weight
-
-    if total_weight == 0:
-        return float("nan")
-
-    return total_wis / total_weight
+    return wis_total_from_intervals(np.asarray(y_true).ravel(), predictions, levels)
 
 
 def logarithmic_score(
@@ -398,8 +407,8 @@ def skill_score(
 def evaluate_forecast(
     y_true: np.ndarray,
     predictions: pd.DataFrame,
-    levels: Optional[List[float]] = None,
-) -> Dict[str, float]:
+    levels: Optional[list[float]] = None,
+) -> dict[str, float]:
     """Comprehensive forecast evaluation.
 
     Args:
@@ -411,7 +420,7 @@ def evaluate_forecast(
         Dictionary with all evaluation metrics
     """
     y_true = np.asarray(y_true).ravel()
-    levels = levels or [0.50, 0.80, 0.95]
+    levels = levels or list(CONFIDENCE_LEVELS)
 
     valid_mask = ~predictions["median"].isna()
     y_true = y_true[valid_mask]
@@ -449,6 +458,37 @@ def evaluate_forecast(
     return results
 
 
+def evaluate_by_horizon(
+    y_true: np.ndarray,
+    predictions: pd.DataFrame,
+    horizons: np.ndarray,
+    levels: Optional[list[float]] = None,
+) -> pd.DataFrame:
+    """Evaluate forecast metrics per forecast horizon.
+
+    Long-horizon degradation is the main failure mode for dengue season
+    forecasting; aggregate metrics hide it.
+
+    Args:
+        y_true: True values aligned with ``predictions`` rows
+        predictions: DataFrame with median and interval columns
+        horizons: Integer forecast horizon (1 = first step after training)
+            for each prediction row
+        levels: Confidence levels to evaluate
+
+    Returns:
+        DataFrame indexed by horizon with metric columns
+    """
+    horizons = np.asarray(horizons).ravel()
+    records = []
+    for h in np.unique(horizons):
+        mask = horizons == h
+        metrics = evaluate_forecast(y_true[mask], predictions[mask].reset_index(drop=True), levels)
+        metrics["horizon"] = int(h)
+        records.append(metrics)
+    return pd.DataFrame(records).set_index("horizon")
+
+
 class ForecastEvaluator:
     """Evaluator class for forecast comparison and analysis.
 
@@ -459,19 +499,19 @@ class ForecastEvaluator:
 
     def __init__(
         self,
-        levels: Optional[List[float]] = None,
+        levels: Optional[list[float]] = None,
         baseline_method: str = "naive",
     ):
         self.levels = levels or [0.50, 0.80, 0.95]
         self.baseline_method = baseline_method
-        self.results: Dict[str, Dict[str, float]] = {}
+        self.results: dict[str, dict[str, float]] = {}
 
     def evaluate(
         self,
         y_true: np.ndarray,
         predictions: pd.DataFrame,
         model_name: str,
-    ) -> Dict[str, float]:
+    ) -> dict[str, float]:
         """Evaluate a model's predictions.
 
         Args:

@@ -1,14 +1,17 @@
 """ValidationOrchestrator for managing the complete validation pipeline.
 
-Coordinates StateValidationAgents for all states, managing bounded parallelism
-and aggregating results across the 4-run validation pipeline.
+.. deprecated::
+    This legacy orchestrator produced invalid metrics (predict-interface
+    mismatch and in-sample evaluation) and has been replaced by the
+    deterministic backtest harness: :mod:`mosqlimate_ai.validation.backtest`.
+    Kept only for reference; do not use in new code.
 """
 
 import asyncio
 import logging
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 from mosqlimate_ai.agents.communication import AgentCommunicationBus
 from mosqlimate_ai.agents.knowledge_base import CrossStateKnowledgeBase
@@ -55,10 +58,10 @@ class ValidationOrchestrator:
         self.knowledge_base = CrossStateKnowledgeBase()
 
         # State agents
-        self.agents: Dict[str, Any] = {}
+        self.agents: dict[str, Any] = {}
 
         # Results storage
-        self.results: Dict[str, Dict[str, Any]] = {}
+        self.results: dict[str, dict[str, Any]] = {}
 
         # Concurrency control
         self.semaphore = asyncio.Semaphore(self.config.max_concurrent_states)
@@ -71,10 +74,10 @@ class ValidationOrchestrator:
 
     def run_full_pipeline(
         self,
-        states: Optional[List[str]] = None,
-        test_numbers: Optional[List[int]] = None,
+        states: Optional[list[str]] = None,
+        test_numbers: Optional[list[int]] = None,
         run_final: bool = True,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Run complete validation pipeline.
 
         Args:
@@ -86,7 +89,7 @@ class ValidationOrchestrator:
             Dictionary with all validation results
         """
         states = states or self.config.states
-        test_numbers = test_numbers or [1, 2, 3]
+        test_numbers = test_numbers or [1, 2, 3, 4]
 
         logger.info(f"Starting validation pipeline for {len(states)} states")
         logger.info(f"Tests: {test_numbers}, Final: {run_final}")
@@ -110,8 +113,8 @@ class ValidationOrchestrator:
 
     async def _run_parallel_validation(
         self,
-        states: List[str],
-        test_numbers: List[int],
+        states: list[str],
+        test_numbers: list[int],
         run_final: bool,
     ) -> None:
         """Run validation for multiple states in parallel."""
@@ -123,7 +126,7 @@ class ValidationOrchestrator:
     async def _run_state_validation_async(
         self,
         state: str,
-        test_numbers: List[int],
+        test_numbers: list[int],
         run_final: bool,
     ) -> None:
         """Async wrapper for state validation with semaphore."""
@@ -141,7 +144,7 @@ class ValidationOrchestrator:
     def _run_state_validation(
         self,
         state: str,
-        test_numbers: List[int],
+        test_numbers: list[int],
         run_final: bool,
     ) -> None:
         """Run validation for a single state."""
@@ -186,7 +189,7 @@ class ValidationOrchestrator:
             logger.error(f"Validation failed for {state}: {e}")
             self.results[state] = {"state": state, "error": str(e), "status": "failed"}
 
-    def _save_state_results(self, state: str, results: Dict[str, Any]) -> None:
+    def _save_state_results(self, state: str, results: dict[str, Any]) -> None:
         """Save validation results for a single state.
 
         Args:
@@ -234,7 +237,7 @@ class ValidationOrchestrator:
 
         logger.info(f"Saved validation results for {state} to {results_file}")
 
-    def _generate_summary(self, elapsed_seconds: float) -> Dict[str, Any]:
+    def _generate_summary(self, elapsed_seconds: float) -> dict[str, Any]:
         """Generate validation summary report."""
         import json
 

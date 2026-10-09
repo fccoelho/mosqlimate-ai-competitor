@@ -13,6 +13,7 @@ from rich.table import Table
 
 from mosqlimate_ai.config import ConfigManager, load_config, merge_with_defaults
 from mosqlimate_ai.data.downloader import DataDownloader
+from mosqlimate_ai.data.exploratory_analysis import ExploratoryDataAnalyzer
 from mosqlimate_ai.data.features import FeatureEngineer
 from mosqlimate_ai.data.loader import CompetitionDataLoader
 from mosqlimate_ai.data.preprocessor import DataPreprocessor
@@ -54,7 +55,12 @@ def download_data_cmd(
     cache_dir: Optional[Path] = typer.Option(
         None,
         "--cache-dir",
-        help="Directory to store downloaded data (default: project data/ folder)",
+        help="Directory to store downloaded data (default: project data/{challenge}/ folder)",
+    ),
+    challenge: str = typer.Option(
+        "3rd_IMDC",
+        "--challenge",
+        help="Challenge dataset to download (2nd_IMDC or 3rd_IMDC)",
     ),
     force: bool = typer.Option(
         False,
@@ -69,17 +75,180 @@ def download_data_cmd(
     ),
 ) -> None:
     """Download and cache Mosqlimate competition data."""
-    # Load config and merge with CLI args
     cfg = ConfigManager(config)
     cache_dir = merge_with_defaults(cache_dir, cfg.get_cache_dir(), None)
 
-    downloader = DataDownloader(cache_dir=cache_dir)
+    downloader = DataDownloader(cache_dir=cache_dir, challenge=challenge)
 
     if clear:
         downloader.clear_cache()
 
+    console.print(f"[cyan]Challenge: {challenge}[/cyan]")
     console.print(f"[cyan]Cache directory: {downloader.cache_dir}[/cyan]\n")
     downloader.download_all(force=force)
+
+
+@app.command("explore")
+def explore_cmd(
+    state: Optional[str] = typer.Option(
+        None,
+        "--state",
+        "-s",
+        help="State UF to analyze (default: all states)",
+    ),
+    output_dir: Optional[Path] = typer.Option(
+        None,
+        "--output",
+        "-o",
+        help="Directory to save plots (default: ./exploratory_plots/)",
+    ),
+    plots: Optional[str] = typer.Option(
+        None,
+        "--plots",
+        help="Comma-separated plots to generate (default: all)",
+    ),
+    challenge: str = typer.Option(
+        "3rd_IMDC",
+        "--challenge",
+        help="Challenge dataset to use (2nd_IMDC or 3rd_IMDC)",
+    ),
+) -> None:
+    """Generate exploratory data analysis plots to validate downloaded data.
+
+    Creates diagnostic visualizations including:
+    - Dengue time series with trends
+    - Climate variables panel (temperature, precipitation, humidity)
+    - Ocean oscillations (ENSO, IOD, PDO)
+    - Data quality summary
+    - Seasonal patterns
+    - Correlation matrix
+
+    Examples:
+        mosqlimate-ai explore --state SP
+        mosqlimate-ai explore --state RJ --output ./my_plots/
+        mosqlimate-ai explore --plots dengue_timeseries,climate_panel
+        mosqlimate-ai explore --state SP --challenge 2nd_IMDC
+    """
+    state_subdir = state.upper() if state else "all_states"
+    output_dir = Path(output_dir) if output_dir else Path("exploratory_plots")
+    state_dir = output_dir / challenge / state_subdir
+    state_dir.mkdir(parents=True, exist_ok=True)
+
+    console.print(f"[cyan]Challenge: {challenge}[/cyan]")
+    console.print("[cyan]Loading data...[/cyan]")
+
+    try:
+        loader = CompetitionDataLoader(challenge=challenge)
+        analyzer = ExploratoryDataAnalyzer(loader, state=state)
+
+        all_plots = [
+            "dengue_timeseries",
+            "climate_panel",
+            "ocean_oscillations",
+            "data_quality_summary",
+            "seasonal_pattern",
+            "correlation_matrix",
+        ]
+
+        if plots:
+            requested = [p.strip() for p in plots.split(",")]
+            plots_to_generate = [p for p in requested if p in all_plots]
+            missing = [p for p in requested if p not in all_plots]
+            if missing:
+                console.print(f"[yellow]Unknown plots: {', '.join(missing)}[/yellow]")
+        else:
+            plots_to_generate = all_plots
+
+        console.print(f"[cyan]Generating {len(plots_to_generate)} plots...[/cyan]\n")
+
+        for plot_name in plots_to_generate:
+            console.print(f"  [cyan]→[/cyan] {plot_name}")
+            if plot_name == "seasonal_pattern":
+                fig = analyzer.plot_seasonal_pattern("casos")
+            else:
+                fig = getattr(analyzer, f"plot_{plot_name}")()
+            filepath = state_dir / f"exploratory_{plot_name}.png"
+            fig.savefig(filepath, dpi=150, bbox_inches="tight", facecolor="white")
+            console.print(f"    [green]✓[/green] Saved to {filepath}")
+            import matplotlib.pyplot as plt
+
+            plt.close(fig)
+
+        console.print("\n[green]✓ Exploratory analysis complete![/green]")
+        console.print(f"[cyan]Plots saved to: {state_dir}/[/cyan]")
+
+    except FileNotFoundError as e:
+        console.print(f"[red]Error: {e}[/red]")
+        console.print("[yellow]Run 'mosqlimate-ai download-data' first to download data.[/yellow]")
+        raise typer.Exit(1) from None
+
+
+@app.command("check-data")
+def check_data_cmd(
+    config: Optional[Path] = config_file_option,
+    states: Optional[str] = typer.Option(
+        None,
+        "--states",
+        "-s",
+        help="Comma-separated state UFs (e.g., SP,RJ). Default: all.",
+    ),
+    diseases: str = typer.Option(
+        "dengue,chikungunya",
+        "--diseases",
+        help="Comma-separated diseases (dengue,chikungunya)",
+    ),
+) -> None:
+    """Verify weekly completeness of the cached case series.
+
+    Reports every missing week per state so data problems are caught
+    before training. Exits with code 1 when gaps are found.
+    """
+    import warnings as _warnings
+
+    from mosqlimate_ai.data.completeness import find_missing_weeks
+
+    loader = CompetitionDataLoader()
+    state_list = [s.strip() for s in states.split(",")] if states else None
+    disease_list = tuple(d.strip() for d in diseases.split(",") if d.strip())
+
+    problems = 0
+    for disease in disease_list:
+        with _warnings.catch_warnings(record=True) as caught:
+            _warnings.simplefilter("always")
+            try:
+                states_data = loader.load_all_states(aggregate=True, disease=disease)
+            except FileNotFoundError as exc:
+                console.print(f"[red]{disease}: {exc}[/red]")
+                problems += 1
+                continue
+        if state_list:
+            states_data = {k: v for k, v in states_data.items() if k in state_list}
+
+        for uf, df in sorted(states_data.items()):
+            missing = find_missing_weeks(df)
+            if missing:
+                problems += 1
+                dates = ", ".join(pd.Timestamp(d).strftime("%Y-%m-%d") for d in missing[:12])
+                more = f" ... +{len(missing) - 12}" if len(missing) > 12 else ""
+                console.print(
+                    f"[red]✗ {uf}/{disease}: {len(missing)} missing weeks: {dates}{more}[/red]"
+                )
+
+    if problems:
+        console.print(
+            f"\n[red]Data completeness check FAILED ({problems} problem(s)). "
+            "Re-download with: mosqlimate-ai download-data --force[/red]"
+        )
+        raise typer.Exit(1)
+
+    # record the verified fingerprints so refresh tooling skips
+    # re-downloading case data that is known-complete
+    from mosqlimate_ai.data.completeness import mark_files_verified
+
+    case_bases = [f"{d}.csv.gz" for d in disease_list if (loader.data_dir / f"{d}.csv.gz").exists()]
+    mark_files_verified(loader.data_dir, case_bases)
+    console.print(f"[green]✓ Data completeness check passed: no missing weeks. "
+                  f"Verified: {', '.join(case_bases)}[/green]")
 
 
 @app.command("cache-info")
@@ -1069,7 +1238,7 @@ def validate_cmd(
     full_pipeline: bool = typer.Option(
         False,
         "--full-pipeline",
-        help="Run complete 4-stage validation (3 tests + final forecast)",
+        help="Run complete validation (4 tests + final forecast)",
     ),
     final_forecast: bool = typer.Option(
         False,
@@ -1079,7 +1248,7 @@ def validate_cmd(
     test: Optional[int] = typer.Option(
         None,
         "--test",
-        help="Run specific test (1, 2, or 3)",
+        help="Run specific test (1, 2, 3, or 4)",
     ),
     states: Optional[str] = typer.Option(
         None,
@@ -1087,8 +1256,13 @@ def validate_cmd(
         "-s",
         help="Comma-separated state UFs (e.g., SP,RJ,MG)",
     ),
+    diseases: str = typer.Option(
+        "dengue,chikungunya",
+        "--diseases",
+        help="Comma-separated diseases (dengue,chikungunya)",
+    ),
     output: Path = typer.Option(
-        Path("validation_results"),
+        Path("validation_results/backtest"),
         "--output",
         "-o",
         help="Output directory for validation results",
@@ -1096,92 +1270,89 @@ def validate_cmd(
     max_concurrent: int = typer.Option(
         5,
         "--max-concurrent",
-        help="Maximum concurrent states",
+        help="Maximum concurrent worker processes",
+    ),
+    tune_trials: int = typer.Option(
+        0,
+        "--tune",
+        help="Per-state GBM hyperparameter tuning trials (0 = fixed defaults; "
+        "e.g. --tune 12). Results cached under <output>/hyperparams/.",
+    ),
+    timesfm: bool = typer.Option(
+        True,
+        "--timesfm/--no-timesfm",
+        help="Include the zero-shot TimesFM foundation model in the registry "
+        "(default; downloads a ~500 MB checkpoint on first use)",
     ),
     show_logs: bool = typer.Option(
         False,
         "--show-logs",
-        help="Show agent communication logs",
+        help="Deprecated: the deterministic pipeline has no agent logs",
     ),
     export_audit: Optional[Path] = typer.Option(
         None,
         "--export-audit",
-        help="Export audit trail to markdown file",
+        help="Deprecated: ignored",
     ),
 ) -> None:
-    """Run validation pipeline for Mosqlimate competition.
+    """Run the deterministic out-of-sample validation pipeline.
 
-    Implements the 4-run validation pipeline according to competition rules:
-    - 3 validation tests (2022-2023, 2023-2024, 2024-2025)
-    - 1 final forecast (2025-2026)
-
-    Examples:
-        mosqlimate-ai validate --full-pipeline
-        mosqlimate-ai validate --test 1 --states SP,RJ
-        mosqlimate-ai validate --final-forecast --states SP
+    For each state and validation test, models are trained strictly on
+    data up to EW25 and asked for the full 52-week target-season
+    forecast with conformally calibrated quantiles. Results (WIS-based)
+    are saved to the output directory.
     """
-    from mosqlimate_ai.validation import ValidationOrchestrator
+    from mosqlimate_ai.validation.backtest import run_full_pipeline
 
-    # Parse states
-    state_list = None
-    if states:
-        state_list = [s.strip() for s in states.split(",")]
+    state_list = [s.strip() for s in states.split(",")] if states else None
+    disease_list = tuple(d.strip() for d in diseases.split(",") if d.strip())
 
-    # Determine what to run
     test_numbers = None
-    run_final = False
-
     if full_pipeline:
-        test_numbers = [1, 2, 3]
-        run_final = True
+        pass
     elif final_forecast:
-        run_final = True
+        test_numbers = [5]
     elif test:
         test_numbers = [test]
     else:
         console.print("[red]Error: Must specify --full-pipeline, --final-forecast, or --test[/red]")
         raise typer.Exit(1)
 
-    console.print("[cyan]Starting validation pipeline...[/cyan]")
+    console.print("[cyan]Deterministic validation pipeline[/cyan]")
     if state_list:
         console.print(f"[cyan]States: {', '.join(state_list)}[/cyan]")
-    console.print(f"[cyan]Tests: {test_numbers or 'None'}[/cyan]")
-    console.print(f"[cyan]Final forecast: {run_final}[/cyan]")
-    console.print()
+    console.print(f"[cyan]Diseases: {', '.join(disease_list)}[/cyan]")
+    if tune_trials:
+        console.print(f"[cyan]Per-state tuning: {tune_trials} trials[/cyan]")
+    console.print(
+        "[cyan]TimesFM foundation model: enabled[/cyan]"
+        if timesfm
+        else "[yellow]TimesFM foundation model: disabled[/yellow]"
+    )
 
-    # Create orchestrator and run
-    orchestrator = ValidationOrchestrator(output_dir=output)
-    orchestrator.config.max_concurrent_states = max_concurrent
+    combined = run_full_pipeline(
+        states=state_list,
+        diseases=disease_list,
+        include_final=full_pipeline or final_forecast,
+        include_timesfm=timesfm,
+        max_workers=max_concurrent,
+        out_dir=output,
+        test_numbers=test_numbers,
+        tune_trials=tune_trials,
+    )
 
-    try:
-        results = orchestrator.run_full_pipeline(
-            states=state_list,
-            test_numbers=test_numbers,
-            run_final=run_final,
-        )
-
-        # Display results
-        console.print("\n[green]✓ Validation pipeline completed[/green]")
-        console.print(f"[green]  Total states: {results['total_states']}[/green]")
-        console.print(f"[green]  Successful: {results['successful_states']}[/green]")
-        if results["failed_states"] > 0:
-            console.print(f"[red]  Failed: {results['failed_states']}[/red]")
-        console.print(f"[green]  Elapsed time: {results['elapsed_seconds']:.1f}s[/green]")
-        console.print(f"\n[cyan]Results saved to: {output}[/cyan]")
-
-        if show_logs:
-            console.print("\n[cyan]Agent Communication Logs:[/cyan]")
-            logs = orchestrator.message_bus.get_message_history()
-            for msg in logs[:20]:  # Show last 20 messages
-                console.print(f"  [{msg.timestamp}] {msg.sender}: {msg.message_type}")
-
-        if export_audit:
-            audit = orchestrator.message_bus.export_audit_trail(export_audit)
-            console.print(f"[green]✓ Audit trail exported to: {audit}[/green]")
-
-    except Exception as e:
-        console.print(f"[red]Validation failed: {e}[/red]")
+    if combined.empty:
+        console.print("[red]No results produced[/red]")
         raise typer.Exit(1)
+
+    console.print("\n[green]✓ Validation completed[/green]")
+    summary = (
+        combined.groupby(["disease", "model"])[["wis", "coverage_50", "coverage_95"]]
+        .mean()
+        .round(2)
+    )
+    console.print(summary.to_string())
+    console.print(f"\n[cyan]Results saved to: {output}[/cyan]")
 
 
 @app.command("validation-report")

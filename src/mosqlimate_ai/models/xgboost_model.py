@@ -8,7 +8,7 @@ import json
 import logging
 import pickle
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Optional, Union
 
 import numpy as np
 import pandas as pd
@@ -53,7 +53,7 @@ class XGBoostQuantileModel:
 
     def __init__(
         self,
-        quantiles: Optional[List[float]] = None,
+        quantiles: Optional[list[float]] = None,
         n_estimators: int = 500,
         max_depth: int = 6,
         learning_rate: float = 0.05,
@@ -73,9 +73,9 @@ class XGBoostQuantileModel:
         self.colsample_bytree = colsample_bytree
         self.random_state = random_state
 
-        self.models_: Dict[float, Any] = {}
+        self.models_: dict[float, Any] = {}
         self.feature_importances_: Optional[pd.DataFrame] = None
-        self.feature_names_: Optional[List[str]] = None
+        self.feature_names_: Optional[list[str]] = None
         self.is_fitted_ = False
 
         self._check_xgboost()
@@ -200,7 +200,7 @@ class XGBoostQuantileModel:
     def predict_with_intervals(
         self,
         X: Union[pd.DataFrame, np.ndarray],
-        levels: Optional[List[float]] = None,
+        levels: Optional[list[float]] = None,
     ) -> pd.DataFrame:
         """Predict with prediction intervals.
 
@@ -264,7 +264,7 @@ class XGBoostQuantileModel:
         y: Union[pd.Series, np.ndarray],
         n_splits: int = 5,
         gap: int = 4,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Perform time-series cross-validation.
 
         Args:
@@ -396,7 +396,7 @@ class XGBoostForecaster:
     def __init__(
         self,
         target_col: str = "casos",
-        feature_cols: Optional[List[str]] = None,
+        feature_cols: Optional[list[str]] = None,
         **model_kwargs,
     ):
         self.target_col = target_col
@@ -441,7 +441,7 @@ class XGBoostForecaster:
     def predict(
         self,
         df: pd.DataFrame,
-        levels: Optional[List[float]] = None,
+        levels: Optional[list[float]] = None,
     ) -> pd.DataFrame:
         """Generate forecasts with prediction intervals.
 
@@ -466,7 +466,7 @@ class XGBoostForecaster:
 
         return predictions
 
-    def _infer_features(self, df: pd.DataFrame) -> List[str]:
+    def _infer_features(self, df: pd.DataFrame) -> list[str]:
         """Infer feature columns from DataFrame."""
         exclude = [
             "date",
@@ -477,9 +477,11 @@ class XGBoostForecaster:
             "train_1",
             "train_2",
             "train_3",
+            "train_4",
             "target_1",
             "target_2",
             "target_3",
+            "target_4",
             self.target_col,
         ]
         return [c for c in df.columns if c not in exclude and df[c].dtype in [np.float64, np.int64]]

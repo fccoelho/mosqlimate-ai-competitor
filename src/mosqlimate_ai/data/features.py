@@ -6,7 +6,7 @@ for machine learning models.
 
 import logging
 import warnings
-from typing import Dict, List, Optional
+from typing import Optional
 
 import numpy as np
 import pandas as pd
@@ -32,8 +32,8 @@ class FeatureEngineer:
 
     def __init__(
         self,
-        lag_periods: Optional[List[int]] = None,
-        rolling_windows: Optional[List[int]] = None,
+        lag_periods: Optional[list[int]] = None,
+        rolling_windows: Optional[list[int]] = None,
         include_spatial: bool = True,
         include_ocean: bool = True,
     ):
@@ -59,8 +59,8 @@ class FeatureEngineer:
         self,
         df: pd.DataFrame,
         target_col: str = "casos",
-        lags: Optional[List[int]] = None,
-        group_cols: Optional[List[str]] = None,
+        lags: Optional[list[int]] = None,
+        group_cols: Optional[list[str]] = None,
     ) -> pd.DataFrame:
         """Create lagged features.
 
@@ -91,9 +91,9 @@ class FeatureEngineer:
         self,
         df: pd.DataFrame,
         target_col: str = "casos",
-        windows: Optional[List[int]] = None,
-        stats: Optional[List[str]] = None,
-        group_cols: Optional[List[str]] = None,
+        windows: Optional[list[int]] = None,
+        stats: Optional[list[str]] = None,
+        group_cols: Optional[list[str]] = None,
     ) -> pd.DataFrame:
         """Create rolling window statistics.
 
@@ -191,7 +191,7 @@ class FeatureEngineer:
     def create_climate_features(
         self,
         df: pd.DataFrame,
-        climate_cols: Optional[List[str]] = None,
+        climate_cols: Optional[list[str]] = None,
     ) -> pd.DataFrame:
         """Create climate-derived features.
 
@@ -264,7 +264,7 @@ class FeatureEngineer:
         self,
         df: pd.DataFrame,
         target_col: str = "casos",
-        neighbor_map: Optional[Dict[str, List[str]]] = None,
+        neighbor_map: Optional[dict[str, list[str]]] = None,
     ) -> pd.DataFrame:
         """Create spatial lag features from neighboring states.
 
@@ -304,7 +304,7 @@ class FeatureEngineer:
         logger.info("Created spatial lag features")
         return df
 
-    def _get_default_neighbor_map(self) -> Dict[str, List[str]]:
+    def _get_default_neighbor_map(self) -> dict[str, list[str]]:
         """Get default neighboring states map for Brazil."""
         return {
             "AC": ["AM", "RO"],
@@ -390,8 +390,8 @@ class FeatureEngineer:
         self,
         df: pd.DataFrame,
         target_col: str = "casos",
-        periods: Optional[List[int]] = None,
-        group_cols: Optional[List[str]] = None,
+        periods: Optional[list[int]] = None,
+        group_cols: Optional[list[str]] = None,
     ) -> pd.DataFrame:
         """Create differenced features.
 
@@ -453,8 +453,8 @@ class FeatureEngineer:
         self,
         df: pd.DataFrame,
         target_col: str = "casos",
-        exclude_cols: Optional[List[str]] = None,
-    ) -> List[str]:
+        exclude_cols: Optional[list[str]] = None,
+    ) -> list[str]:
         """Select feature columns for modeling.
 
         Args:
@@ -476,9 +476,11 @@ class FeatureEngineer:
                 "train_1",
                 "train_2",
                 "train_3",
+                "train_4",
                 "target_1",
                 "target_2",
                 "target_3",
+                "target_4",
                 "regional_geocode",
                 "macroregional_geocode",
                 target_col,
@@ -500,7 +502,7 @@ class FeatureEngineer:
         df: pd.DataFrame,
         target_col: str = "casos",
         ocean_df: Optional[pd.DataFrame] = None,
-        neighbor_map: Optional[Dict[str, List[str]]] = None,
+        neighbor_map: Optional[dict[str, list[str]]] = None,
         horizon: int = 4,
     ) -> pd.DataFrame:
         """Create complete feature set for modeling.

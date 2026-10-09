@@ -661,7 +661,14 @@ def plot_coverage_analysis(
         models = sorted(all_models)
 
     # Use distinct colors for models
-    model_colors = {"xgboost": "#1f77b4", "lstm": "#ff7f0e", "ensemble": "#2ca02c"}
+    model_colors = {
+        "xgboost": "#1f77b4",
+        "lstm": "#ff7f0e",
+        "prophet": "#2ca02c",
+        "tft": "#9467bd",
+        "nbeats": "#8c564b",
+        "ensemble": "#e377c2",
+    }
 
     for idx, (level, target) in enumerate(zip(coverage_levels, target_coverage)):
         ax = axes[idx]
@@ -957,6 +964,7 @@ def create_validation_figure_set(
             1: "2022-2023",
             2: "2023-2024",
             3: "2024-2025",
+            4: "2025-2026",
         }
 
     # Default train end dates if not provided
@@ -965,10 +973,11 @@ def create_validation_figure_set(
             1: "2022-06-26",
             2: "2023-06-25",
             3: "2024-06-23",
+            4: "2025-06-22",
         }
 
     # Generate individual test plots (Pages 2-4)
-    for test_num in [1, 2, 3]:
+    for test_num in [1, 2, 3, 4]:
         if test_num in test_forecasts:
             # Handle both old format (single DataFrame) and new format (dict of DataFrames)
             forecast_data = test_forecasts[test_num]

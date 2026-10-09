@@ -1,6 +1,10 @@
 """Data ingestion and preprocessing module."""
 
 from mosqlimate_ai.data.downloader import DataDownloader, download_data
+from mosqlimate_ai.data.exploratory_analysis import (
+    ExploratoryDataAnalyzer,
+    analyze_data,
+)
 from mosqlimate_ai.data.feature_cache import FeatureCache, get_feature_cache
 from mosqlimate_ai.data.features import FeatureEngineer
 from mosqlimate_ai.data.loader import DataLoader
@@ -14,4 +18,6 @@ __all__ = [
     "download_data",
     "FeatureCache",
     "get_feature_cache",
+    "ExploratoryDataAnalyzer",
+    "analyze_data",
 ]

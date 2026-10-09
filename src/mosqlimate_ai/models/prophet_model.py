@@ -7,7 +7,7 @@ built-in uncertainty quantification via posterior predictive samples.
 import json
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Optional, Union
 
 import numpy as np
 import pandas as pd
@@ -64,8 +64,8 @@ class ProphetModel:
         holidays_prior_scale: float = 10.0,
         mcmc_samples: int = 0,
         interval_width: float = 0.80,
-        quantiles: Optional[List[float]] = None,
-        extra_regressors: Optional[List[str]] = None,
+        quantiles: Optional[list[float]] = None,
+        extra_regressors: Optional[list[str]] = None,
         n_forecast_samples: int = 1000,
     ):
         self.yearly_seasonality = yearly_seasonality
@@ -83,7 +83,7 @@ class ProphetModel:
 
         self.model_ = None
         self.is_fitted_ = False
-        self.feature_names_: Optional[List[str]] = None
+        self.feature_names_: Optional[list[str]] = None
 
         self._check_prophet()
 
@@ -247,7 +247,7 @@ class ProphetModel:
     def predict_with_intervals(
         self,
         df: pd.DataFrame,
-        levels: Optional[List[float]] = None,
+        levels: Optional[list[float]] = None,
         date_col: str = "date",
     ) -> pd.DataFrame:
         """Predict with prediction intervals.
@@ -291,6 +291,7 @@ class ProphetModel:
         path.mkdir(parents=True, exist_ok=True)
 
         import json
+
         from prophet.serialize import model_to_json
 
         with open(path / "model.json", "w") as f:
@@ -365,7 +366,7 @@ class ProphetForecaster:
         self,
         target_col: str = "casos",
         date_col: str = "date",
-        extra_regressors: Optional[List[str]] = None,
+        extra_regressors: Optional[list[str]] = None,
         **model_kwargs,
     ):
         self.target_col = target_col
@@ -400,7 +401,7 @@ class ProphetForecaster:
     def predict(
         self,
         df: pd.DataFrame,
-        levels: Optional[List[float]] = None,
+        levels: Optional[list[float]] = None,
     ) -> pd.DataFrame:
         """Generate forecasts with prediction intervals.
 

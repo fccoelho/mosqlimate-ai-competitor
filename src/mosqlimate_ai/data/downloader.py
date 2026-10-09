@@ -1,6 +1,7 @@
-"""Data downloader for Mosqlimate Sprint 2025 competition data.
+"""Data downloader for Mosqlimate competition data.
 
 Downloads and caches data from the Mosqlimate FTP server (info.dengue.mat.br).
+Supports both 2nd IMDC (2025) and 3rd IMDC (2026) challenges.
 """
 
 import ftplib
@@ -24,8 +25,11 @@ from rich.table import Table
 logger = logging.getLogger(__name__)
 console = Console()
 
+CHALLENGE_2ND_IMDC = "2nd_IMDC"
+CHALLENGE_3RD_IMDC = "3rd_IMDC"
+DEFAULT_CHALLENGE = CHALLENGE_3RD_IMDC
 
-DATA_FILES = {
+DATA_FILES_2ND = {
     "dengue.csv.gz": {
         "description": "Weekly dengue cases by municipality (2010-2025)",
         "required": True,
@@ -68,6 +72,71 @@ DATA_FILES = {
     },
 }
 
+DATA_FILES_3RD = {
+    "dengue.csv.gz": {
+        "description": "Weekly dengue cases by municipality (2010-2026)",
+        "required": True,
+    },
+    "chikungunya.csv.gz": {
+        "description": "Weekly chikungunya cases by municipality (2014-2026)",
+        "required": True,
+    },
+    "climate.csv.gz": {
+        "description": "Weekly climate reanalysis data (ERA5)",
+        "required": True,
+    },
+    "climate_forecast.csv.gz": {
+        "description": "Monthly climate forecasts (ECMWF)",
+        "required": True,
+    },
+    "datasus_population_2001_2025.csv.gz": {
+        "description": "Population by municipality and year",
+        "required": True,
+    },
+    "environ_vars.csv.gz": {
+        "description": "Environmental variables (Koppen, Biome)",
+        "required": True,
+    },
+    "map_regional_health.csv": {
+        "description": "City to health region mapping",
+        "required": True,
+    },
+    "shape_muni.gpkg": {
+        "description": "Municipality geometries",
+        "required": True,
+    },
+    "shape_regional_health.gpkg": {
+        "description": "Regional health geometries",
+        "required": True,
+    },
+    "shape_macroregional_health.gpkg": {
+        "description": "Macroregional health geometries",
+        "required": True,
+    },
+    "enso.csv.gz": {
+        "description": "ENSO ocean index",
+        "required": True,
+    },
+    "iod.csv.gz": {
+        "description": "IOD ocean index",
+        "required": True,
+    },
+    "pdo.csv.gz": {
+        "description": "PDO ocean index",
+        "required": True,
+    },
+}
+
+CHALLENGE_DATA_FILES = {
+    CHALLENGE_2ND_IMDC: DATA_FILES_2ND,
+    CHALLENGE_3RD_IMDC: DATA_FILES_3RD,
+}
+
+CHALLENGE_REMOTE_DIRS = {
+    CHALLENGE_2ND_IMDC: "data_sprint_2025",
+    CHALLENGE_3RD_IMDC: "data_imdc_2026",
+}
+
 
 class DownloadConfig(BaseModel):
     """Configuration for data download."""
@@ -75,7 +144,6 @@ class DownloadConfig(BaseModel):
     ftp_host: str = "info.dengue.mat.br"
     ftp_user: str = "anonymous"
     ftp_password: str = "anonymous@domain.com"
-    remote_dir: str = "data_sprint_2025"
     timeout: int = 300
 
 
@@ -86,11 +154,12 @@ class DataDownloader:
     and caching it locally. Files are kept compressed (.gz) to save space.
 
     Args:
-        cache_dir: Directory to store downloaded data. Defaults to project's data/ folder.
+        cache_dir: Directory to store downloaded data. Defaults to project's data/{challenge}/ folder.
         config: FTP connection configuration.
+        challenge: Which challenge dataset to use ("2nd_IMDC" or "3rd_IMDC").
 
     Example:
-        >>> downloader = DataDownloader()
+        >>> downloader = DataDownloader(challenge="3rd_IMDC")
         >>> downloader.download_all()
         >>> df = downloader.load_data("dengue.csv.gz")
     """
@@ -99,19 +168,38 @@ class DataDownloader:
         self,
         cache_dir: Optional[Path] = None,
         config: Optional[DownloadConfig] = None,
+        challenge: str = DEFAULT_CHALLENGE,
     ):
+        self.challenge = challenge
         if cache_dir is None:
-            cache_dir = self._get_default_cache_dir()
+            cache_dir = self._get_default_cache_dir(challenge)
         self.cache_dir = Path(cache_dir)
         self.cache_dir.mkdir(parents=True, exist_ok=True)
         self.config = config or DownloadConfig()
         self._ftp: Optional[ftplib.FTP] = None
 
     @staticmethod
-    def _get_default_cache_dir() -> Path:
-        """Get default cache directory (project's data/ folder)."""
+    def _get_default_cache_dir(challenge: str = DEFAULT_CHALLENGE) -> Path:
+        """Get default cache directory.
+
+        Prefers ``data/{challenge}/`` when it exists; falls back to the flat
+        ``data/`` directory so downloads land next to already-cached files.
+        """
         project_root = Path(__file__).parent.parent.parent.parent
+        challenge_dir = project_root / "data" / challenge
+        if challenge_dir.exists():
+            return challenge_dir
         return project_root / "data"
+
+    @property
+    def remote_dir(self) -> str:
+        """Get the remote FTP directory for the current challenge."""
+        return CHALLENGE_REMOTE_DIRS.get(self.challenge, CHALLENGE_REMOTE_DIRS[DEFAULT_CHALLENGE])
+
+    @property
+    def data_files(self) -> dict:
+        """Get the data files list for the current challenge."""
+        return CHALLENGE_DATA_FILES.get(self.challenge, CHALLENGE_DATA_FILES[DEFAULT_CHALLENGE])
 
     def connect(self) -> None:
         """Connect to FTP server."""
@@ -123,7 +211,7 @@ class DataDownloader:
         self._ftp.connect(self.config.ftp_host, timeout=self.config.timeout)
         self._ftp.login(self.config.ftp_user, self.config.ftp_password)
         self._ftp.voidcmd("TYPE I")
-        self._ftp.cwd(self.config.remote_dir)
+        self._ftp.cwd(self.remote_dir)
         console.print("[green]Connected successfully![/green]")
 
     def disconnect(self) -> None:
@@ -144,17 +232,31 @@ class DataDownloader:
         return size if size else 0
 
     def _file_exists_and_valid(self, filename: str) -> bool:
-        """Check if local file exists and has correct size."""
+        """Check if local file exists and is complete.
+
+        A local copy is trusted (no re-download) when any of:
+        - it is recorded as *verified complete* in the completeness
+          manifest (written by ``check-data``) and unchanged on disk;
+        - its size matches the remote size;
+        - the remote size is unavailable (server won't report it).
+        """
         local_path = self.cache_dir / filename
         if not local_path.exists():
             return False
 
+        from mosqlimate_ai.data.completeness import file_is_verified
+
+        if file_is_verified(self.cache_dir, filename):
+            return True
+
         try:
             remote_size = self._get_remote_file_size(filename)
+            if not remote_size:
+                return True
             local_size = local_path.stat().st_size
             return local_size == remote_size
         except Exception:
-            return local_path.exists()
+            return True
 
     def download_file(
         self,
@@ -162,6 +264,10 @@ class DataDownloader:
         force: bool = False,
     ) -> Path:
         """Download a single file from FTP server.
+
+        Interrupted transfers leave a ``.tmp`` file behind which is
+        resumed (via FTP REST) on the next attempt instead of
+        restarting the download from byte zero.
 
         Args:
             filename: Name of the file to download.
@@ -174,23 +280,37 @@ class DataDownloader:
             FileNotFoundError: If file doesn't exist on server.
         """
         local_path = self.cache_dir / filename
+        temp_path = local_path.with_suffix(local_path.suffix + ".tmp")
 
         if not force and self._file_exists_and_valid(filename):
+            if temp_path.exists():
+                temp_path.unlink()
             console.print(f"[green]✓[/green] {filename} already cached")
             return local_path
 
         if self._ftp is None:
             self.connect()
 
-        remote_size = self._get_remote_file_size(filename)
+        remote_size = self._get_remote_file_size(filename) or 0
 
+        resume_from = 0
+        if temp_path.exists() and temp_path.stat().st_size:
+            if remote_size and temp_path.stat().st_size > remote_size:
+                temp_path.unlink()  # stale temp from an older, larger remote
+            else:
+                resume_from = temp_path.stat().st_size
+
+        if remote_size and resume_from == remote_size:
+            temp_path.rename(local_path)  # transfer had finished; finalize
+            console.print(f"[green]✓[/green] Resumed {filename} to completion")
+            return local_path
+
+        action = "Resuming" if resume_from else "Downloading"
         console.print(
-            f"[yellow]↓[/yellow] Downloading {filename} ({self._format_size(remote_size)})..."
+            f"[yellow]↓[/yellow] {action} {filename} ({self._format_size(remote_size)})..."
         )
 
-        temp_path = local_path.with_suffix(local_path.suffix + ".tmp")
-
-        with Progress(
+        with open(temp_path, "ab") as temp_fh, Progress(
             SpinnerColumn(),
             TextColumn("[progress.description]{task.description}"),
             BarColumn(),
@@ -199,25 +319,39 @@ class DataDownloader:
             TimeRemainingColumn(),
             console=console,
         ) as progress:
-            task = progress.add_task(filename, total=remote_size)
-            downloaded = [0]
+            task = progress.add_task(filename, total=remote_size or None)
+            downloaded = [resume_from]
+            if resume_from:
+                progress.update(task, completed=resume_from)
 
             def callback(data: bytes) -> None:
-                temp_path.write_bytes(temp_path.read_bytes() + data)
+                temp_fh.write(data)
                 downloaded[0] += len(data)
                 progress.update(task, completed=downloaded[0])
 
-            temp_path.write_bytes(b"")
             assert self._ftp is not None
-            self._ftp.retrbinary(f"RETR {filename}", callback)
+            self._ftp.retrbinary(
+                f"RETR {filename}", callback, rest=resume_from or None
+            )
+
+        if remote_size and temp_path.stat().st_size != remote_size:
+            logger.warning(
+                f"Incomplete download of {filename} "
+                f"({temp_path.stat().st_size}/{remote_size} bytes); "
+                "keeping .tmp for resume on the next attempt"
+            )
+            raise OSError(
+                f"Incomplete download of {filename}: got "
+                f"{temp_path.stat().st_size} of {remote_size} bytes"
+            )
 
         temp_path.rename(local_path)
         console.print(f"[green]✓[/green] Downloaded {filename}")
 
         return local_path
 
-    def download_all(self, force: bool = False) -> dict[str, Path]:
-        """Download all required data files.
+    def download_all(self, force: bool = False) -> dict:
+        """Download all required data files for the current challenge.
 
         Args:
             force: Force re-download even if files exist.
@@ -230,16 +364,16 @@ class DataDownloader:
         results = {}
         failed = []
 
-        table = Table(title="Data Download Summary")
+        table = Table(title=f"Data Download Summary ({self.challenge})")
         table.add_column("File", style="cyan")
         table.add_column("Status", style="green")
         table.add_column("Description")
 
-        for filename, info in DATA_FILES.items():
+        for filename, info in self.data_files.items():
             try:
                 path = self.download_file(filename, force=force)
                 results[filename] = path
-                table.add_row(filename, "✓ Downloaded", info["description"])
+                table.add_row(filename, "✓ Ready", info["description"])
             except Exception as e:
                 failed.append(filename)
                 table.add_row(filename, f"✗ Failed: {e}", info["description"])
@@ -267,7 +401,7 @@ class DataDownloader:
         local_path = self.cache_dir / filename
         return local_path if local_path.exists() else None
 
-    def list_cached_files(self) -> list[Path]:
+    def list_cached_files(self) -> list:
         """List all cached data files.
 
         Returns:
@@ -282,14 +416,14 @@ class DataDownloader:
                 file_path.unlink()
         console.print(f"[yellow]Cache cleared: {self.cache_dir}[/yellow]")
 
-    def get_cache_info(self) -> dict[str, dict]:
+    def get_cache_info(self) -> dict:
         """Get information about cached files.
 
         Returns:
             Dictionary with file info including size and status.
         """
         info = {}
-        for filename, meta in DATA_FILES.items():
+        for filename, meta in self.data_files.items():
             local_path = self.cache_dir / filename
             if local_path.exists():
                 size = local_path.stat().st_size
@@ -330,15 +464,17 @@ class DataDownloader:
 def download_data(
     cache_dir: Optional[Path] = None,
     force: bool = False,
-) -> dict[str, Path]:
+    challenge: str = DEFAULT_CHALLENGE,
+) -> dict:
     """Convenience function to download all data.
 
     Args:
         cache_dir: Directory to store downloaded data.
         force: Force re-download even if files exist.
+        challenge: Which challenge dataset to use ("2nd_IMDC" or "3rd_IMDC").
 
     Returns:
         Dictionary mapping filenames to local paths.
     """
-    with DataDownloader(cache_dir=cache_dir) as downloader:
+    with DataDownloader(cache_dir=cache_dir, challenge=challenge) as downloader:
         return downloader.download_all(force=force)

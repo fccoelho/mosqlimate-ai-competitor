@@ -8,7 +8,7 @@ import json
 import logging
 import pickle
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Optional, Union
 
 import numpy as np
 import pandas as pd
@@ -59,14 +59,14 @@ class NBEATSModel:
 
     def __init__(
         self,
-        stack_types: Optional[List[str]] = None,
-        num_blocks: List[int] = [3],
-        num_block_layers: List[int] = [4],
+        stack_types: Optional[list[str]] = None,
+        num_blocks: list[int] = None,
+        num_block_layers: list[int] = None,
         hidden_size: int = 256,
         learning_rate: float = 0.001,
         max_prediction_length: int = 52,
         max_encoder_length: int = 104,
-        quantiles: Optional[List[float]] = None,
+        quantiles: Optional[list[float]] = None,
         batch_size: int = 64,
         max_epochs: int = 50,
         early_stopping_patience: int = 5,
@@ -75,6 +75,10 @@ class NBEATSModel:
         device: str = "auto",
         dropout: float = 0.1,
     ):
+        if num_block_layers is None:
+            num_block_layers = [8]
+        if num_blocks is None:
+            num_blocks = [6]
         self.stack_types = stack_types or ["generic"]
         self.num_blocks = num_blocks
         self.num_block_layers = num_block_layers
@@ -128,7 +132,7 @@ class NBEATSModel:
         df: pd.DataFrame,
         date_col: str = "date",
         target_col: str = "casos",
-        group_cols: Optional[List[str]] = None,
+        group_cols: Optional[list[str]] = None,
     ) -> Any:
         """Prepare TimeSeriesDataSet for N-BEATS.
 
@@ -183,7 +187,7 @@ class NBEATSModel:
         df: pd.DataFrame,
         date_col: str = "date",
         target_col: str = "casos",
-        group_cols: Optional[List[str]] = None,
+        group_cols: Optional[list[str]] = None,
         verbose: bool = False,
     ) -> "NBEATSModel":
         """Fit N-BEATS model.
@@ -198,11 +202,12 @@ class NBEATSModel:
         Returns:
             Fitted model
         """
+        import tempfile
+
         from pytorch_forecasting import TimeSeriesDataSet
         from pytorch_forecasting.models import NBeats
         from pytorch_lightning.callbacks import EarlyStopping
         from pytorch_lightning.loggers import TensorBoardLogger
-        import tempfile
 
         logger.info("Preparing N-BEATS training data...")
 
@@ -364,7 +369,7 @@ class NBEATSModel:
     def predict_with_intervals(
         self,
         df: pd.DataFrame,
-        levels: Optional[List[float]] = None,
+        levels: Optional[list[float]] = None,
         date_col: str = "date",
     ) -> pd.DataFrame:
         """Predict with prediction intervals.
@@ -489,7 +494,7 @@ class NBEATSForecaster:
         self,
         target_col: str = "casos",
         date_col: str = "date",
-        group_cols: Optional[List[str]] = None,
+        group_cols: Optional[list[str]] = None,
         **model_kwargs,
     ):
         self.target_col = target_col
@@ -525,7 +530,7 @@ class NBEATSForecaster:
     def predict(
         self,
         df: pd.DataFrame,
-        levels: Optional[List[float]] = None,
+        levels: Optional[list[float]] = None,
         n_mc_samples: Optional[int] = None,
     ) -> pd.DataFrame:
         """Generate forecasts with prediction intervals.

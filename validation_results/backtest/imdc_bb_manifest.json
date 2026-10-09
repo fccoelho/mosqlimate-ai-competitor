@@ -1,0 +1,3299 @@
+{
+  "source_model": {
+    "name": "3rd_imdc_procc_bb_model",
+    "model_id": 85,
+    "repository": "lsbastos/3rd_imdc_procc_bb_model",
+    "commit": "1685e97cc5750e7d28114491d92484dcfcbeb633"
+  },
+  "local_model": "imdc_bb",
+  "downloaded_at": "2026-10-06T20:51:31",
+  "quantile_mapping": {
+    "lower_95": "q025",
+    "lower_90": "q050",
+    "lower_80": "q100",
+    "lower_50": "q250",
+    "pred": "q500",
+    "upper_50": "q750",
+    "upper_80": "q900",
+    "upper_90": "q950",
+    "upper_95": "q975"
+  },
+  "files": {
+    "AC_chikungunya_1_imdc_bb.csv.gz": {
+      "prediction_id": 11720,
+      "rows": 52,
+      "first_date": "2022-10-09",
+      "last_date": "2023-10-01",
+      "scores": {
+        "mae": 1.56,
+        "mse": 3.75,
+        "crps": 1.03,
+        "log": -53.14,
+        "interval": 20.77,
+        "wis": 1.15
+      }
+    },
+    "AC_chikungunya_2_imdc_bb.csv.gz": {
+      "prediction_id": 11746,
+      "rows": 52,
+      "first_date": "2023-10-08",
+      "last_date": "2024-09-29",
+      "scores": {
+        "mae": 4.37,
+        "mse": 41.17,
+        "crps": 3.72,
+        "log": -13.19,
+        "interval": 116.15,
+        "wis": 2.0
+      }
+    },
+    "AC_chikungunya_3_imdc_bb.csv.gz": {
+      "prediction_id": 11773,
+      "rows": 52,
+      "first_date": "2024-10-06",
+      "last_date": "2025-09-28",
+      "scores": {
+        "mae": 3.02,
+        "mse": 15.21,
+        "crps": 2.77,
+        "log": -7.3,
+        "interval": 94.62,
+        "wis": 1.47
+      }
+    },
+    "AC_chikungunya_4_imdc_bb.csv.gz": {
+      "prediction_id": 11828,
+      "rows": 53,
+      "first_date": "2025-10-05",
+      "last_date": "2026-10-04",
+      "scores": {
+        "mae": 1.82,
+        "mse": 5.16,
+        "crps": 1.62,
+        "log": -12.47,
+        "interval": 52.16,
+        "wis": 1.18
+      }
+    },
+    "AC_chikungunya_final_imdc_bb.csv.gz": {
+      "prediction_id": 14405,
+      "rows": 52,
+      "first_date": "2026-10-11",
+      "last_date": "2027-10-03",
+      "scores": {}
+    },
+    "AC_dengue_1_imdc_bb.csv.gz": {
+      "prediction_id": 11640,
+      "rows": 52,
+      "first_date": "2022-10-09",
+      "last_date": "2023-10-01",
+      "scores": {
+        "mae": 49.79,
+        "mse": 4532.55,
+        "crps": 39.71,
+        "log": -5.45,
+        "interval": 1569.31,
+        "wis": 30.96
+      }
+    },
+    "AC_dengue_2_imdc_bb.csv.gz": {
+      "prediction_id": 11666,
+      "rows": 52,
+      "first_date": "2023-10-08",
+      "last_date": "2024-09-29",
+      "scores": {
+        "mae": 108.89,
+        "mse": 55422.88,
+        "crps": 86.22,
+        "log": -5.81,
+        "interval": 3482.04,
+        "wis": 58.97
+      }
+    },
+    "AC_dengue_3_imdc_bb.csv.gz": {
+      "prediction_id": 11693,
+      "rows": 52,
+      "first_date": "2024-10-06",
+      "last_date": "2025-09-28",
+      "scores": {
+        "mae": 125.87,
+        "mse": 33983.36,
+        "crps": 79.52,
+        "log": -6.21,
+        "interval": 3995.88,
+        "wis": 47.44
+      }
+    },
+    "AC_dengue_4_imdc_bb.csv.gz": {
+      "prediction_id": 11801,
+      "rows": 53,
+      "first_date": "2025-10-05",
+      "last_date": "2026-10-04",
+      "scores": {
+        "mae": 57.25,
+        "mse": 6147.7,
+        "crps": 40.79,
+        "log": -5.12,
+        "interval": 698.14,
+        "wis": 32.06
+      }
+    },
+    "AC_dengue_final_imdc_bb.csv.gz": {
+      "prediction_id": 14378,
+      "rows": 52,
+      "first_date": "2026-10-11",
+      "last_date": "2027-10-03",
+      "scores": {}
+    },
+    "AL_chikungunya_1_imdc_bb.csv.gz": {
+      "prediction_id": 11721,
+      "rows": 52,
+      "first_date": "2022-10-09",
+      "last_date": "2023-10-01",
+      "scores": {
+        "mae": 23.1,
+        "mse": 740.38,
+        "crps": 23.2,
+        "log": -5.15,
+        "interval": 584.25,
+        "wis": 20.12
+      }
+    },
+    "AL_chikungunya_2_imdc_bb.csv.gz": {
+      "prediction_id": 11747,
+      "rows": 52,
+      "first_date": "2023-10-08",
+      "last_date": "2024-09-29",
+      "scores": {
+        "mae": 17.75,
+        "mse": 516.7,
+        "crps": 20.29,
+        "log": -3.93,
+        "interval": 157.71,
+        "wis": 21.29
+      }
+    },
+    "AL_chikungunya_3_imdc_bb.csv.gz": {
+      "prediction_id": 11774,
+      "rows": 52,
+      "first_date": "2024-10-06",
+      "last_date": "2025-09-28",
+      "scores": {
+        "mae": 54.11,
+        "mse": 9172.0,
+        "crps": 40.15,
+        "log": -6.66,
+        "interval": 1330.38,
+        "wis": 28.32
+      }
+    },
+    "AL_chikungunya_4_imdc_bb.csv.gz": {
+      "prediction_id": 11829,
+      "rows": 53,
+      "first_date": "2025-10-05",
+      "last_date": "2026-10-04",
+      "scores": {
+        "mae": 56.31,
+        "mse": 7418.58,
+        "crps": 38.4,
+        "log": -5.81,
+        "interval": 1469.82,
+        "wis": 24.82
+      }
+    },
+    "AL_chikungunya_final_imdc_bb.csv.gz": {
+      "prediction_id": 14406,
+      "rows": 52,
+      "first_date": "2026-10-11",
+      "last_date": "2027-10-03",
+      "scores": {}
+    },
+    "AL_dengue_1_imdc_bb.csv.gz": {
+      "prediction_id": 11641,
+      "rows": 52,
+      "first_date": "2022-10-09",
+      "last_date": "2023-10-01",
+      "scores": {
+        "mae": 59.83,
+        "mse": 6689.35,
+        "crps": 69.14,
+        "log": -5.68,
+        "interval": 1473.54,
+        "wis": 63.17
+      }
+    },
+    "AL_dengue_2_imdc_bb.csv.gz": {
+      "prediction_id": 11667,
+      "rows": 52,
+      "first_date": "2023-10-08",
+      "last_date": "2024-09-29",
+      "scores": {
+        "mae": 235.48,
+        "mse": 90377.34,
+        "crps": 143.34,
+        "log": -6.82,
+        "interval": 6789.85,
+        "wis": 98.24
+      }
+    },
+    "AL_dengue_3_imdc_bb.csv.gz": {
+      "prediction_id": 11694,
+      "rows": 52,
+      "first_date": "2024-10-06",
+      "last_date": "2025-09-28",
+      "scores": {
+        "mae": 65.71,
+        "mse": 8955.76,
+        "crps": 68.38,
+        "log": -6.07,
+        "interval": 2755.87,
+        "wis": 60.48
+      }
+    },
+    "AL_dengue_4_imdc_bb.csv.gz": {
+      "prediction_id": 11802,
+      "rows": 53,
+      "first_date": "2025-10-05",
+      "last_date": "2026-10-04",
+      "scores": {
+        "mae": 47.42,
+        "mse": 3819.59,
+        "crps": 56.54,
+        "log": -6.01,
+        "interval": 2893.47,
+        "wis": 52.21
+      }
+    },
+    "AL_dengue_final_imdc_bb.csv.gz": {
+      "prediction_id": 14379,
+      "rows": 52,
+      "first_date": "2026-10-11",
+      "last_date": "2027-10-03",
+      "scores": {}
+    },
+    "AM_chikungunya_1_imdc_bb.csv.gz": {
+      "prediction_id": 11722,
+      "rows": 52,
+      "first_date": "2022-10-09",
+      "last_date": "2023-10-01",
+      "scores": {
+        "mae": 3.68,
+        "mse": 26.04,
+        "crps": 3.37,
+        "log": -7.35,
+        "interval": 116.15,
+        "wis": 1.69
+      }
+    },
+    "AM_chikungunya_2_imdc_bb.csv.gz": {
+      "prediction_id": 11748,
+      "rows": 52,
+      "first_date": "2023-10-08",
+      "last_date": "2024-09-29",
+      "scores": {
+        "mae": 2.34,
+        "mse": 8.68,
+        "crps": 2.01,
+        "log": -18.04,
+        "interval": 63.85,
+        "wis": 1.31
+      }
+    },
+    "AM_chikungunya_3_imdc_bb.csv.gz": {
+      "prediction_id": 11775,
+      "rows": 52,
+      "first_date": "2024-10-06",
+      "last_date": "2025-09-28",
+      "scores": {
+        "mae": 1.69,
+        "mse": 6.58,
+        "crps": 2.03,
+        "log": -5.01,
+        "interval": 75.77,
+        "wis": 1.17
+      }
+    },
+    "AM_chikungunya_4_imdc_bb.csv.gz": {
+      "prediction_id": 11830,
+      "rows": 53,
+      "first_date": "2025-10-05",
+      "last_date": "2026-10-04",
+      "scores": {
+        "mae": 1.94,
+        "mse": 6.45,
+        "crps": 1.82,
+        "log": -12.47,
+        "interval": 63.14,
+        "wis": 1.15
+      }
+    },
+    "AM_chikungunya_final_imdc_bb.csv.gz": {
+      "prediction_id": 14407,
+      "rows": 52,
+      "first_date": "2026-10-11",
+      "last_date": "2027-10-03",
+      "scores": {}
+    },
+    "AM_dengue_1_imdc_bb.csv.gz": {
+      "prediction_id": 11642,
+      "rows": 52,
+      "first_date": "2022-10-09",
+      "last_date": "2023-10-01",
+      "scores": {
+        "mae": 45.09,
+        "mse": 3914.96,
+        "crps": 32.51,
+        "log": -5.59,
+        "interval": 1912.0,
+        "wis": 22.9
+      }
+    },
+    "AM_dengue_2_imdc_bb.csv.gz": {
+      "prediction_id": 11668,
+      "rows": 52,
+      "first_date": "2023-10-08",
+      "last_date": "2024-09-29",
+      "scores": {
+        "mae": 115.28,
+        "mse": 34422.25,
+        "crps": 82.89,
+        "log": -6.14,
+        "interval": 3387.02,
+        "wis": 57.6
+      }
+    },
+    "AM_dengue_3_imdc_bb.csv.gz": {
+      "prediction_id": 11695,
+      "rows": 52,
+      "first_date": "2024-10-06",
+      "last_date": "2025-09-28",
+      "scores": {
+        "mae": 24.81,
+        "mse": 1163.57,
+        "crps": 21.91,
+        "log": -5.32,
+        "interval": 1715.52,
+        "wis": 18.51
+      }
+    },
+    "AM_dengue_4_imdc_bb.csv.gz": {
+      "prediction_id": 11803,
+      "rows": 53,
+      "first_date": "2025-10-05",
+      "last_date": "2026-10-04",
+      "scores": {
+        "mae": 53.37,
+        "mse": 4335.14,
+        "crps": 41.49,
+        "log": -5.24,
+        "interval": 493.78,
+        "wis": 28.52
+      }
+    },
+    "AM_dengue_final_imdc_bb.csv.gz": {
+      "prediction_id": 14380,
+      "rows": 52,
+      "first_date": "2026-10-11",
+      "last_date": "2027-10-03",
+      "scores": {}
+    },
+    "AP_chikungunya_1_imdc_bb.csv.gz": {
+      "prediction_id": 11723,
+      "rows": 52,
+      "first_date": "2022-10-09",
+      "last_date": "2023-10-01",
+      "scores": {
+        "mae": 0.83,
+        "mse": 1.1,
+        "crps": 0.7,
+        "log": -51.08,
+        "interval": 13.85,
+        "wis": 0.89
+      }
+    },
+    "AP_chikungunya_2_imdc_bb.csv.gz": {
+      "prediction_id": 11749,
+      "rows": 52,
+      "first_date": "2023-10-08",
+      "last_date": "2024-09-29",
+      "scores": {
+        "mae": 5.09,
+        "mse": 62.27,
+        "crps": 4.19,
+        "log": -16.93,
+        "interval": 120.38,
+        "wis": 2.38
+      }
+    },
+    "AP_chikungunya_3_imdc_bb.csv.gz": {
+      "prediction_id": 11776,
+      "rows": 52,
+      "first_date": "2024-10-06",
+      "last_date": "2025-09-28",
+      "scores": {
+        "mae": 0.98,
+        "mse": 1.79,
+        "crps": 0.97,
+        "log": -26.93,
+        "interval": 30.77,
+        "wis": 0.85
+      }
+    },
+    "AP_chikungunya_4_imdc_bb.csv.gz": {
+      "prediction_id": 11831,
+      "rows": 53,
+      "first_date": "2025-10-05",
+      "last_date": "2026-10-04",
+      "scores": {
+        "mae": 1.07,
+        "mse": 1.48,
+        "crps": 0.68,
+        "log": -53.97,
+        "interval": 13.33,
+        "wis": 0.82
+      }
+    },
+    "AP_chikungunya_final_imdc_bb.csv.gz": {
+      "prediction_id": 14408,
+      "rows": 52,
+      "first_date": "2026-10-11",
+      "last_date": "2027-10-03",
+      "scores": {}
+    },
+    "AP_dengue_1_imdc_bb.csv.gz": {
+      "prediction_id": 11643,
+      "rows": 52,
+      "first_date": "2022-10-09",
+      "last_date": "2023-10-01",
+      "scores": {
+        "mae": 14.35,
+        "mse": 573.96,
+        "crps": 12.67,
+        "log": -6.49,
+        "interval": 395.4,
+        "wis": 8.52
+      }
+    },
+    "AP_dengue_2_imdc_bb.csv.gz": {
+      "prediction_id": 11669,
+      "rows": 52,
+      "first_date": "2023-10-08",
+      "last_date": "2024-09-29",
+      "scores": {
+        "mae": 205.9,
+        "mse": 70009.87,
+        "crps": 189.11,
+        "log": -8.64,
+        "interval": 4254.27,
+        "wis": 180.81
+      }
+    },
+    "AP_dengue_3_imdc_bb.csv.gz": {
+      "prediction_id": 11696,
+      "rows": 52,
+      "first_date": "2024-10-06",
+      "last_date": "2025-09-28",
+      "scores": {
+        "mae": 45.37,
+        "mse": 2764.29,
+        "crps": 33.25,
+        "log": -6.28,
+        "interval": 1113.08,
+        "wis": 17.47
+      }
+    },
+    "AP_dengue_4_imdc_bb.csv.gz": {
+      "prediction_id": 11804,
+      "rows": 53,
+      "first_date": "2025-10-05",
+      "last_date": "2026-10-04",
+      "scores": {
+        "mae": 5.59,
+        "mse": 54.65,
+        "crps": 8.91,
+        "log": -6.28,
+        "interval": 272.16,
+        "wis": 7.81
+      }
+    },
+    "AP_dengue_final_imdc_bb.csv.gz": {
+      "prediction_id": 14381,
+      "rows": 52,
+      "first_date": "2026-10-11",
+      "last_date": "2027-10-03",
+      "scores": {}
+    },
+    "BA_chikungunya_1_imdc_bb.csv.gz": {
+      "prediction_id": 11724,
+      "rows": 52,
+      "first_date": "2022-10-09",
+      "last_date": "2023-10-01",
+      "scores": {
+        "mae": 91.5,
+        "mse": 12347.55,
+        "crps": 126.83,
+        "log": -6.61,
+        "interval": 4870.13,
+        "wis": 106.94
+      }
+    },
+    "BA_chikungunya_2_imdc_bb.csv.gz": {
+      "prediction_id": 11750,
+      "rows": 52,
+      "first_date": "2023-10-08",
+      "last_date": "2024-09-29",
+      "scores": {
+        "mae": 221.49,
+        "mse": 123758.19,
+        "crps": 183.83,
+        "log": -6.54,
+        "interval": 5105.75,
+        "wis": 137.46
+      }
+    },
+    "BA_chikungunya_3_imdc_bb.csv.gz": {
+      "prediction_id": 11777,
+      "rows": 52,
+      "first_date": "2024-10-06",
+      "last_date": "2025-09-28",
+      "scores": {
+        "mae": 251.79,
+        "mse": 87131.58,
+        "crps": 236.57,
+        "log": -6.8,
+        "interval": 790.21,
+        "wis": 159.66
+      }
+    },
+    "BA_chikungunya_4_imdc_bb.csv.gz": {
+      "prediction_id": 11832,
+      "rows": 53,
+      "first_date": "2025-10-05",
+      "last_date": "2026-10-04",
+      "scores": {
+        "mae": 193.55,
+        "mse": 48915.17,
+        "crps": 156.01,
+        "log": -6.87,
+        "interval": 3365.16,
+        "wis": 113.53
+      }
+    },
+    "BA_chikungunya_final_imdc_bb.csv.gz": {
+      "prediction_id": 14409,
+      "rows": 52,
+      "first_date": "2026-10-11",
+      "last_date": "2027-10-03",
+      "scores": {}
+    },
+    "BA_dengue_1_imdc_bb.csv.gz": {
+      "prediction_id": 11644,
+      "rows": 52,
+      "first_date": "2022-10-09",
+      "last_date": "2023-10-01",
+      "scores": {
+        "mae": 277.55,
+        "mse": 109378.0,
+        "crps": 230.87,
+        "log": -7.52,
+        "interval": 12398.08,
+        "wis": 183.18
+      }
+    },
+    "BA_dengue_2_imdc_bb.csv.gz": {
+      "prediction_id": 11670,
+      "rows": 52,
+      "first_date": "2023-10-08",
+      "last_date": "2024-09-29",
+      "scores": {
+        "mae": 3902.7,
+        "mse": 50389353.02,
+        "crps": 3453.78,
+        "log": -9.8,
+        "interval": 86345.67,
+        "wis": 3104.06
+      }
+    },
+    "BA_dengue_3_imdc_bb.csv.gz": {
+      "prediction_id": 11697,
+      "rows": 52,
+      "first_date": "2024-10-06",
+      "last_date": "2025-09-28",
+      "scores": {
+        "mae": 364.38,
+        "mse": 268790.21,
+        "crps": 365.03,
+        "log": -7.25,
+        "interval": 5959.29,
+        "wis": 236.23
+      }
+    },
+    "BA_dengue_4_imdc_bb.csv.gz": {
+      "prediction_id": 11805,
+      "rows": 53,
+      "first_date": "2025-10-05",
+      "last_date": "2026-10-04",
+      "scores": {
+        "mae": 443.83,
+        "mse": 376344.26,
+        "crps": 382.83,
+        "log": -7.36,
+        "interval": 4765.9,
+        "wis": 247.8
+      }
+    },
+    "BA_dengue_final_imdc_bb.csv.gz": {
+      "prediction_id": 14382,
+      "rows": 52,
+      "first_date": "2026-10-11",
+      "last_date": "2027-10-03",
+      "scores": {}
+    },
+    "CE_chikungunya_1_imdc_bb.csv.gz": {
+      "prediction_id": 11725,
+      "rows": 52,
+      "first_date": "2022-10-09",
+      "last_date": "2023-10-01",
+      "scores": {
+        "mae": 161.87,
+        "mse": 57760.0,
+        "crps": 183.17,
+        "log": -5.8,
+        "interval": 622.37,
+        "wis": 142.6
+      }
+    },
+    "CE_chikungunya_2_imdc_bb.csv.gz": {
+      "prediction_id": 11751,
+      "rows": 52,
+      "first_date": "2023-10-08",
+      "last_date": "2024-09-29",
+      "scores": {
+        "mae": 167.55,
+        "mse": 48988.9,
+        "crps": 168.81,
+        "log": -5.66,
+        "interval": 297.15,
+        "wis": 126.18
+      }
+    },
+    "CE_chikungunya_3_imdc_bb.csv.gz": {
+      "prediction_id": 11778,
+      "rows": 52,
+      "first_date": "2024-10-06",
+      "last_date": "2025-09-28",
+      "scores": {
+        "mae": 138.0,
+        "mse": 31549.7,
+        "crps": 138.57,
+        "log": -5.46,
+        "interval": 210.65,
+        "wis": 103.28
+      }
+    },
+    "CE_chikungunya_4_imdc_bb.csv.gz": {
+      "prediction_id": 11833,
+      "rows": 53,
+      "first_date": "2025-10-05",
+      "last_date": "2026-10-04",
+      "scores": {
+        "mae": 117.36,
+        "mse": 23295.66,
+        "crps": 121.74,
+        "log": -5.44,
+        "interval": 258.06,
+        "wis": 90.98
+      }
+    },
+    "CE_chikungunya_final_imdc_bb.csv.gz": {
+      "prediction_id": 14410,
+      "rows": 52,
+      "first_date": "2026-10-11",
+      "last_date": "2027-10-03",
+      "scores": {}
+    },
+    "CE_dengue_1_imdc_bb.csv.gz": {
+      "prediction_id": 11645,
+      "rows": 52,
+      "first_date": "2022-10-09",
+      "last_date": "2023-10-01",
+      "scores": {
+        "mae": 210.0,
+        "mse": 89316.14,
+        "crps": 181.66,
+        "log": -6.46,
+        "interval": 2708.15,
+        "wis": 119.86
+      }
+    },
+    "CE_dengue_2_imdc_bb.csv.gz": {
+      "prediction_id": 11671,
+      "rows": 52,
+      "first_date": "2023-10-08",
+      "last_date": "2024-09-29",
+      "scores": {
+        "mae": 223.68,
+        "mse": 89851.62,
+        "crps": 195.93,
+        "log": -6.49,
+        "interval": 1834.42,
+        "wis": 125.95
+      }
+    },
+    "CE_dengue_3_imdc_bb.csv.gz": {
+      "prediction_id": 11698,
+      "rows": 52,
+      "first_date": "2024-10-06",
+      "last_date": "2025-09-28",
+      "scores": {
+        "mae": 339.3,
+        "mse": 186597.57,
+        "crps": 280.37,
+        "log": -7.2,
+        "interval": 1293.92,
+        "wis": 191.48
+      }
+    },
+    "CE_dengue_4_imdc_bb.csv.gz": {
+      "prediction_id": 11806,
+      "rows": 53,
+      "first_date": "2025-10-05",
+      "last_date": "2026-10-04",
+      "scores": {
+        "mae": 261.34,
+        "mse": 113347.37,
+        "crps": 186.5,
+        "log": -6.67,
+        "interval": 5167.59,
+        "wis": 122.94
+      }
+    },
+    "CE_dengue_final_imdc_bb.csv.gz": {
+      "prediction_id": 14383,
+      "rows": 52,
+      "first_date": "2026-10-11",
+      "last_date": "2027-10-03",
+      "scores": {}
+    },
+    "DF_chikungunya_1_imdc_bb.csv.gz": {
+      "prediction_id": 11726,
+      "rows": 52,
+      "first_date": "2022-10-09",
+      "last_date": "2023-10-01",
+      "scores": {
+        "mae": 11.92,
+        "mse": 233.96,
+        "crps": 9.64,
+        "log": -4.78,
+        "interval": 311.54,
+        "wis": 4.63
+      }
+    },
+    "DF_chikungunya_2_imdc_bb.csv.gz": {
+      "prediction_id": 11752,
+      "rows": 52,
+      "first_date": "2023-10-08",
+      "last_date": "2024-09-29",
+      "scores": {
+        "mae": 6.63,
+        "mse": 100.37,
+        "crps": 6.07,
+        "log": -4.18,
+        "interval": 216.96,
+        "wis": 2.98
+      }
+    },
+    "DF_chikungunya_3_imdc_bb.csv.gz": {
+      "prediction_id": 11779,
+      "rows": 52,
+      "first_date": "2024-10-06",
+      "last_date": "2025-09-28",
+      "scores": {
+        "mae": 2.69,
+        "mse": 11.65,
+        "crps": 2.97,
+        "log": -3.5,
+        "interval": 111.54,
+        "wis": 1.91
+      }
+    },
+    "DF_chikungunya_4_imdc_bb.csv.gz": {
+      "prediction_id": 11834,
+      "rows": 53,
+      "first_date": "2025-10-05",
+      "last_date": "2026-10-04",
+      "scores": {
+        "mae": 5.1,
+        "mse": 51.18,
+        "crps": 4.87,
+        "log": -4.03,
+        "interval": 183.14,
+        "wis": 2.49
+      }
+    },
+    "DF_chikungunya_final_imdc_bb.csv.gz": {
+      "prediction_id": 14411,
+      "rows": 52,
+      "first_date": "2026-10-11",
+      "last_date": "2027-10-03",
+      "scores": {}
+    },
+    "DF_dengue_1_imdc_bb.csv.gz": {
+      "prediction_id": 11646,
+      "rows": 52,
+      "first_date": "2022-10-09",
+      "last_date": "2023-10-01",
+      "scores": {
+        "mae": 342.87,
+        "mse": 128108.16,
+        "crps": 247.35,
+        "log": -8.04,
+        "interval": 12116.85,
+        "wis": 186.25
+      }
+    },
+    "DF_dengue_2_imdc_bb.csv.gz": {
+      "prediction_id": 11672,
+      "rows": 52,
+      "first_date": "2023-10-08",
+      "last_date": "2024-09-29",
+      "scores": {
+        "mae": 5335.69,
+        "mse": 82275255.03,
+        "crps": 4741.88,
+        "log": -10.18,
+        "interval": 112241.83,
+        "wis": 4186.77
+      }
+    },
+    "DF_dengue_3_imdc_bb.csv.gz": {
+      "prediction_id": 11699,
+      "rows": 52,
+      "first_date": "2024-10-06",
+      "last_date": "2025-09-28",
+      "scores": {
+        "mae": 289.88,
+        "mse": 149067.91,
+        "crps": 300.42,
+        "log": -7.02,
+        "interval": 4646.52,
+        "wis": 296.11
+      }
+    },
+    "DF_dengue_4_imdc_bb.csv.gz": {
+      "prediction_id": 11807,
+      "rows": 53,
+      "first_date": "2025-10-05",
+      "last_date": "2026-10-04",
+      "scores": {
+        "mae": 282.18,
+        "mse": 144653.24,
+        "crps": 249.87,
+        "log": -6.41,
+        "interval": 1918.65,
+        "wis": 233.78
+      }
+    },
+    "DF_dengue_final_imdc_bb.csv.gz": {
+      "prediction_id": 14384,
+      "rows": 52,
+      "first_date": "2026-10-11",
+      "last_date": "2027-10-03",
+      "scores": {}
+    },
+    "GO_chikungunya_1_imdc_bb.csv.gz": {
+      "prediction_id": 11727,
+      "rows": 52,
+      "first_date": "2022-10-09",
+      "last_date": "2023-10-01",
+      "scores": {
+        "mae": 36.62,
+        "mse": 2374.19,
+        "crps": 26.35,
+        "log": -5.85,
+        "interval": 847.31,
+        "wis": 17.14
+      }
+    },
+    "GO_chikungunya_2_imdc_bb.csv.gz": {
+      "prediction_id": 11754,
+      "rows": 52,
+      "first_date": "2023-10-08",
+      "last_date": "2024-09-29",
+      "scores": {
+        "mae": 224.9,
+        "mse": 90721.56,
+        "crps": 201.21,
+        "log": -8.6,
+        "interval": 4663.08,
+        "wis": 175.09
+      }
+    },
+    "GO_chikungunya_3_imdc_bb.csv.gz": {
+      "prediction_id": 11781,
+      "rows": 52,
+      "first_date": "2024-10-06",
+      "last_date": "2025-09-28",
+      "scores": {
+        "mae": 31.29,
+        "mse": 1413.08,
+        "crps": 17.36,
+        "log": -5.32,
+        "interval": 899.25,
+        "wis": 13.5
+      }
+    },
+    "GO_chikungunya_4_imdc_bb.csv.gz": {
+      "prediction_id": 11836,
+      "rows": 53,
+      "first_date": "2025-10-05",
+      "last_date": "2026-10-04",
+      "scores": {
+        "mae": 225.79,
+        "mse": 120227.85,
+        "crps": 185.98,
+        "log": -7.07,
+        "interval": 4836.86,
+        "wis": 145.97
+      }
+    },
+    "GO_chikungunya_final_imdc_bb.csv.gz": {
+      "prediction_id": 14413,
+      "rows": 52,
+      "first_date": "2026-10-11",
+      "last_date": "2027-10-03",
+      "scores": {}
+    },
+    "GO_dengue_1_imdc_bb.csv.gz": {
+      "prediction_id": 11647,
+      "rows": 52,
+      "first_date": "2022-10-09",
+      "last_date": "2023-10-01",
+      "scores": {
+        "mae": 686.75,
+        "mse": 778817.3,
+        "crps": 508.64,
+        "log": -7.77,
+        "interval": 7517.02,
+        "wis": 312.87
+      }
+    },
+    "GO_dengue_2_imdc_bb.csv.gz": {
+      "prediction_id": 11674,
+      "rows": 52,
+      "first_date": "2023-10-08",
+      "last_date": "2024-09-29",
+      "scores": {
+        "mae": 5168.29,
+        "mse": 63879684.04,
+        "crps": 4599.32,
+        "log": -11.65,
+        "interval": 119232.73,
+        "wis": 4133.94
+      }
+    },
+    "GO_dengue_3_imdc_bb.csv.gz": {
+      "prediction_id": 11701,
+      "rows": 52,
+      "first_date": "2024-10-06",
+      "last_date": "2025-09-28",
+      "scores": {
+        "mae": 466.05,
+        "mse": 343792.58,
+        "crps": 360.83,
+        "log": -7.82,
+        "interval": 23927.75,
+        "wis": 267.54
+      }
+    },
+    "GO_dengue_4_imdc_bb.csv.gz": {
+      "prediction_id": 11809,
+      "rows": 53,
+      "first_date": "2025-10-05",
+      "last_date": "2026-10-04",
+      "scores": {
+        "mae": 468.51,
+        "mse": 311702.92,
+        "crps": 336.35,
+        "log": -7.97,
+        "interval": 30704.51,
+        "wis": 260.37
+      }
+    },
+    "GO_dengue_final_imdc_bb.csv.gz": {
+      "prediction_id": 14386,
+      "rows": 52,
+      "first_date": "2026-10-11",
+      "last_date": "2027-10-03",
+      "scores": {}
+    },
+    "MA_chikungunya_1_imdc_bb.csv.gz": {
+      "prediction_id": 11728,
+      "rows": 52,
+      "first_date": "2022-10-09",
+      "last_date": "2023-10-01",
+      "scores": {
+        "mae": 29.83,
+        "mse": 1420.6,
+        "crps": 22.49,
+        "log": -5.34,
+        "interval": 1135.04,
+        "wis": 19.74
+      }
+    },
+    "MA_chikungunya_2_imdc_bb.csv.gz": {
+      "prediction_id": 11755,
+      "rows": 52,
+      "first_date": "2023-10-08",
+      "last_date": "2024-09-29",
+      "scores": {
+        "mae": 16.05,
+        "mse": 434.68,
+        "crps": 19.7,
+        "log": -5.8,
+        "interval": 286.62,
+        "wis": 17.64
+      }
+    },
+    "MA_chikungunya_3_imdc_bb.csv.gz": {
+      "prediction_id": 11782,
+      "rows": 52,
+      "first_date": "2024-10-06",
+      "last_date": "2025-09-28",
+      "scores": {
+        "mae": 20.61,
+        "mse": 789.13,
+        "crps": 19.94,
+        "log": -3.8,
+        "interval": 144.25,
+        "wis": 16.4
+      }
+    },
+    "MA_chikungunya_4_imdc_bb.csv.gz": {
+      "prediction_id": 11837,
+      "rows": 53,
+      "first_date": "2025-10-05",
+      "last_date": "2026-10-04",
+      "scores": {
+        "mae": 22.25,
+        "mse": 956.38,
+        "crps": 18.86,
+        "log": -7.5,
+        "interval": 99.25,
+        "wis": 15.07
+      }
+    },
+    "MA_chikungunya_final_imdc_bb.csv.gz": {
+      "prediction_id": 14414,
+      "rows": 52,
+      "first_date": "2026-10-11",
+      "last_date": "2027-10-03",
+      "scores": {}
+    },
+    "MA_dengue_1_imdc_bb.csv.gz": {
+      "prediction_id": 11648,
+      "rows": 52,
+      "first_date": "2022-10-09",
+      "last_date": "2023-10-01",
+      "scores": {
+        "mae": 27.59,
+        "mse": 1399.51,
+        "crps": 29.09,
+        "log": -5.19,
+        "interval": 1444.71,
+        "wis": 24.06
+      }
+    },
+    "MA_dengue_2_imdc_bb.csv.gz": {
+      "prediction_id": 11675,
+      "rows": 52,
+      "first_date": "2023-10-08",
+      "last_date": "2024-09-29",
+      "scores": {
+        "mae": 126.29,
+        "mse": 63590.98,
+        "crps": 88.58,
+        "log": -5.45,
+        "interval": 3660.08,
+        "wis": 58.1
+      }
+    },
+    "MA_dengue_3_imdc_bb.csv.gz": {
+      "prediction_id": 11702,
+      "rows": 52,
+      "first_date": "2024-10-06",
+      "last_date": "2025-09-28",
+      "scores": {
+        "mae": 30.52,
+        "mse": 1672.92,
+        "crps": 28.9,
+        "log": -5.13,
+        "interval": 1373.69,
+        "wis": 22.99
+      }
+    },
+    "MA_dengue_4_imdc_bb.csv.gz": {
+      "prediction_id": 11810,
+      "rows": 53,
+      "first_date": "2025-10-05",
+      "last_date": "2026-10-04",
+      "scores": {
+        "mae": 175.55,
+        "mse": 49379.08,
+        "crps": 115.08,
+        "log": -6.75,
+        "interval": 5002.1,
+        "wis": 72.1
+      }
+    },
+    "MA_dengue_final_imdc_bb.csv.gz": {
+      "prediction_id": 14387,
+      "rows": 52,
+      "first_date": "2026-10-11",
+      "last_date": "2027-10-03",
+      "scores": {}
+    },
+    "MG_chikungunya_1_imdc_bb.csv.gz": {
+      "prediction_id": 11729,
+      "rows": 52,
+      "first_date": "2022-10-09",
+      "last_date": "2023-10-01",
+      "scores": {
+        "mae": 1825.49,
+        "mse": 6506328.76,
+        "crps": 1646.0,
+        "log": -10.7,
+        "interval": 37458.19,
+        "wis": 1438.98
+      }
+    },
+    "MG_chikungunya_2_imdc_bb.csv.gz": {
+      "prediction_id": 11756,
+      "rows": 52,
+      "first_date": "2023-10-08",
+      "last_date": "2024-09-29",
+      "scores": {
+        "mae": 3373.88,
+        "mse": 27436827.24,
+        "crps": 2973.36,
+        "log": -10.64,
+        "interval": 69519.04,
+        "wis": 2522.22
+      }
+    },
+    "MG_chikungunya_3_imdc_bb.csv.gz": {
+      "prediction_id": 11783,
+      "rows": 52,
+      "first_date": "2024-10-06",
+      "last_date": "2025-09-28",
+      "scores": {
+        "mae": 145.04,
+        "mse": 46052.46,
+        "crps": 168.7,
+        "log": -6.96,
+        "interval": 7227.15,
+        "wis": 173.44
+      }
+    },
+    "MG_chikungunya_4_imdc_bb.csv.gz": {
+      "prediction_id": 11838,
+      "rows": 53,
+      "first_date": "2025-10-05",
+      "last_date": "2026-10-04",
+      "scores": {
+        "mae": 110.01,
+        "mse": 32026.25,
+        "crps": 146.09,
+        "log": -6.65,
+        "interval": 6080.73,
+        "wis": 149.34
+      }
+    },
+    "MG_chikungunya_final_imdc_bb.csv.gz": {
+      "prediction_id": 14415,
+      "rows": 52,
+      "first_date": "2026-10-11",
+      "last_date": "2027-10-03",
+      "scores": {}
+    },
+    "MG_dengue_1_imdc_bb.csv.gz": {
+      "prediction_id": 11649,
+      "rows": 52,
+      "first_date": "2022-10-09",
+      "last_date": "2023-10-01",
+      "scores": {
+        "mae": 5457.57,
+        "mse": 78652854.11,
+        "crps": 3492.96,
+        "log": -9.37,
+        "interval": 130348.08,
+        "wis": 2415.21
+      }
+    },
+    "MG_dengue_2_imdc_bb.csv.gz": {
+      "prediction_id": 11676,
+      "rows": 52,
+      "first_date": "2023-10-08",
+      "last_date": "2024-09-29",
+      "scores": {
+        "mae": 31628.59,
+        "mse": 2874337514.42,
+        "crps": 28571.76,
+        "log": -12.77,
+        "interval": 662288.81,
+        "wis": 25866.0
+      }
+    },
+    "MG_dengue_3_imdc_bb.csv.gz": {
+      "prediction_id": 11703,
+      "rows": 52,
+      "first_date": "2024-10-06",
+      "last_date": "2025-09-28",
+      "scores": {
+        "mae": 1311.81,
+        "mse": 4432660.15,
+        "crps": 1760.59,
+        "log": -8.59,
+        "interval": 34945.69,
+        "wis": 1132.99
+      }
+    },
+    "MG_dengue_4_imdc_bb.csv.gz": {
+      "prediction_id": 11811,
+      "rows": 53,
+      "first_date": "2025-10-05",
+      "last_date": "2026-10-04",
+      "scores": {
+        "mae": 2761.27,
+        "mse": 16875065.54,
+        "crps": 2774.52,
+        "log": -8.78,
+        "interval": 12249.78,
+        "wis": 1722.62
+      }
+    },
+    "MG_dengue_final_imdc_bb.csv.gz": {
+      "prediction_id": 14388,
+      "rows": 52,
+      "first_date": "2026-10-11",
+      "last_date": "2027-10-03",
+      "scores": {}
+    },
+    "MS_chikungunya_1_imdc_bb.csv.gz": {
+      "prediction_id": 11730,
+      "rows": 52,
+      "first_date": "2022-10-09",
+      "last_date": "2023-10-01",
+      "scores": {
+        "mae": 94.54,
+        "mse": 24381.27,
+        "crps": 90.11,
+        "log": -7.44,
+        "interval": 1956.15,
+        "wis": 87.29
+      }
+    },
+    "MS_chikungunya_2_imdc_bb.csv.gz": {
+      "prediction_id": 11757,
+      "rows": 52,
+      "first_date": "2023-10-08",
+      "last_date": "2024-09-29",
+      "scores": {
+        "mae": 44.02,
+        "mse": 5465.75,
+        "crps": 34.81,
+        "log": -5.46,
+        "interval": 1004.62,
+        "wis": 23.24
+      }
+    },
+    "MS_chikungunya_3_imdc_bb.csv.gz": {
+      "prediction_id": 11784,
+      "rows": 52,
+      "first_date": "2024-10-06",
+      "last_date": "2025-09-28",
+      "scores": {
+        "mae": 242.63,
+        "mse": 127094.43,
+        "crps": 219.21,
+        "log": -8.19,
+        "interval": 5014.62,
+        "wis": 196.16
+      }
+    },
+    "MS_chikungunya_4_imdc_bb.csv.gz": {
+      "prediction_id": 11839,
+      "rows": 53,
+      "first_date": "2025-10-05",
+      "last_date": "2026-10-04",
+      "scores": {
+        "mae": 249.64,
+        "mse": 135190.56,
+        "crps": 201.13,
+        "log": -7.96,
+        "interval": 5282.8,
+        "wis": 144.77
+      }
+    },
+    "MS_chikungunya_final_imdc_bb.csv.gz": {
+      "prediction_id": 14416,
+      "rows": 52,
+      "first_date": "2026-10-11",
+      "last_date": "2027-10-03",
+      "scores": {}
+    },
+    "MS_dengue_1_imdc_bb.csv.gz": {
+      "prediction_id": 11650,
+      "rows": 52,
+      "first_date": "2022-10-09",
+      "last_date": "2023-10-01",
+      "scores": {
+        "mae": 642.54,
+        "mse": 1005975.55,
+        "crps": 383.16,
+        "log": -7.53,
+        "interval": 17810.65,
+        "wis": 257.82
+      }
+    },
+    "MS_dengue_2_imdc_bb.csv.gz": {
+      "prediction_id": 11677,
+      "rows": 52,
+      "first_date": "2023-10-08",
+      "last_date": "2024-09-29",
+      "scores": {
+        "mae": 129.6,
+        "mse": 26450.11,
+        "crps": 180.81,
+        "log": -6.47,
+        "interval": 5805.0,
+        "wis": 155.0
+      }
+    },
+    "MS_dengue_3_imdc_bb.csv.gz": {
+      "prediction_id": 11704,
+      "rows": 52,
+      "first_date": "2024-10-06",
+      "last_date": "2025-09-28",
+      "scores": {
+        "mae": 185.44,
+        "mse": 63424.83,
+        "crps": 190.24,
+        "log": -6.39,
+        "interval": 3374.29,
+        "wis": 147.63
+      }
+    },
+    "MS_dengue_4_imdc_bb.csv.gz": {
+      "prediction_id": 11812,
+      "rows": 53,
+      "first_date": "2025-10-05",
+      "last_date": "2026-10-04",
+      "scores": {
+        "mae": 318.96,
+        "mse": 179951.02,
+        "crps": 269.08,
+        "log": -6.53,
+        "interval": 827.76,
+        "wis": 186.21
+      }
+    },
+    "MS_dengue_final_imdc_bb.csv.gz": {
+      "prediction_id": 14389,
+      "rows": 52,
+      "first_date": "2026-10-11",
+      "last_date": "2027-10-03",
+      "scores": {}
+    },
+    "MT_chikungunya_1_imdc_bb.csv.gz": {
+      "prediction_id": 11731,
+      "rows": 52,
+      "first_date": "2022-10-09",
+      "last_date": "2023-10-01",
+      "scores": {
+        "mae": 9.36,
+        "mse": 179.37,
+        "crps": 13.16,
+        "log": -10.96,
+        "interval": 98.46,
+        "wis": 10.29
+      }
+    },
+    "MT_chikungunya_2_imdc_bb.csv.gz": {
+      "prediction_id": 11758,
+      "rows": 52,
+      "first_date": "2023-10-08",
+      "last_date": "2024-09-29",
+      "scores": {
+        "mae": 376.14,
+        "mse": 270501.37,
+        "crps": 342.67,
+        "log": -8.8,
+        "interval": 7720.0,
+        "wis": 303.2
+      }
+    },
+    "MT_chikungunya_3_imdc_bb.csv.gz": {
+      "prediction_id": 11785,
+      "rows": 52,
+      "first_date": "2024-10-06",
+      "last_date": "2025-09-28",
+      "scores": {
+        "mae": 989.95,
+        "mse": 2106649.29,
+        "crps": 911.04,
+        "log": -10.33,
+        "interval": 20211.54,
+        "wis": 818.03
+      }
+    },
+    "MT_chikungunya_4_imdc_bb.csv.gz": {
+      "prediction_id": 11840,
+      "rows": 53,
+      "first_date": "2025-10-05",
+      "last_date": "2026-10-04",
+      "scores": {
+        "mae": 32.16,
+        "mse": 1524.3,
+        "crps": 43.13,
+        "log": -5.04,
+        "interval": 584.37,
+        "wis": 39.26
+      }
+    },
+    "MT_chikungunya_final_imdc_bb.csv.gz": {
+      "prediction_id": 14417,
+      "rows": 52,
+      "first_date": "2026-10-11",
+      "last_date": "2027-10-03",
+      "scores": {}
+    },
+    "MT_dengue_1_imdc_bb.csv.gz": {
+      "prediction_id": 11651,
+      "rows": 52,
+      "first_date": "2022-10-09",
+      "last_date": "2023-10-01",
+      "scores": {
+        "mae": 233.64,
+        "mse": 115321.97,
+        "crps": 135.6,
+        "log": -6.75,
+        "interval": 8334.98,
+        "wis": 102.48
+      }
+    },
+    "MT_dengue_2_imdc_bb.csv.gz": {
+      "prediction_id": 11678,
+      "rows": 52,
+      "first_date": "2023-10-08",
+      "last_date": "2024-09-29",
+      "scores": {
+        "mae": 484.24,
+        "mse": 496455.58,
+        "crps": 298.28,
+        "log": -7.27,
+        "interval": 13675.35,
+        "wis": 202.05
+      }
+    },
+    "MT_dengue_3_imdc_bb.csv.gz": {
+      "prediction_id": 11705,
+      "rows": 52,
+      "first_date": "2024-10-06",
+      "last_date": "2025-09-28",
+      "scores": {
+        "mae": 314.93,
+        "mse": 249109.45,
+        "crps": 192.47,
+        "log": -6.9,
+        "interval": 11221.87,
+        "wis": 135.48
+      }
+    },
+    "MT_dengue_4_imdc_bb.csv.gz": {
+      "prediction_id": 11813,
+      "rows": 53,
+      "first_date": "2025-10-05",
+      "last_date": "2026-10-04",
+      "scores": {
+        "mae": 196.52,
+        "mse": 61828.05,
+        "crps": 153.26,
+        "log": -6.43,
+        "interval": 2215.33,
+        "wis": 97.47
+      }
+    },
+    "MT_dengue_final_imdc_bb.csv.gz": {
+      "prediction_id": 14390,
+      "rows": 52,
+      "first_date": "2026-10-11",
+      "last_date": "2027-10-03",
+      "scores": {}
+    },
+    "PA_chikungunya_1_imdc_bb.csv.gz": {
+      "prediction_id": 11732,
+      "rows": 52,
+      "first_date": "2022-10-09",
+      "last_date": "2023-10-01",
+      "scores": {
+        "mae": 30.05,
+        "mse": 1006.66,
+        "crps": 31.28,
+        "log": -4.18,
+        "interval": 78.1,
+        "wis": 24.19
+      }
+    },
+    "PA_chikungunya_2_imdc_bb.csv.gz": {
+      "prediction_id": 11759,
+      "rows": 52,
+      "first_date": "2023-10-08",
+      "last_date": "2024-09-29",
+      "scores": {
+        "mae": 13.12,
+        "mse": 222.15,
+        "crps": 17.29,
+        "log": -4.27,
+        "interval": 337.35,
+        "wis": 14.99
+      }
+    },
+    "PA_chikungunya_3_imdc_bb.csv.gz": {
+      "prediction_id": 11786,
+      "rows": 52,
+      "first_date": "2024-10-06",
+      "last_date": "2025-09-28",
+      "scores": {
+        "mae": 19.13,
+        "mse": 439.95,
+        "crps": 18.87,
+        "log": -4.02,
+        "interval": 144.23,
+        "wis": 14.24
+      }
+    },
+    "PA_chikungunya_4_imdc_bb.csv.gz": {
+      "prediction_id": 11841,
+      "rows": 53,
+      "first_date": "2025-10-05",
+      "last_date": "2026-10-04",
+      "scores": {
+        "mae": 18.88,
+        "mse": 443.62,
+        "crps": 16.79,
+        "log": -3.84,
+        "interval": 73.35,
+        "wis": 12.25
+      }
+    },
+    "PA_chikungunya_final_imdc_bb.csv.gz": {
+      "prediction_id": 14418,
+      "rows": 52,
+      "first_date": "2026-10-11",
+      "last_date": "2027-10-03",
+      "scores": {}
+    },
+    "PA_dengue_1_imdc_bb.csv.gz": {
+      "prediction_id": 11652,
+      "rows": 52,
+      "first_date": "2022-10-09",
+      "last_date": "2023-10-01",
+      "scores": {
+        "mae": 28.46,
+        "mse": 1327.07,
+        "crps": 24.02,
+        "log": -5.27,
+        "interval": 1396.25,
+        "wis": 18.41
+      }
+    },
+    "PA_dengue_2_imdc_bb.csv.gz": {
+      "prediction_id": 11679,
+      "rows": 52,
+      "first_date": "2023-10-08",
+      "last_date": "2024-09-29",
+      "scores": {
+        "mae": 286.57,
+        "mse": 175904.75,
+        "crps": 238.98,
+        "log": -8.21,
+        "interval": 6846.29,
+        "wis": 197.2
+      }
+    },
+    "PA_dengue_3_imdc_bb.csv.gz": {
+      "prediction_id": 11706,
+      "rows": 52,
+      "first_date": "2024-10-06",
+      "last_date": "2025-09-28",
+      "scores": {
+        "mae": 210.92,
+        "mse": 65979.71,
+        "crps": 143.92,
+        "log": -7.32,
+        "interval": 5765.81,
+        "wis": 92.14
+      }
+    },
+    "PA_dengue_4_imdc_bb.csv.gz": {
+      "prediction_id": 11814,
+      "rows": 53,
+      "first_date": "2025-10-05",
+      "last_date": "2026-10-04",
+      "scores": {
+        "mae": 100.43,
+        "mse": 13514.89,
+        "crps": 67.76,
+        "log": -6.47,
+        "interval": 3719.35,
+        "wis": 44.66
+      }
+    },
+    "PA_dengue_final_imdc_bb.csv.gz": {
+      "prediction_id": 14391,
+      "rows": 52,
+      "first_date": "2026-10-11",
+      "last_date": "2027-10-03",
+      "scores": {}
+    },
+    "PB_chikungunya_1_imdc_bb.csv.gz": {
+      "prediction_id": 11733,
+      "rows": 52,
+      "first_date": "2022-10-09",
+      "last_date": "2023-10-01",
+      "scores": {
+        "mae": 61.88,
+        "mse": 6382.92,
+        "crps": 54.55,
+        "log": -5.0,
+        "interval": 388.5,
+        "wis": 41.51
+      }
+    },
+    "PB_chikungunya_2_imdc_bb.csv.gz": {
+      "prediction_id": 11760,
+      "rows": 52,
+      "first_date": "2023-10-08",
+      "last_date": "2024-09-29",
+      "scores": {
+        "mae": 54.07,
+        "mse": 5124.27,
+        "crps": 45.62,
+        "log": -4.94,
+        "interval": 438.48,
+        "wis": 34.45
+      }
+    },
+    "PB_chikungunya_3_imdc_bb.csv.gz": {
+      "prediction_id": 11787,
+      "rows": 52,
+      "first_date": "2024-10-06",
+      "last_date": "2025-09-28",
+      "scores": {
+        "mae": 60.32,
+        "mse": 5735.09,
+        "crps": 51.11,
+        "log": -7.33,
+        "interval": 276.1,
+        "wis": 37.85
+      }
+    },
+    "PB_chikungunya_4_imdc_bb.csv.gz": {
+      "prediction_id": 11842,
+      "rows": 53,
+      "first_date": "2025-10-05",
+      "last_date": "2026-10-04",
+      "scores": {
+        "mae": 60.4,
+        "mse": 4965.04,
+        "crps": 49.45,
+        "log": -8.06,
+        "interval": 186.63,
+        "wis": 36.88
+      }
+    },
+    "PB_chikungunya_final_imdc_bb.csv.gz": {
+      "prediction_id": 14419,
+      "rows": 52,
+      "first_date": "2026-10-11",
+      "last_date": "2027-10-03",
+      "scores": {}
+    },
+    "PB_dengue_1_imdc_bb.csv.gz": {
+      "prediction_id": 11653,
+      "rows": 52,
+      "first_date": "2022-10-09",
+      "last_date": "2023-10-01",
+      "scores": {
+        "mae": 137.87,
+        "mse": 31713.5,
+        "crps": 114.11,
+        "log": -6.04,
+        "interval": 1541.56,
+        "wis": 81.91
+      }
+    },
+    "PB_dengue_2_imdc_bb.csv.gz": {
+      "prediction_id": 11680,
+      "rows": 52,
+      "first_date": "2023-10-08",
+      "last_date": "2024-09-29",
+      "scores": {
+        "mae": 154.56,
+        "mse": 59255.7,
+        "crps": 112.36,
+        "log": -6.21,
+        "interval": 4241.44,
+        "wis": 78.43
+      }
+    },
+    "PB_dengue_3_imdc_bb.csv.gz": {
+      "prediction_id": 11707,
+      "rows": 52,
+      "first_date": "2024-10-06",
+      "last_date": "2025-09-28",
+      "scores": {
+        "mae": 124.42,
+        "mse": 25196.62,
+        "crps": 97.27,
+        "log": -6.05,
+        "interval": 1693.35,
+        "wis": 67.79
+      }
+    },
+    "PB_dengue_4_imdc_bb.csv.gz": {
+      "prediction_id": 11815,
+      "rows": 53,
+      "first_date": "2025-10-05",
+      "last_date": "2026-10-04",
+      "scores": {
+        "mae": 86.61,
+        "mse": 15987.2,
+        "crps": 73.29,
+        "log": -5.88,
+        "interval": 1913.75,
+        "wis": 54.52
+      }
+    },
+    "PB_dengue_final_imdc_bb.csv.gz": {
+      "prediction_id": 14392,
+      "rows": 52,
+      "first_date": "2026-10-11",
+      "last_date": "2027-10-03",
+      "scores": {}
+    },
+    "PE_chikungunya_1_imdc_bb.csv.gz": {
+      "prediction_id": 11734,
+      "rows": 52,
+      "first_date": "2022-10-09",
+      "last_date": "2023-10-01",
+      "scores": {
+        "mae": 84.59,
+        "mse": 10834.13,
+        "crps": 91.37,
+        "log": -5.61,
+        "interval": 887.85,
+        "wis": 77.61
+      }
+    },
+    "PE_chikungunya_2_imdc_bb.csv.gz": {
+      "prediction_id": 11761,
+      "rows": 52,
+      "first_date": "2023-10-08",
+      "last_date": "2024-09-29",
+      "scores": {
+        "mae": 61.53,
+        "mse": 4512.53,
+        "crps": 69.52,
+        "log": -5.63,
+        "interval": 1444.77,
+        "wis": 60.18
+      }
+    },
+    "PE_chikungunya_3_imdc_bb.csv.gz": {
+      "prediction_id": 11788,
+      "rows": 52,
+      "first_date": "2024-10-06",
+      "last_date": "2025-09-28",
+      "scores": {
+        "mae": 77.25,
+        "mse": 7933.4,
+        "crps": 72.14,
+        "log": -5.39,
+        "interval": 592.08,
+        "wis": 55.45
+      }
+    },
+    "PE_chikungunya_4_imdc_bb.csv.gz": {
+      "prediction_id": 11843,
+      "rows": 53,
+      "first_date": "2025-10-05",
+      "last_date": "2026-10-04",
+      "scores": {
+        "mae": 61.39,
+        "mse": 5099.12,
+        "crps": 60.29,
+        "log": -5.36,
+        "interval": 720.1,
+        "wis": 47.21
+      }
+    },
+    "PE_chikungunya_final_imdc_bb.csv.gz": {
+      "prediction_id": 14420,
+      "rows": 52,
+      "first_date": "2026-10-11",
+      "last_date": "2027-10-03",
+      "scores": {}
+    },
+    "PE_dengue_1_imdc_bb.csv.gz": {
+      "prediction_id": 11654,
+      "rows": 52,
+      "first_date": "2022-10-09",
+      "last_date": "2023-10-01",
+      "scores": {
+        "mae": 324.43,
+        "mse": 133961.75,
+        "crps": 279.83,
+        "log": -6.89,
+        "interval": 1389.79,
+        "wis": 194.3
+      }
+    },
+    "PE_dengue_2_imdc_bb.csv.gz": {
+      "prediction_id": 11681,
+      "rows": 52,
+      "first_date": "2023-10-08",
+      "last_date": "2024-09-29",
+      "scores": {
+        "mae": 207.64,
+        "mse": 105515.32,
+        "crps": 177.66,
+        "log": -6.96,
+        "interval": 8361.13,
+        "wis": 137.06
+      }
+    },
+    "PE_dengue_3_imdc_bb.csv.gz": {
+      "prediction_id": 11708,
+      "rows": 52,
+      "first_date": "2024-10-06",
+      "last_date": "2025-09-28",
+      "scores": {
+        "mae": 130.2,
+        "mse": 30898.77,
+        "crps": 140.16,
+        "log": -6.89,
+        "interval": 6422.33,
+        "wis": 113.79
+      }
+    },
+    "PE_dengue_4_imdc_bb.csv.gz": {
+      "prediction_id": 11816,
+      "rows": 53,
+      "first_date": "2025-10-05",
+      "last_date": "2026-10-04",
+      "scores": {
+        "mae": 175.05,
+        "mse": 51692.07,
+        "crps": 131.43,
+        "log": -7.02,
+        "interval": 8933.27,
+        "wis": 105.99
+      }
+    },
+    "PE_dengue_final_imdc_bb.csv.gz": {
+      "prediction_id": 14393,
+      "rows": 52,
+      "first_date": "2026-10-11",
+      "last_date": "2027-10-03",
+      "scores": {}
+    },
+    "PI_chikungunya_1_imdc_bb.csv.gz": {
+      "prediction_id": 11735,
+      "rows": 52,
+      "first_date": "2022-10-09",
+      "last_date": "2023-10-01",
+      "scores": {
+        "mae": 58.35,
+        "mse": 7767.68,
+        "crps": 39.75,
+        "log": -5.58,
+        "interval": 1653.08,
+        "wis": 27.78
+      }
+    },
+    "PI_chikungunya_2_imdc_bb.csv.gz": {
+      "prediction_id": 11762,
+      "rows": 52,
+      "first_date": "2023-10-08",
+      "last_date": "2024-09-29",
+      "scores": {
+        "mae": 22.77,
+        "mse": 1047.22,
+        "crps": 19.95,
+        "log": -5.99,
+        "interval": 260.38,
+        "wis": 15.96
+      }
+    },
+    "PI_chikungunya_3_imdc_bb.csv.gz": {
+      "prediction_id": 11789,
+      "rows": 52,
+      "first_date": "2024-10-06",
+      "last_date": "2025-09-28",
+      "scores": {
+        "mae": 20.19,
+        "mse": 826.15,
+        "crps": 16.62,
+        "log": -3.75,
+        "interval": 143.12,
+        "wis": 12.8
+      }
+    },
+    "PI_chikungunya_4_imdc_bb.csv.gz": {
+      "prediction_id": 11844,
+      "rows": 53,
+      "first_date": "2025-10-05",
+      "last_date": "2026-10-04",
+      "scores": {
+        "mae": 18.02,
+        "mse": 639.28,
+        "crps": 14.91,
+        "log": -7.47,
+        "interval": 121.2,
+        "wis": 11.42
+      }
+    },
+    "PI_chikungunya_final_imdc_bb.csv.gz": {
+      "prediction_id": 14421,
+      "rows": 52,
+      "first_date": "2026-10-11",
+      "last_date": "2027-10-03",
+      "scores": {}
+    },
+    "PI_dengue_1_imdc_bb.csv.gz": {
+      "prediction_id": 11655,
+      "rows": 52,
+      "first_date": "2022-10-09",
+      "last_date": "2023-10-01",
+      "scores": {
+        "mae": 46.99,
+        "mse": 5274.72,
+        "crps": 36.74,
+        "log": -5.34,
+        "interval": 2226.69,
+        "wis": 28.56
+      }
+    },
+    "PI_dengue_2_imdc_bb.csv.gz": {
+      "prediction_id": 11682,
+      "rows": 52,
+      "first_date": "2023-10-08",
+      "last_date": "2024-09-29",
+      "scores": {
+        "mae": 172.69,
+        "mse": 72115.38,
+        "crps": 116.34,
+        "log": -6.17,
+        "interval": 4983.23,
+        "wis": 79.69
+      }
+    },
+    "PI_dengue_3_imdc_bb.csv.gz": {
+      "prediction_id": 11709,
+      "rows": 52,
+      "first_date": "2024-10-06",
+      "last_date": "2025-09-28",
+      "scores": {
+        "mae": 45.48,
+        "mse": 3112.98,
+        "crps": 33.74,
+        "log": -5.64,
+        "interval": 2633.6,
+        "wis": 26.3
+      }
+    },
+    "PI_dengue_4_imdc_bb.csv.gz": {
+      "prediction_id": 11817,
+      "rows": 53,
+      "first_date": "2025-10-05",
+      "last_date": "2026-10-04",
+      "scores": {
+        "mae": 259.46,
+        "mse": 131101.07,
+        "crps": 183.97,
+        "log": -7.14,
+        "interval": 6936.61,
+        "wis": 120.0
+      }
+    },
+    "PI_dengue_final_imdc_bb.csv.gz": {
+      "prediction_id": 14394,
+      "rows": 52,
+      "first_date": "2026-10-11",
+      "last_date": "2027-10-03",
+      "scores": {}
+    },
+    "PR_chikungunya_1_imdc_bb.csv.gz": {
+      "prediction_id": 11736,
+      "rows": 52,
+      "first_date": "2022-10-09",
+      "last_date": "2023-10-01",
+      "scores": {
+        "mae": 52.62,
+        "mse": 9036.42,
+        "crps": 47.76,
+        "log": -6.05,
+        "interval": 1156.94,
+        "wis": 42.79
+      }
+    },
+    "PR_chikungunya_2_imdc_bb.csv.gz": {
+      "prediction_id": 11763,
+      "rows": 52,
+      "first_date": "2023-10-08",
+      "last_date": "2024-09-29",
+      "scores": {
+        "mae": 15.92,
+        "mse": 568.54,
+        "crps": 10.77,
+        "log": -4.5,
+        "interval": 463.08,
+        "wis": 6.41
+      }
+    },
+    "PR_chikungunya_3_imdc_bb.csv.gz": {
+      "prediction_id": 11790,
+      "rows": 52,
+      "first_date": "2024-10-06",
+      "last_date": "2025-09-28",
+      "scores": {
+        "mae": 138.55,
+        "mse": 52842.79,
+        "crps": 125.38,
+        "log": -7.56,
+        "interval": 2943.87,
+        "wis": 111.85
+      }
+    },
+    "PR_chikungunya_4_imdc_bb.csv.gz": {
+      "prediction_id": 11845,
+      "rows": 53,
+      "first_date": "2025-10-05",
+      "last_date": "2026-10-04",
+      "scores": {
+        "mae": 10.19,
+        "mse": 179.3,
+        "crps": 9.39,
+        "log": -3.85,
+        "interval": 163.94,
+        "wis": 6.52
+      }
+    },
+    "PR_chikungunya_final_imdc_bb.csv.gz": {
+      "prediction_id": 14422,
+      "rows": 52,
+      "first_date": "2026-10-11",
+      "last_date": "2027-10-03",
+      "scores": {}
+    },
+    "PR_dengue_1_imdc_bb.csv.gz": {
+      "prediction_id": 11656,
+      "rows": 52,
+      "first_date": "2022-10-09",
+      "last_date": "2023-10-01",
+      "scores": {
+        "mae": 3271.92,
+        "mse": 36828299.69,
+        "crps": 2203.88,
+        "log": -9.01,
+        "interval": 78910.48,
+        "wis": 1437.42
+      }
+    },
+    "PR_dengue_2_imdc_bb.csv.gz": {
+      "prediction_id": 11683,
+      "rows": 52,
+      "first_date": "2023-10-08",
+      "last_date": "2024-09-29",
+      "scores": {
+        "mae": 11855.48,
+        "mse": 356699974.32,
+        "crps": 9398.02,
+        "log": -10.76,
+        "interval": 255073.21,
+        "wis": 6683.28
+      }
+    },
+    "PR_dengue_3_imdc_bb.csv.gz": {
+      "prediction_id": 11710,
+      "rows": 52,
+      "first_date": "2024-10-06",
+      "last_date": "2025-09-28",
+      "scores": {
+        "mae": 674.9,
+        "mse": 1201447.49,
+        "crps": 718.56,
+        "log": -8.17,
+        "interval": 40431.85,
+        "wis": 728.92
+      }
+    },
+    "PR_dengue_4_imdc_bb.csv.gz": {
+      "prediction_id": 11818,
+      "rows": 53,
+      "first_date": "2025-10-05",
+      "last_date": "2026-10-04",
+      "scores": {
+        "mae": 1487.46,
+        "mse": 5148916.31,
+        "crps": 1410.83,
+        "log": -7.8,
+        "interval": 4255.88,
+        "wis": 1047.94
+      }
+    },
+    "PR_dengue_final_imdc_bb.csv.gz": {
+      "prediction_id": 14395,
+      "rows": 52,
+      "first_date": "2026-10-11",
+      "last_date": "2027-10-03",
+      "scores": {}
+    },
+    "RJ_chikungunya_1_imdc_bb.csv.gz": {
+      "prediction_id": 11737,
+      "rows": 52,
+      "first_date": "2022-10-09",
+      "last_date": "2023-10-01",
+      "scores": {
+        "mae": 80.62,
+        "mse": 12112.78,
+        "crps": 91.13,
+        "log": -5.25,
+        "interval": 576.19,
+        "wis": 104.89
+      }
+    },
+    "RJ_chikungunya_2_imdc_bb.csv.gz": {
+      "prediction_id": 11764,
+      "rows": 52,
+      "first_date": "2023-10-08",
+      "last_date": "2024-09-29",
+      "scores": {
+        "mae": 47.72,
+        "mse": 3563.62,
+        "crps": 80.09,
+        "log": -5.78,
+        "interval": 1702.71,
+        "wis": 94.05
+      }
+    },
+    "RJ_chikungunya_3_imdc_bb.csv.gz": {
+      "prediction_id": 11791,
+      "rows": 52,
+      "first_date": "2024-10-06",
+      "last_date": "2025-09-28",
+      "scores": {
+        "mae": 60.59,
+        "mse": 6178.16,
+        "crps": 68.75,
+        "log": -5.15,
+        "interval": 770.92,
+        "wis": 74.43
+      }
+    },
+    "RJ_chikungunya_4_imdc_bb.csv.gz": {
+      "prediction_id": 11846,
+      "rows": 53,
+      "first_date": "2025-10-05",
+      "last_date": "2026-10-04",
+      "scores": {
+        "mae": 34.52,
+        "mse": 1693.73,
+        "crps": 57.98,
+        "log": -5.14,
+        "interval": 1162.76,
+        "wis": 64.59
+      }
+    },
+    "RJ_chikungunya_final_imdc_bb.csv.gz": {
+      "prediction_id": 14423,
+      "rows": 52,
+      "first_date": "2026-10-11",
+      "last_date": "2027-10-03",
+      "scores": {}
+    },
+    "RJ_dengue_1_imdc_bb.csv.gz": {
+      "prediction_id": 11657,
+      "rows": 52,
+      "first_date": "2022-10-09",
+      "last_date": "2023-10-01",
+      "scores": {
+        "mae": 592.2,
+        "mse": 612891.52,
+        "crps": 376.65,
+        "log": -7.93,
+        "interval": 15309.42,
+        "wis": 234.75
+      }
+    },
+    "RJ_dengue_2_imdc_bb.csv.gz": {
+      "prediction_id": 11684,
+      "rows": 52,
+      "first_date": "2023-10-08",
+      "last_date": "2024-09-29",
+      "scores": {
+        "mae": 5932.86,
+        "mse": 97233098.96,
+        "crps": 5338.33,
+        "log": -11.05,
+        "interval": 123060.94,
+        "wis": 4730.01
+      }
+    },
+    "RJ_dengue_3_imdc_bb.csv.gz": {
+      "prediction_id": 11711,
+      "rows": 52,
+      "first_date": "2024-10-06",
+      "last_date": "2025-09-28",
+      "scores": {
+        "mae": 341.68,
+        "mse": 242150.37,
+        "crps": 263.94,
+        "log": -7.69,
+        "interval": 12820.17,
+        "wis": 236.55
+      }
+    },
+    "RJ_dengue_4_imdc_bb.csv.gz": {
+      "prediction_id": 11819,
+      "rows": 53,
+      "first_date": "2025-10-05",
+      "last_date": "2026-10-04",
+      "scores": {
+        "mae": 201.13,
+        "mse": 68794.55,
+        "crps": 207.42,
+        "log": -6.54,
+        "interval": 3066.1,
+        "wis": 206.2
+      }
+    },
+    "RJ_dengue_final_imdc_bb.csv.gz": {
+      "prediction_id": 14396,
+      "rows": 52,
+      "first_date": "2026-10-11",
+      "last_date": "2027-10-03",
+      "scores": {}
+    },
+    "RN_chikungunya_1_imdc_bb.csv.gz": {
+      "prediction_id": 11738,
+      "rows": 52,
+      "first_date": "2022-10-09",
+      "last_date": "2023-10-01",
+      "scores": {
+        "mae": 71.07,
+        "mse": 8190.0,
+        "crps": 57.42,
+        "log": -5.36,
+        "interval": 760.0,
+        "wis": 45.82
+      }
+    },
+    "RN_chikungunya_2_imdc_bb.csv.gz": {
+      "prediction_id": 11765,
+      "rows": 52,
+      "first_date": "2023-10-08",
+      "last_date": "2024-09-29",
+      "scores": {
+        "mae": 66.94,
+        "mse": 6776.71,
+        "crps": 50.94,
+        "log": -5.11,
+        "interval": 805.06,
+        "wis": 40.43
+      }
+    },
+    "RN_chikungunya_3_imdc_bb.csv.gz": {
+      "prediction_id": 11792,
+      "rows": 52,
+      "first_date": "2024-10-06",
+      "last_date": "2025-09-28",
+      "scores": {
+        "mae": 52.33,
+        "mse": 4274.71,
+        "crps": 40.39,
+        "log": -4.98,
+        "interval": 778.58,
+        "wis": 33.58
+      }
+    },
+    "RN_chikungunya_4_imdc_bb.csv.gz": {
+      "prediction_id": 11847,
+      "rows": 53,
+      "first_date": "2025-10-05",
+      "last_date": "2026-10-04",
+      "scores": {
+        "mae": 62.55,
+        "mse": 6059.32,
+        "crps": 46.0,
+        "log": -4.95,
+        "interval": 309.86,
+        "wis": 34.92
+      }
+    },
+    "RN_chikungunya_final_imdc_bb.csv.gz": {
+      "prediction_id": 14424,
+      "rows": 52,
+      "first_date": "2026-10-11",
+      "last_date": "2027-10-03",
+      "scores": {}
+    },
+    "RN_dengue_1_imdc_bb.csv.gz": {
+      "prediction_id": 11658,
+      "rows": 52,
+      "first_date": "2022-10-09",
+      "last_date": "2023-10-01",
+      "scores": {
+        "mae": 154.63,
+        "mse": 38434.65,
+        "crps": 138.01,
+        "log": -6.11,
+        "interval": 1838.75,
+        "wis": 109.64
+      }
+    },
+    "RN_dengue_2_imdc_bb.csv.gz": {
+      "prediction_id": 11685,
+      "rows": 52,
+      "first_date": "2023-10-08",
+      "last_date": "2024-09-29",
+      "scores": {
+        "mae": 166.55,
+        "mse": 80689.93,
+        "crps": 130.58,
+        "log": -6.59,
+        "interval": 5937.17,
+        "wis": 99.97
+      }
+    },
+    "RN_dengue_3_imdc_bb.csv.gz": {
+      "prediction_id": 11712,
+      "rows": 52,
+      "first_date": "2024-10-06",
+      "last_date": "2025-09-28",
+      "scores": {
+        "mae": 113.89,
+        "mse": 22056.09,
+        "crps": 99.89,
+        "log": -6.24,
+        "interval": 2781.81,
+        "wis": 82.8
+      }
+    },
+    "RN_dengue_4_imdc_bb.csv.gz": {
+      "prediction_id": 11820,
+      "rows": 53,
+      "first_date": "2025-10-05",
+      "last_date": "2026-10-04",
+      "scores": {
+        "mae": 104.62,
+        "mse": 20164.28,
+        "crps": 95.4,
+        "log": -6.15,
+        "interval": 2631.29,
+        "wis": 76.15
+      }
+    },
+    "RN_dengue_final_imdc_bb.csv.gz": {
+      "prediction_id": 14397,
+      "rows": 52,
+      "first_date": "2026-10-11",
+      "last_date": "2027-10-03",
+      "scores": {}
+    },
+    "RO_chikungunya_1_imdc_bb.csv.gz": {
+      "prediction_id": 11739,
+      "rows": 52,
+      "first_date": "2022-10-09",
+      "last_date": "2023-10-01",
+      "scores": {
+        "mae": 1.71,
+        "mse": 5.9,
+        "crps": 1.39,
+        "log": -21.27,
+        "interval": 41.54,
+        "wis": 1.23
+      }
+    },
+    "RO_chikungunya_2_imdc_bb.csv.gz": {
+      "prediction_id": 11766,
+      "rows": 52,
+      "first_date": "2023-10-08",
+      "last_date": "2024-09-29",
+      "scores": {
+        "mae": 3.8,
+        "mse": 68.24,
+        "crps": 3.3,
+        "log": -27.55,
+        "interval": 111.92,
+        "wis": 1.88
+      }
+    },
+    "RO_chikungunya_3_imdc_bb.csv.gz": {
+      "prediction_id": 11793,
+      "rows": 52,
+      "first_date": "2024-10-06",
+      "last_date": "2025-09-28",
+      "scores": {
+        "mae": 87.52,
+        "mse": 17626.83,
+        "crps": 82.8,
+        "log": -14.52,
+        "interval": 1795.4,
+        "wis": 80.32
+      }
+    },
+    "RO_chikungunya_4_imdc_bb.csv.gz": {
+      "prediction_id": 11848,
+      "rows": 53,
+      "first_date": "2025-10-05",
+      "last_date": "2026-10-04",
+      "scores": {
+        "mae": 20.71,
+        "mse": 701.06,
+        "crps": 15.93,
+        "log": -7.26,
+        "interval": 496.08,
+        "wis": 8.27
+      }
+    },
+    "RO_chikungunya_final_imdc_bb.csv.gz": {
+      "prediction_id": 14425,
+      "rows": 52,
+      "first_date": "2026-10-11",
+      "last_date": "2027-10-03",
+      "scores": {}
+    },
+    "RO_dengue_1_imdc_bb.csv.gz": {
+      "prediction_id": 11659,
+      "rows": 52,
+      "first_date": "2022-10-09",
+      "last_date": "2023-10-01",
+      "scores": {
+        "mae": 201.65,
+        "mse": 93131.9,
+        "crps": 148.64,
+        "log": -6.84,
+        "interval": 4896.94,
+        "wis": 101.89
+      }
+    },
+    "RO_dengue_2_imdc_bb.csv.gz": {
+      "prediction_id": 11686,
+      "rows": 52,
+      "first_date": "2023-10-08",
+      "last_date": "2024-09-29",
+      "scores": {
+        "mae": 58.93,
+        "mse": 14381.5,
+        "crps": 43.01,
+        "log": -5.17,
+        "interval": 1911.17,
+        "wis": 31.28
+      }
+    },
+    "RO_dengue_3_imdc_bb.csv.gz": {
+      "prediction_id": 11713,
+      "rows": 52,
+      "first_date": "2024-10-06",
+      "last_date": "2025-09-28",
+      "scores": {
+        "mae": 40.66,
+        "mse": 3066.45,
+        "crps": 32.67,
+        "log": -4.93,
+        "interval": 712.83,
+        "wis": 24.74
+      }
+    },
+    "RO_dengue_4_imdc_bb.csv.gz": {
+      "prediction_id": 11821,
+      "rows": 53,
+      "first_date": "2025-10-05",
+      "last_date": "2026-10-04",
+      "scores": {
+        "mae": 36.6,
+        "mse": 2238.75,
+        "crps": 29.17,
+        "log": -6.67,
+        "interval": 489.8,
+        "wis": 22.08
+      }
+    },
+    "RO_dengue_final_imdc_bb.csv.gz": {
+      "prediction_id": 14398,
+      "rows": 52,
+      "first_date": "2026-10-11",
+      "last_date": "2027-10-03",
+      "scores": {}
+    },
+    "RR_chikungunya_1_imdc_bb.csv.gz": {
+      "prediction_id": 11740,
+      "rows": 52,
+      "first_date": "2022-10-09",
+      "last_date": "2023-10-01",
+      "scores": {
+        "mae": 0.87,
+        "mse": 1.56,
+        "crps": 0.95,
+        "log": -47.45,
+        "interval": 18.08,
+        "wis": 1.29
+      }
+    },
+    "RR_chikungunya_2_imdc_bb.csv.gz": {
+      "prediction_id": 11767,
+      "rows": 52,
+      "first_date": "2023-10-08",
+      "last_date": "2024-09-29",
+      "scores": {
+        "mae": 0.73,
+        "mse": 1.15,
+        "crps": 0.88,
+        "log": -43.62,
+        "interval": 17.31,
+        "wis": 1.24
+      }
+    },
+    "RR_chikungunya_3_imdc_bb.csv.gz": {
+      "prediction_id": 11794,
+      "rows": 52,
+      "first_date": "2024-10-06",
+      "last_date": "2025-09-28",
+      "scores": {
+        "mae": 0.79,
+        "mse": 1.44,
+        "crps": 0.86,
+        "log": -39.88,
+        "interval": 18.85,
+        "wis": 1.09
+      }
+    },
+    "RR_chikungunya_4_imdc_bb.csv.gz": {
+      "prediction_id": 11849,
+      "rows": 53,
+      "first_date": "2025-10-05",
+      "last_date": "2026-10-04",
+      "scores": {
+        "mae": 0.88,
+        "mse": 1.47,
+        "crps": 0.78,
+        "log": -46.38,
+        "interval": 17.25,
+        "wis": 0.93
+      }
+    },
+    "RR_chikungunya_final_imdc_bb.csv.gz": {
+      "prediction_id": 14426,
+      "rows": 52,
+      "first_date": "2026-10-11",
+      "last_date": "2027-10-03",
+      "scores": {}
+    },
+    "RR_dengue_1_imdc_bb.csv.gz": {
+      "prediction_id": 11660,
+      "rows": 52,
+      "first_date": "2022-10-09",
+      "last_date": "2023-10-01",
+      "scores": {
+        "mae": 2.98,
+        "mse": 27.98,
+        "crps": 2.73,
+        "log": -12.28,
+        "interval": 78.85,
+        "wis": 2.17
+      }
+    },
+    "RR_dengue_2_imdc_bb.csv.gz": {
+      "prediction_id": 11687,
+      "rows": 52,
+      "first_date": "2023-10-08",
+      "last_date": "2024-09-29",
+      "scores": {
+        "mae": 10.21,
+        "mse": 189.72,
+        "crps": 8.12,
+        "log": -4.51,
+        "interval": 251.54,
+        "wis": 4.44
+      }
+    },
+    "RR_dengue_3_imdc_bb.csv.gz": {
+      "prediction_id": 11714,
+      "rows": 52,
+      "first_date": "2024-10-06",
+      "last_date": "2025-09-28",
+      "scores": {
+        "mae": 5.21,
+        "mse": 47.13,
+        "crps": 4.82,
+        "log": -4.13,
+        "interval": 169.23,
+        "wis": 2.69
+      }
+    },
+    "RR_dengue_4_imdc_bb.csv.gz": {
+      "prediction_id": 11822,
+      "rows": 53,
+      "first_date": "2025-10-05",
+      "last_date": "2026-10-04",
+      "scores": {
+        "mae": 11.53,
+        "mse": 247.96,
+        "crps": 9.52,
+        "log": -6.64,
+        "interval": 303.92,
+        "wis": 4.74
+      }
+    },
+    "RR_dengue_final_imdc_bb.csv.gz": {
+      "prediction_id": 14399,
+      "rows": 52,
+      "first_date": "2026-10-11",
+      "last_date": "2027-10-03",
+      "scores": {}
+    },
+    "RS_chikungunya_1_imdc_bb.csv.gz": {
+      "prediction_id": 11741,
+      "rows": 52,
+      "first_date": "2022-10-09",
+      "last_date": "2023-10-01",
+      "scores": {
+        "mae": 2.5,
+        "mse": 16.96,
+        "crps": 2.11,
+        "log": -18.02,
+        "interval": 81.92,
+        "wis": 1.26
+      }
+    },
+    "RS_chikungunya_2_imdc_bb.csv.gz": {
+      "prediction_id": 11768,
+      "rows": 52,
+      "first_date": "2023-10-08",
+      "last_date": "2024-09-29",
+      "scores": {
+        "mae": 5.76,
+        "mse": 93.52,
+        "crps": 4.5,
+        "log": -14.83,
+        "interval": 160.77,
+        "wis": 2.46
+      }
+    },
+    "RS_chikungunya_3_imdc_bb.csv.gz": {
+      "prediction_id": 11795,
+      "rows": 52,
+      "first_date": "2024-10-06",
+      "last_date": "2025-09-28",
+      "scores": {
+        "mae": 7.92,
+        "mse": 278.12,
+        "crps": 6.16,
+        "log": -10.85,
+        "interval": 204.23,
+        "wis": 4.06
+      }
+    },
+    "RS_chikungunya_4_imdc_bb.csv.gz": {
+      "prediction_id": 11850,
+      "rows": 53,
+      "first_date": "2025-10-05",
+      "last_date": "2026-10-04",
+      "scores": {
+        "mae": 3.02,
+        "mse": 16.55,
+        "crps": 2.31,
+        "log": -10.39,
+        "interval": 43.14,
+        "wis": 1.59
+      }
+    },
+    "RS_chikungunya_final_imdc_bb.csv.gz": {
+      "prediction_id": 14427,
+      "rows": 52,
+      "first_date": "2026-10-11",
+      "last_date": "2027-10-03",
+      "scores": {}
+    },
+    "RS_dengue_1_imdc_bb.csv.gz": {
+      "prediction_id": 11661,
+      "rows": 52,
+      "first_date": "2022-10-09",
+      "last_date": "2023-10-01",
+      "scores": {
+        "mae": 680.32,
+        "mse": 1634200.91,
+        "crps": 523.2,
+        "log": -7.47,
+        "interval": 14717.73,
+        "wis": 369.79
+      }
+    },
+    "RS_dengue_2_imdc_bb.csv.gz": {
+      "prediction_id": 11688,
+      "rows": 52,
+      "first_date": "2023-10-08",
+      "last_date": "2024-09-29",
+      "scores": {
+        "mae": 4173.89,
+        "mse": 57530123.62,
+        "crps": 3791.42,
+        "log": -10.34,
+        "interval": 85342.42,
+        "wis": 3349.22
+      }
+    },
+    "RS_dengue_3_imdc_bb.csv.gz": {
+      "prediction_id": 11715,
+      "rows": 52,
+      "first_date": "2024-10-06",
+      "last_date": "2025-09-28",
+      "scores": {
+        "mae": 1499.51,
+        "mse": 8400150.43,
+        "crps": 953.53,
+        "log": -8.13,
+        "interval": 33908.94,
+        "wis": 634.46
+      }
+    },
+    "RS_dengue_4_imdc_bb.csv.gz": {
+      "prediction_id": 11823,
+      "rows": 53,
+      "first_date": "2025-10-05",
+      "last_date": "2026-10-04",
+      "scores": {
+        "mae": 230.41,
+        "mse": 116055.38,
+        "crps": 260.28,
+        "log": -6.63,
+        "interval": 3134.06,
+        "wis": 221.71
+      }
+    },
+    "RS_dengue_final_imdc_bb.csv.gz": {
+      "prediction_id": 14400,
+      "rows": 52,
+      "first_date": "2026-10-11",
+      "last_date": "2027-10-03",
+      "scores": {}
+    },
+    "SC_chikungunya_1_imdc_bb.csv.gz": {
+      "prediction_id": 11742,
+      "rows": 52,
+      "first_date": "2022-10-09",
+      "last_date": "2023-10-01",
+      "scores": {
+        "mae": 4.4,
+        "mse": 48.06,
+        "crps": 3.66,
+        "log": -12.78,
+        "interval": 130.0,
+        "wis": 2.31
+      }
+    },
+    "SC_chikungunya_2_imdc_bb.csv.gz": {
+      "prediction_id": 11769,
+      "rows": 52,
+      "first_date": "2023-10-08",
+      "last_date": "2024-09-29",
+      "scores": {
+        "mae": 5.86,
+        "mse": 117.75,
+        "crps": 4.49,
+        "log": -12.68,
+        "interval": 173.87,
+        "wis": 2.94
+      }
+    },
+    "SC_chikungunya_3_imdc_bb.csv.gz": {
+      "prediction_id": 11796,
+      "rows": 52,
+      "first_date": "2024-10-06",
+      "last_date": "2025-09-28",
+      "scores": {
+        "mae": 13.69,
+        "mse": 890.65,
+        "crps": 11.12,
+        "log": -9.5,
+        "interval": 345.02,
+        "wis": 8.2
+      }
+    },
+    "SC_chikungunya_4_imdc_bb.csv.gz": {
+      "prediction_id": 11851,
+      "rows": 53,
+      "first_date": "2025-10-05",
+      "last_date": "2026-10-04",
+      "scores": {
+        "mae": 3.73,
+        "mse": 23.69,
+        "crps": 3.29,
+        "log": -5.04,
+        "interval": 64.33,
+        "wis": 2.1
+      }
+    },
+    "SC_chikungunya_final_imdc_bb.csv.gz": {
+      "prediction_id": 14428,
+      "rows": 52,
+      "first_date": "2026-10-11",
+      "last_date": "2027-10-03",
+      "scores": {}
+    },
+    "SC_dengue_1_imdc_bb.csv.gz": {
+      "prediction_id": 11662,
+      "rows": 52,
+      "first_date": "2022-10-09",
+      "last_date": "2023-10-01",
+      "scores": {
+        "mae": 2793.48,
+        "mse": 25982840.42,
+        "crps": 2367.47,
+        "log": -9.28,
+        "interval": 57331.15,
+        "wis": 1760.92
+      }
+    },
+    "SC_dengue_2_imdc_bb.csv.gz": {
+      "prediction_id": 11689,
+      "rows": 52,
+      "first_date": "2023-10-08",
+      "last_date": "2024-09-29",
+      "scores": {
+        "mae": 6882.36,
+        "mse": 147635320.27,
+        "crps": 5766.43,
+        "log": -10.35,
+        "interval": 140866.38,
+        "wis": 4318.64
+      }
+    },
+    "SC_dengue_3_imdc_bb.csv.gz": {
+      "prediction_id": 11716,
+      "rows": 52,
+      "first_date": "2024-10-06",
+      "last_date": "2025-09-28",
+      "scores": {
+        "mae": 229.67,
+        "mse": 85854.24,
+        "crps": 407.92,
+        "log": -7.46,
+        "interval": 11000.56,
+        "wis": 548.67
+      }
+    },
+    "SC_dengue_4_imdc_bb.csv.gz": {
+      "prediction_id": 11824,
+      "rows": 53,
+      "first_date": "2025-10-05",
+      "last_date": "2026-10-04",
+      "scores": {
+        "mae": 364.25,
+        "mse": 361539.99,
+        "crps": 512.21,
+        "log": -6.51,
+        "interval": 1374.98,
+        "wis": 471.04
+      }
+    },
+    "SC_dengue_final_imdc_bb.csv.gz": {
+      "prediction_id": 14401,
+      "rows": 52,
+      "first_date": "2026-10-11",
+      "last_date": "2027-10-03",
+      "scores": {}
+    },
+    "SE_chikungunya_1_imdc_bb.csv.gz": {
+      "prediction_id": 11743,
+      "rows": 52,
+      "first_date": "2022-10-09",
+      "last_date": "2023-10-01",
+      "scores": {
+        "mae": 24.82,
+        "mse": 755.19,
+        "crps": 33.0,
+        "log": -5.9,
+        "interval": 771.54,
+        "wis": 30.73
+      }
+    },
+    "SE_chikungunya_2_imdc_bb.csv.gz": {
+      "prediction_id": 11770,
+      "rows": 52,
+      "first_date": "2023-10-08",
+      "last_date": "2024-09-29",
+      "scores": {
+        "mae": 12.7,
+        "mse": 285.52,
+        "crps": 21.11,
+        "log": -6.02,
+        "interval": 208.46,
+        "wis": 25.08
+      }
+    },
+    "SE_chikungunya_3_imdc_bb.csv.gz": {
+      "prediction_id": 11797,
+      "rows": 52,
+      "first_date": "2024-10-06",
+      "last_date": "2025-09-28",
+      "scores": {
+        "mae": 13.95,
+        "mse": 248.49,
+        "crps": 15.0,
+        "log": -21.57,
+        "interval": 46.92,
+        "wis": 18.95
+      }
+    },
+    "SE_chikungunya_4_imdc_bb.csv.gz": {
+      "prediction_id": 11852,
+      "rows": 53,
+      "first_date": "2025-10-05",
+      "last_date": "2026-10-04",
+      "scores": {
+        "mae": 5.58,
+        "mse": 41.99,
+        "crps": 11.74,
+        "log": -3.75,
+        "interval": 165.88,
+        "wis": 14.13
+      }
+    },
+    "SE_chikungunya_final_imdc_bb.csv.gz": {
+      "prediction_id": 14429,
+      "rows": 52,
+      "first_date": "2026-10-11",
+      "last_date": "2027-10-03",
+      "scores": {}
+    },
+    "SE_dengue_1_imdc_bb.csv.gz": {
+      "prediction_id": 11663,
+      "rows": 52,
+      "first_date": "2022-10-09",
+      "last_date": "2023-10-01",
+      "scores": {
+        "mae": 35.43,
+        "mse": 1741.3,
+        "crps": 29.69,
+        "log": -5.72,
+        "interval": 1144.62,
+        "wis": 22.79
+      }
+    },
+    "SE_dengue_2_imdc_bb.csv.gz": {
+      "prediction_id": 11690,
+      "rows": 52,
+      "first_date": "2023-10-08",
+      "last_date": "2024-09-29",
+      "scores": {
+        "mae": 32.49,
+        "mse": 1970.46,
+        "crps": 30.57,
+        "log": -5.72,
+        "interval": 1093.5,
+        "wis": 22.28
+      }
+    },
+    "SE_dengue_3_imdc_bb.csv.gz": {
+      "prediction_id": 11717,
+      "rows": 52,
+      "first_date": "2024-10-06",
+      "last_date": "2025-09-28",
+      "scores": {
+        "mae": 13.58,
+        "mse": 271.59,
+        "crps": 14.43,
+        "log": -4.25,
+        "interval": 315.02,
+        "wis": 15.27
+      }
+    },
+    "SE_dengue_4_imdc_bb.csv.gz": {
+      "prediction_id": 11825,
+      "rows": 53,
+      "first_date": "2025-10-05",
+      "last_date": "2026-10-04",
+      "scores": {
+        "mae": 12.2,
+        "mse": 267.19,
+        "crps": 13.56,
+        "log": -4.59,
+        "interval": 529.86,
+        "wis": 13.09
+      }
+    },
+    "SE_dengue_final_imdc_bb.csv.gz": {
+      "prediction_id": 14402,
+      "rows": 52,
+      "first_date": "2026-10-11",
+      "last_date": "2027-10-03",
+      "scores": {}
+    },
+    "SP_chikungunya_1_imdc_bb.csv.gz": {
+      "prediction_id": 11744,
+      "rows": 52,
+      "first_date": "2022-10-09",
+      "last_date": "2023-10-01",
+      "scores": {
+        "mae": 37.12,
+        "mse": 4057.14,
+        "crps": 21.69,
+        "log": -4.66,
+        "interval": 1053.46,
+        "wis": 17.26
+      }
+    },
+    "SP_chikungunya_2_imdc_bb.csv.gz": {
+      "prediction_id": 11771,
+      "rows": 52,
+      "first_date": "2023-10-08",
+      "last_date": "2024-09-29",
+      "scores": {
+        "mae": 216.75,
+        "mse": 78482.76,
+        "crps": 173.58,
+        "log": -7.91,
+        "interval": 4719.65,
+        "wis": 133.51
+      }
+    },
+    "SP_chikungunya_3_imdc_bb.csv.gz": {
+      "prediction_id": 11798,
+      "rows": 52,
+      "first_date": "2024-10-06",
+      "last_date": "2025-09-28",
+      "scores": {
+        "mae": 177.98,
+        "mse": 70744.07,
+        "crps": 133.23,
+        "log": -7.03,
+        "interval": 4135.85,
+        "wis": 107.32
+      }
+    },
+    "SP_chikungunya_4_imdc_bb.csv.gz": {
+      "prediction_id": 11853,
+      "rows": 53,
+      "first_date": "2025-10-05",
+      "last_date": "2026-10-04",
+      "scores": {
+        "mae": 18.54,
+        "mse": 523.83,
+        "crps": 21.36,
+        "log": -4.93,
+        "interval": 836.12,
+        "wis": 16.19
+      }
+    },
+    "SP_chikungunya_final_imdc_bb.csv.gz": {
+      "prediction_id": 14430,
+      "rows": 52,
+      "first_date": "2026-10-11",
+      "last_date": "2027-10-03",
+      "scores": {}
+    },
+    "SP_dengue_1_imdc_bb.csv.gz": {
+      "prediction_id": 11664,
+      "rows": 52,
+      "first_date": "2022-10-09",
+      "last_date": "2023-10-01",
+      "scores": {
+        "mae": 3327.46,
+        "mse": 36128689.77,
+        "crps": 1749.65,
+        "log": -8.74,
+        "interval": 106486.65,
+        "wis": 1338.23
+      }
+    },
+    "SP_dengue_2_imdc_bb.csv.gz": {
+      "prediction_id": 11691,
+      "rows": 52,
+      "first_date": "2023-10-08",
+      "last_date": "2024-09-29",
+      "scores": {
+        "mae": 38509.65,
+        "mse": 4041662271.79,
+        "crps": 33457.98,
+        "log": -12.74,
+        "interval": 816399.38,
+        "wis": 28667.0
+      }
+    },
+    "SP_dengue_3_imdc_bb.csv.gz": {
+      "prediction_id": 11718,
+      "rows": 52,
+      "first_date": "2024-10-06",
+      "last_date": "2025-09-28",
+      "scores": {
+        "mae": 13020.54,
+        "mse": 386012724.63,
+        "crps": 7925.09,
+        "log": -10.45,
+        "interval": 336605.33,
+        "wis": 5586.85
+      }
+    },
+    "SP_dengue_4_imdc_bb.csv.gz": {
+      "prediction_id": 11826,
+      "rows": 53,
+      "first_date": "2025-10-05",
+      "last_date": "2026-10-04",
+      "scores": {
+        "mae": 5857.89,
+        "mse": 76826609.48,
+        "crps": 5649.01,
+        "log": -9.69,
+        "interval": 32560.75,
+        "wis": 3817.41
+      }
+    },
+    "SP_dengue_final_imdc_bb.csv.gz": {
+      "prediction_id": 14403,
+      "rows": 52,
+      "first_date": "2026-10-11",
+      "last_date": "2027-10-03",
+      "scores": {}
+    },
+    "TO_chikungunya_1_imdc_bb.csv.gz": {
+      "prediction_id": 11745,
+      "rows": 52,
+      "first_date": "2022-10-09",
+      "last_date": "2023-10-01",
+      "scores": {
+        "mae": 88.65,
+        "mse": 22642.54,
+        "crps": 71.48,
+        "log": -5.82,
+        "interval": 1980.79,
+        "wis": 52.61
+      }
+    },
+    "TO_chikungunya_2_imdc_bb.csv.gz": {
+      "prediction_id": 11772,
+      "rows": 52,
+      "first_date": "2023-10-08",
+      "last_date": "2024-09-29",
+      "scores": {
+        "mae": 8.1,
+        "mse": 135.22,
+        "crps": 8.45,
+        "log": -5.64,
+        "interval": 310.0,
+        "wis": 8.46
+      }
+    },
+    "TO_chikungunya_3_imdc_bb.csv.gz": {
+      "prediction_id": 11799,
+      "rows": 52,
+      "first_date": "2024-10-06",
+      "last_date": "2025-09-28",
+      "scores": {
+        "mae": 5.34,
+        "mse": 45.0,
+        "crps": 6.72,
+        "log": -16.48,
+        "interval": 173.87,
+        "wis": 6.95
+      }
+    },
+    "TO_chikungunya_4_imdc_bb.csv.gz": {
+      "prediction_id": 11854,
+      "rows": 53,
+      "first_date": "2025-10-05",
+      "last_date": "2026-10-04",
+      "scores": {
+        "mae": 7.3,
+        "mse": 85.04,
+        "crps": 6.8,
+        "log": -7.1,
+        "interval": 100.41,
+        "wis": 6.37
+      }
+    },
+    "TO_chikungunya_final_imdc_bb.csv.gz": {
+      "prediction_id": 14431,
+      "rows": 52,
+      "first_date": "2026-10-11",
+      "last_date": "2027-10-03",
+      "scores": {}
+    },
+    "TO_dengue_1_imdc_bb.csv.gz": {
+      "prediction_id": 11665,
+      "rows": 52,
+      "first_date": "2022-10-09",
+      "last_date": "2023-10-01",
+      "scores": {
+        "mae": 35.19,
+        "mse": 2120.9,
+        "crps": 39.73,
+        "log": -5.21,
+        "interval": 1223.6,
+        "wis": 32.95
+      }
+    },
+    "TO_dengue_2_imdc_bb.csv.gz": {
+      "prediction_id": 11692,
+      "rows": 52,
+      "first_date": "2023-10-08",
+      "last_date": "2024-09-29",
+      "scores": {
+        "mae": 40.36,
+        "mse": 2741.06,
+        "crps": 36.21,
+        "log": -5.11,
+        "interval": 1489.73,
+        "wis": 29.63
+      }
+    },
+    "TO_dengue_3_imdc_bb.csv.gz": {
+      "prediction_id": 11719,
+      "rows": 52,
+      "first_date": "2024-10-06",
+      "last_date": "2025-09-28",
+      "scores": {
+        "mae": 58.19,
+        "mse": 5668.3,
+        "crps": 45.48,
+        "log": -5.03,
+        "interval": 517.38,
+        "wis": 32.61
+      }
+    },
+    "TO_dengue_4_imdc_bb.csv.gz": {
+      "prediction_id": 11827,
+      "rows": 53,
+      "first_date": "2025-10-05",
+      "last_date": "2026-10-04",
+      "scores": {
+        "mae": 245.41,
+        "mse": 104552.21,
+        "crps": 169.51,
+        "log": -7.15,
+        "interval": 6419.35,
+        "wis": 105.88
+      }
+    },
+    "TO_dengue_final_imdc_bb.csv.gz": {
+      "prediction_id": 14404,
+      "rows": 52,
+      "first_date": "2026-10-11",
+      "last_date": "2027-10-03",
+      "scores": {}
+    }
+  }
+}

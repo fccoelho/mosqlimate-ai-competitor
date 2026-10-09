@@ -1,19 +1,18 @@
-"""Validation pipeline configuration for Mosqlimate Sprint 2025.
+"""Validation pipeline configuration for Mosqlimate 3rd IMDC 2026.
 
 Defines the 4-run validation structure according to competition rules:
-- 3 validation tests (2022-2023, 2023-2024, 2024-2025)
-- 1 final forecast (2025-2026)
+- 4 validation tests (2022-2023, 2023-2024, 2024-2025, 2025-2026)
+- 1 final forecast target (2026-2027 season, EW41 2026 - EW40 2027)
 """
 
 from dataclasses import dataclass
-from typing import Dict, List, Optional
 
 
 @dataclass
 class ValidationTestConfig:
     """Configuration for a single validation test."""
 
-    test_number: int  # 1, 2, or 3
+    test_number: int  # 1, 2, 3, or 4
     season: str  # e.g., "2022-2023"
     train_end: str  # EW 25 of training year
     target_start: str  # EW 41 of forecast year
@@ -26,7 +25,7 @@ class ValidationPipelineConfig:
     """Complete validation pipeline configuration."""
 
     # Validation tests
-    validation_tests: List[ValidationTestConfig]
+    validation_tests: list[ValidationTestConfig]
 
     # Final forecast
     final_forecast_train_end: str
@@ -34,7 +33,7 @@ class ValidationPipelineConfig:
     final_forecast_target_end: str
 
     # States to validate
-    states: List[str]
+    states: list[str]
 
     # Parallelization limits
     max_concurrent_states: int
@@ -86,10 +85,18 @@ DEFAULT_VALIDATION_CONFIG = ValidationPipelineConfig(
             target_end="2025-10-05",  # EW 40 2025
             description="Validation Test 3: 2024-2025 season",
         ),
+        ValidationTestConfig(
+            test_number=4,
+            season="2025-2026",
+            train_end="2025-06-22",  # EW 25 2025
+            target_start="2025-10-05",  # EW 41 2025
+            target_end="2026-10-04",  # EW 40 2026
+            description="Validation Test 4: 2025-2026 season",
+        ),
     ],
-    final_forecast_train_end="2025-06-22",  # EW 25 2025
-    final_forecast_target_start="2025-10-05",  # EW 41 2025
-    final_forecast_target_end="2026-10-04",  # EW 40 2026
+    final_forecast_train_end="2026-06-21",  # EW 25 2026
+    final_forecast_target_start="2026-10-04",  # EW 41 2026
+    final_forecast_target_end="2027-10-03",  # EW 40 2027
     states=[
         "AC",
         "AL",
@@ -98,7 +105,7 @@ DEFAULT_VALIDATION_CONFIG = ValidationPipelineConfig(
         "BA",
         "CE",
         "DF",
-        "ES",
+        # ES (Espírito Santo) excluded by competition rules
         "GO",
         "MA",
         "MT",
